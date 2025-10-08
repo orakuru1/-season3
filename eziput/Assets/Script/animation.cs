@@ -33,6 +33,6 @@ public class animation : MonoBehaviour
         if(player == null) return false;
 
         float distance = Vector3.Distance(player.transform.position, transform.position);
-        return distance < 3.0f; //3m以内ならOK
+        return distance < 1.0f; //3m以内ならOK
     }
 }
