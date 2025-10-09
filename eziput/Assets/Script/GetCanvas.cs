@@ -13,6 +13,9 @@ public class GetCanvas : MonoBehaviour
     public GameObject bouguImage;   //防具イメージ
     public GameObject inventoryImage;
 
+    [Header("プレイヤー操作スクリプト")]
+    public MonoBehaviour playerController;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,11 +44,13 @@ public class GetCanvas : MonoBehaviour
     public void ShowPanel()
     {
         panel.SetActive(true);
+        SetPlayerControl(false);
     }
 
     public void HisPanel()
     {
         panel.SetActive(false);
+        SetPlayerControl(false);
     }
 
     public void TogglePanel()
@@ -60,10 +65,13 @@ public class GetCanvas : MonoBehaviour
                inventoryImage.SetActive(false);
             if(bukiImage != null)
                bukiImage.SetActive(false);
+
+            SetPlayerControl(false);
         }
         else
         {
             panel.SetActive(false);
+            SetPlayerControl(true);
         }
     }
 
@@ -108,5 +116,14 @@ public class GetCanvas : MonoBehaviour
         
         panel.SetActive(true);
         statusImage.SetActive(true);
+    }
+
+    //プレイヤー操作を無効化する
+    void SetPlayerControl(bool enable)
+    {
+        if(playerController != null)
+        {
+            playerController.enabled = enable;
+        }
     }
 }
