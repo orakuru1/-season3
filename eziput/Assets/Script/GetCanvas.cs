@@ -8,122 +8,102 @@ public class GetCanvas : MonoBehaviour
     public GameObject panel;
 
     [Header("持ち物画面(Imageなど)")]
-    public GameObject statusImage;  //ステータスイメージ
-    public GameObject bukiImage;    //武器イメージ
-    public GameObject bouguImage;   //防具イメージ
-    public GameObject inventoryImage;
+    public GameObject statusImage;  //全体image
+    public GameObject bukiImage;    //武器image
+    public GameObject bouguImage;   //防具image
+    public GameObject inventoryImage;  //持ち物image
 
-    [Header("プレイヤー操作スクリプト")]
-    public MonoBehaviour playerController;
+    [Header("プレイヤー操作スクリプト（PlayerMoveなど）")]
+    public MonoBehaviour[] playerControllers; // ← 複数登録できるように変更！
 
-    // Start is called before the first frame update
     void Start()
     {
-        panel.SetActive(false);
-        if(statusImage != null) 
-           statusImage.SetActive(false);
-        if(inventoryImage != null)
-           inventoryImage.SetActive(false);
-        if(bukiImage != null)
-           bukiImage.SetActive(false);
-        if(bouguImage != null)
-           bouguImage.SetActive(false);
+        panel.SetActive(false);  //最初はすべて非表示
+        HideAllImages();  //最初はimageもすべて非表示
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //ESCキーが押されたトグル
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Debug.Log("押されてない");
             TogglePanel();
         }
     }
 
-    public void ShowPanel()
-    {
-        panel.SetActive(true);
-        SetPlayerControl(false);
-    }
-
-    public void HisPanel()
-    {
-        panel.SetActive(false);
-        SetPlayerControl(false);
-    }
-
-    public void TogglePanel()
+    public void TogglePanel()  //ESCキーを押したとき表示非表示する
     {
         bool newState = !panel.activeSelf;
 
-        if(newState)
-        {
-            panel.SetActive(true);
-            statusImage.SetActive(true);
-            if(inventoryImage != null)
-               inventoryImage.SetActive(false);
-            if(bukiImage != null)
-               bukiImage.SetActive(false);
+        panel.SetActive(newState);
+        inventoryImage.SetActive(newState);
+        bukiImage.SetActive(newState);
+        bouguImage.SetActive(newState);
 
-            SetPlayerControl(false);
+        if (newState)
+        {
+            ShowStatusOnly();
+            SetPlayerControl(false); // ← 停止！
         }
         else
         {
-            panel.SetActive(false);
-            SetPlayerControl(true);
+            SetPlayerControl(true); // ← 再開！
         }
     }
 
-    public void showInventory()
+    void HideAllImages()  //最初に全部非表示にするやつ
     {
-        Debug.Log("押した");
-        //ESCパネルを閉じて持ち物画面表示
-        statusImage.SetActive(false);
-        if(inventoryImage != null)
-           inventoryImage.SetActive(true);
+        if (statusImage) statusImage.SetActive(false);
+        if (inventoryImage) inventoryImage.SetActive(false);
+        if (bukiImage) bukiImage.SetActive(false);
+        if (bouguImage) bouguImage.SetActive(false);
     }
 
-    public void showbuki()
+    public void ShowStatusOnly()  //ステータスimageだけ表示
     {
-        Debug.Log("押した");
-        //ESCパネルを閉じて武器画面表示
-        statusImage.SetActive(false);
-        if(bukiImage != null)
-           bukiImage.SetActive(true);
+        HideAllImages();
+        if (statusImage) statusImage.SetActive(true);
     }
 
-    public void showbougu()
+    public void showInventory()  //ステータスimageと持ち物image表示
     {
-        Debug.Log("押した");
-        //ESCパネルを閉じて防具画面表示
-        statusImage.SetActive(false);
-        if(bouguImage != null)
-           bouguImage.SetActive(true);
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if (inventoryImage) inventoryImage.SetActive(true);
     }
 
-    //持ち物画面から戻るボタンなどで呼ぶ
-    public void CloseInventory()
+    public void showbuki()  //ステータスimageと武器image表示
     {
-        if(inventoryImage != null) 
-           inventoryImage.SetActive(false);
-        
-        if(bukiImage != null)
-           bukiImage.SetActive(false);
-        
-        if(bouguImage != null)
-           bouguImage.SetActive(false);
-        
-        panel.SetActive(true);
-        statusImage.SetActive(true);
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if (bukiImage) bukiImage.SetActive(true);
     }
 
-    //プレイヤー操作を無効化する
+    public void showbougu()  //ステータスimageと防具image表示
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if (bouguImage) bouguImage.SetActive(true);
+    }
+
     void SetPlayerControl(bool enable)
     {
-        if(playerController != null)
+        // 登録されているすべてのプレイヤースクリプトをオン/オフ
+        foreach (var script in playerControllers)
         {
-            playerController.enabled = enable;
+            if (script != null)
+                script.enabled = enable;
+        }
+
+        // マウスカーソルも制御（UI操作しやすく）
+        if (!enable)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
     }
 }
