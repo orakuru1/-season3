@@ -7,6 +7,7 @@ public class Unit : MonoBehaviour
 {
     public GridManager gridManager;
 
+    
     [System.Serializable]
     public class UnitStatus
     {
@@ -219,13 +220,12 @@ public class Unit : MonoBehaviour
         }
         
     }
-    
-
 
     public void AttackEnd()
     {
         isAttacking = false;
         anim.SetInteger("Attack",0);
+        // �U����Ƀ^�[�����I���i�v���C���[�Ȃ�G�^�[���ցj
         if (team == Team.Player)
         {
             TurnManager.Instance.NextTurn();
