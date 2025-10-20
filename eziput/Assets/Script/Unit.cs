@@ -6,6 +6,7 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     public GridManager gridManager;
+
     
     [System.Serializable]
     public class UnitStatus
@@ -35,6 +36,7 @@ public class Unit : MonoBehaviour
     public Vector2Int gridPos;
     public float moveSpeed = 4f; // interpolation speed
     public bool isMoving = false;
+    private bool isAttacking = false;
 
     private Vector3 originalPosition;
     private Animator anim;
@@ -74,7 +76,7 @@ public class Unit : MonoBehaviour
         // �G������Ȃ�U��
         if (nextBlock.occupantUnit != null && nextBlock.occupantUnit.team != this.team)
         {
-            Attack(nextBlock.occupantUnit);
+            StartCoroutine(Attack(nextBlock.occupantUnit));
             return true;
         }
 
@@ -178,7 +180,7 @@ public class Unit : MonoBehaviour
             if (block.occupantUnit != null)
             {
                 // �G�ɐڐG������U�����Ď~�߂�
-                if (block.occupantUnit.team != team) { Attack(block.occupantUnit); break; }
+                if (block.occupantUnit.team != team) { StartCoroutine(Attack(block.occupantUnit)); break; }
                 else break;
             }
             if (!block.isWalkable) break;
@@ -189,19 +191,40 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void Attack(Unit target)
+    public IEnumerator Attack(Unit target)
     {
-        if (target == null) return;
+        if (target == null) yield break;
 
-        // �����ύX�i�U�������������j
-        Vector2 dir = (target.transform.position - transform.position).normalized;
-        transform.forward = new Vector3(dir.x, 0, dir.y);
+        // �U����Ƀ^�[�����I���i�v���C���[�Ȃ�G�^�[���ցj
+        if (isAttacking) yield break;
 
-        // �U������
-        target.TakeDamage(1); // ����1�_���[�W
+        if (team == Team.Player)
+        {
+            isAttacking = true;///現在は攻撃アニメーションがプレイヤーにしか入っていないため、プレイヤー限定にする。
+        }
 
-        Debug.Log($"{name} attacked {target.name}!");
+        if (anim != null)
+        {
+            // �����ύX�i�U�������������j
+            Vector2 dir = (target.transform.position - transform.position).normalized;
+            transform.forward = new Vector3(dir.x, 0, dir.y);
 
+            yield return null;
+
+            // �U������
+            target.TakeDamage(1); // ����1�_���[�W
+
+            Debug.Log($"{name} attacked {target.name}!");
+            anim.SetInteger("Attack", 1);
+
+        }
+        
+    }
+
+    public void AttackEnd()
+    {
+        isAttacking = false;
+        anim.SetInteger("Attack",0);
         // �U����Ƀ^�[�����I���i�v���C���[�Ȃ�G�^�[���ցj
         if (team == Team.Player)
         {
@@ -252,7 +275,7 @@ public class Unit : MonoBehaviour
             var b = gridManager.GetBlock(gridPos + d);
             if (b != null && b.occupantUnit != null && b.occupantUnit.team != this.team)
             {
-                Attack(b.occupantUnit);
+                StartCoroutine(Attack(b.occupantUnit));
                 return;
             }
         }
@@ -274,7 +297,7 @@ public class Unit : MonoBehaviour
         {
             if (nextBlock.occupantUnit.team != this.team)
             {
-                Attack(nextBlock.occupantUnit);
+                StartCoroutine(Attack(nextBlock.occupantUnit));
                 yield break;
             }
             else yield break;
