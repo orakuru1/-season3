@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class moveanimation : MonoBehaviour
 {
-    public Animator animator;
+    //public Animator animator;
 
     private Vector3 move;
     // Start is called before the first frame update
     void Start()
     {
-        animator = GetComponent<Animator>();
+        //animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -25,12 +25,12 @@ public class moveanimation : MonoBehaviour
         if (move != Vector3.zero)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), 0.2f);
-            transform.Translate(move * Time.deltaTime * 2, Space.World);
-            animator.SetInteger("３種の行動", 1); // 歩く
+            //transform.Translate(move * Time.deltaTime * 2, Space.World);
+            //animator.SetInteger("３種の行動", 1); // 歩く
         }
         else
         {
-            animator.SetInteger("３種の行動", 0); // 待機
+            //animator.SetInteger("３種の行動", 0); // 待機
         }
 
 

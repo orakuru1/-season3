@@ -6,7 +6,6 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     public GridManager gridManager;
-    public Surveyor enemyCount; // placeholder for your original EnemyCount usage
 
     [System.Serializable]
     public class UnitStatus
@@ -36,6 +35,7 @@ public class Unit : MonoBehaviour
     public Vector2Int gridPos;
     public float moveSpeed = 4f; // interpolation speed
     public bool isMoving = false;
+    private bool isAttacking = false;
 
     private Vector3 originalPosition;
     private Animator anim;
@@ -50,7 +50,7 @@ public class Unit : MonoBehaviour
     {
         gridManager = FindObjectOfType<GridManager>();
 
-        // ƒ[ƒ‹ƒhˆÊ’u‚©‚çƒOƒŠƒbƒhÀ•W‚ğ©“®Zo
+        // ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½hï¿½Ê’uï¿½ï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½o
         gridPos = gridManager.WorldToGrid(transform.position);
 
         var block = gridManager.GetBlock(gridPos);
@@ -64,7 +64,7 @@ public class Unit : MonoBehaviour
     }
 
 
-    // 1ƒ}ƒXˆÚ“®iƒ^[ƒ“’†‚Ì’¼ÚˆÚ“®j
+    // 1ï¿½}ï¿½Xï¿½Ú“ï¿½ï¿½iï¿½^ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Ì’ï¿½ï¿½ÚˆÚ“ï¿½ï¿½j
     public bool TryMove(Vector2Int dir)
     {
         if (isMoving) return false;
@@ -72,14 +72,14 @@ public class Unit : MonoBehaviour
         var nextBlock = gridManager.GetBlock(next);
         if (nextBlock == null) return false;
 
-        // “G‚ª‚¢‚é‚È‚çUŒ‚
+        // ï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½Uï¿½ï¿½
         if (nextBlock.occupantUnit != null && nextBlock.occupantUnit.team != this.team)
         {
-            Attack(nextBlock.occupantUnit);
+            StartCoroutine(Attack(nextBlock.occupantUnit));
             return true;
         }
 
-        // ’Ês‰Â”\‚©
+        // ï¿½Êsï¿½Â”\ï¿½ï¿½
         if (!nextBlock.isWalkable || (nextBlock.occupantUnit != null)) return false;
 
         StartCoroutine(MoveToBlockCoroutine(nextBlock));
@@ -90,23 +90,23 @@ public class Unit : MonoBehaviour
     {
         if (path == null || path.Count == 0) yield break;
 
-        // ˆÚ“®ŠJnƒtƒ‰ƒO
+        // ï¿½Ú“ï¿½ï¿½Jï¿½nï¿½tï¿½ï¿½ï¿½O
         isMoving = true;
 
-        // Œ»İƒuƒƒbƒN‚Ìè—L‚ğˆê’U‰ğœ
+        // ï¿½ï¿½ï¿½İƒuï¿½ï¿½ï¿½bï¿½Nï¿½Ìï¿½Lï¿½ï¿½ï¿½ï¿½Uï¿½ï¿½ï¿½ï¿½
         var curBlock = gridManager.GetBlock(gridPos);
         if (curBlock != null && curBlock.occupantUnit == this)
             curBlock.occupantUnit = null;
 
-        // ŠeƒXƒeƒbƒv‚ğ•âŠÔˆÚ“®
+        // ï¿½eï¿½Xï¿½eï¿½bï¿½vï¿½ï¿½ï¿½ÔˆÚ“ï¿½
         foreach (var block in path)
         {
             if (block == null) continue;
 
             Vector3 start = transform.position;
-            Vector3 end = block.transform.position + Vector3.up * 1f; // ‚‚³ƒIƒtƒZƒbƒg‚É‡‚í‚¹‚é
+            Vector3 end = block.transform.position + Vector3.up * 1f; // ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½tï¿½Zï¿½bï¿½gï¿½Éï¿½ï¿½í‚¹ï¿½ï¿½
             float elapsed = 0f;
-            float duration = 1f / moveSpeed; // moveSpeed ‚ªã‚Å’è‹`‚³‚ê‚Ä‚¢‚é‘O’ñ
+            float duration = 1f / moveSpeed; // moveSpeed ï¿½ï¿½ï¿½ï¿½Å’ï¿½`ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Oï¿½ï¿½
 
             while (elapsed < duration)
             {
@@ -116,29 +116,29 @@ public class Unit : MonoBehaviour
             }
             transform.position = end;
 
-            // gridPos ‚Æ occupant ‚ğXVi“r’†‚Å occupant ‚ª•K—v‚È‚ç‚±‚±‚Åİ’èj
+            // gridPos ï¿½ï¿½ occupant ï¿½ï¿½ï¿½Xï¿½Vï¿½iï¿½rï¿½ï¿½ï¿½ï¿½ occupant ï¿½ï¿½ï¿½Kï¿½vï¿½È‚ç‚±ï¿½ï¿½ï¿½Åİ’ï¿½j
             gridPos = block.gridPos;
             block.occupantUnit = this;
 
-            // ­‚µ‘Ò‚ÂiŒ©‚½–Ú‚Ì’²®j
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ò‚Âiï¿½ï¿½ï¿½ï¿½ï¿½Ú‚Ì’ï¿½ï¿½ï¿½ï¿½j
             yield return new WaitForSeconds(0.02f);
         }
 
         isMoving = false;
 
-        // I—¹‚ÉƒvƒŒƒCƒ„[‚È‚çƒ^[ƒ“I—¹’Ê’miŒo˜HˆÚ“®‚Í1‰ñ‚¾‚¯j
+        // ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Éƒvï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½È‚ï¿½^ï¿½[ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½Ê’mï¿½iï¿½oï¿½Hï¿½Ú“ï¿½ï¿½ï¿½1ï¿½ñ‚¾‚ï¿½ï¿½j
         if (team == Unit.Team.Player)
         {
             TurnManager.Instance.EndPlayerTurn();
         }
     }
 
-    // coroutine‚ÅŠŠ‚ç‚©‚ÉˆÚ“®
+    // coroutineï¿½ÅŠï¿½ï¿½ç‚©ï¿½ÉˆÚ“ï¿½
     private IEnumerator MoveToBlockCoroutine(GridBlock block)
     {
         isMoving = true;
 
-        // Œ»İƒuƒƒbƒN‰ğ•ú
+        // ï¿½ï¿½ï¿½İƒuï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½
         var cur = gridManager.GetBlock(gridPos);
         if (cur != null && cur.occupantUnit == this) cur.occupantUnit = null;
 
@@ -155,20 +155,20 @@ public class Unit : MonoBehaviour
         }
         transform.position = end;
 
-        // ÅIXV
+        // ï¿½ÅIï¿½Xï¿½V
         gridPos = block.gridPos;
         block.occupantUnit = this;
 
         isMoving = false;
 
-        // ƒvƒŒƒCƒ„[‚È‚çƒ^[ƒ“I—¹’Ê’m
+        // ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½È‚ï¿½^ï¿½[ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½Ê’m
         if (team == Team.Player)
         {
             TurnManager.Instance.EndPlayerTurn();
         }
     }
 
-    // ƒ_ƒbƒVƒ…i•¡”ƒ}ƒXj
+    // ï¿½_ï¿½bï¿½Vï¿½ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½ï¿½}ï¿½Xï¿½j
     public IEnumerator Dash(Vector2Int dir, int distance)
     {
         for (int i = 0; i < distance; i++)
@@ -178,32 +178,54 @@ public class Unit : MonoBehaviour
             if (block == null) break;
             if (block.occupantUnit != null)
             {
-                // “G‚ÉÚG‚µ‚½‚çUŒ‚‚µ‚Ä~‚ß‚é
-                if (block.occupantUnit.team != team) { Attack(block.occupantUnit); break; }
+                // ï¿½Gï¿½ÉÚGï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Uï¿½ï¿½ï¿½ï¿½ï¿½Ä~ï¿½ß‚ï¿½
+                if (block.occupantUnit.team != team) { StartCoroutine(Attack(block.occupantUnit)); break; }
                 else break;
             }
             if (!block.isWalkable) break;
 
             yield return StartCoroutine(MoveToBlockCoroutine(block));
-            // ˆÚ“®–ˆ‚Éˆê¬‹x~
+            // ï¿½Ú“ï¿½ï¿½ï¿½ï¿½Éˆê¬ï¿½xï¿½~
             while (isMoving) yield return null;
         }
     }
 
-    public void Attack(Unit target)
+    public IEnumerator Attack(Unit target)
     {
-        if (target == null) return;
+        if (target == null) yield break;
 
-        // Œü‚«•ÏXiUŒ‚•ûŒü‚ğŒü‚­j
-        Vector2 dir = (target.transform.position - transform.position).normalized;
-        transform.forward = new Vector3(dir.x, 0, dir.y);
+        // ï¿½Uï¿½ï¿½ï¿½ï¿½Éƒ^ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½iï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½È‚ï¿½Gï¿½^ï¿½[ï¿½ï¿½ï¿½Öj
+        if (isAttacking) yield break;
 
-        // UŒ‚ˆ—
-        target.TakeDamage(1); // ‰¼‚Å1ƒ_ƒ[ƒW
+        if (team == Team.Player)
+        {
+            isAttacking = true;///ç¾åœ¨ã¯æ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ã—ã‹å…¥ã£ã¦ã„ãªã„ãŸã‚ã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼é™å®šã«ã™ã‚‹ã€‚
+        }
 
-        Debug.Log($"{name} attacked {target.name}!");
+        if (anim != null)
+        {
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ÏXï¿½iï¿½Uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½j
+            Vector2 dir = (target.transform.position - transform.position).normalized;
+            transform.forward = new Vector3(dir.x, 0, dir.y);
 
-        // UŒ‚Œã‚Éƒ^[ƒ“‚ğI—¹iƒvƒŒƒCƒ„[‚È‚ç“Gƒ^[ƒ“‚Öj
+            yield return null;
+
+            // ï¿½Uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            target.TakeDamage(1); // ï¿½ï¿½ï¿½ï¿½1ï¿½_ï¿½ï¿½ï¿½[ï¿½W
+
+            Debug.Log($"{name} attacked {target.name}!");
+            anim.SetInteger("Attack", 1);
+
+        }
+        
+    }
+    
+
+
+    public void AttackEnd()
+    {
+        isAttacking = false;
+        anim.SetInteger("Attack",0);
         if (team == Team.Player)
         {
             TurnManager.Instance.NextTurn();
@@ -233,7 +255,7 @@ public class Unit : MonoBehaviour
         Destroy(gameObject);
     }
 
-    // AI—pƒwƒ‹ƒp[
+    // AIï¿½pï¿½wï¿½ï¿½ï¿½pï¿½[
     public bool CanAttackNearby()
     {
         Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
@@ -253,29 +275,29 @@ public class Unit : MonoBehaviour
             var b = gridManager.GetBlock(gridPos + d);
             if (b != null && b.occupantUnit != null && b.occupantUnit.team != this.team)
             {
-                Attack(b.occupantUnit);
+                StartCoroutine(Attack(b.occupantUnit));
                 return;
             }
         }
     }
 
-    // “G‚ªƒvƒŒƒCƒ„[‚Éˆê•à‚¾‚¯‹ß‚Ã‚­iƒRƒ‹[ƒ`ƒ“‚ÅŒÄ‚×‚éj
+    // ï¿½Gï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Éˆï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß‚Ã‚ï¿½ï¿½iï¿½Rï¿½ï¿½ï¿½[ï¿½`ï¿½ï¿½ï¿½ÅŒÄ‚×‚ï¿½j
     public IEnumerator MoveTowardNearestPlayerCoroutine()
     {
         var target = FindClosestEnemyUnit(team == Team.Player ? Team.Enemy : Team.Player);
         if (target == null) yield break;
 
-        // A*‚ÅŒo˜H‚ğæ“¾
+        // A*ï¿½ÅŒoï¿½Hï¿½ï¿½ï¿½æ“¾
         var path = gridManager.FindPath(gridPos, target.gridPos);
         if (path == null || path.Count < 2) yield break;
 
-        // Ÿ‚Ì1ƒ}ƒX‚Ö
+        // ï¿½ï¿½ï¿½ï¿½1ï¿½}ï¿½Xï¿½ï¿½
         var nextBlock = path[1];
         if (nextBlock.occupantUnit != null)
         {
             if (nextBlock.occupantUnit.team != this.team)
             {
-                Attack(nextBlock.occupantUnit);
+                StartCoroutine(Attack(nextBlock.occupantUnit));
                 yield break;
             }
             else yield break;
