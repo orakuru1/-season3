@@ -9,9 +9,11 @@ public class GetCanvas : MonoBehaviour
 
     [Header("持ち物画面(Imageなど)")]
     public GameObject statusImage;  //全体image
+    public GameObject kyarastatusImage; //キャラのステータスimage
     public GameObject bukiImage;    //武器image
     public GameObject bouguImage;   //防具image
     public GameObject inventoryImage;  //持ち物image
+    public GameObject setteiImage;  //設定image
 
     [Header("プレイヤー操作スクリプト（PlayerMoveなど）")]
     public MonoBehaviour[] playerControllers; // ← 複数登録できるように変更！
@@ -35,9 +37,11 @@ public class GetCanvas : MonoBehaviour
         bool newState = !panel.activeSelf;
 
         panel.SetActive(newState);
+        kyarastatusImage.SetActive(newState);
         inventoryImage.SetActive(newState);
         bukiImage.SetActive(newState);
         bouguImage.SetActive(newState);
+        setteiImage.SetActive(newState);
 
         if (newState)
         {
@@ -53,15 +57,25 @@ public class GetCanvas : MonoBehaviour
     void HideAllImages()  //最初に全部非表示にするやつ
     {
         if (statusImage) statusImage.SetActive(false);
+        if(kyarastatusImage) kyarastatusImage.SetActive(false);
         if (inventoryImage) inventoryImage.SetActive(false);
         if (bukiImage) bukiImage.SetActive(false);
         if (bouguImage) bouguImage.SetActive(false);
+        if(setteiImage) setteiImage.SetActive(false);
     }
 
     public void ShowStatusOnly()  //ステータスimageだけ表示
     {
         HideAllImages();
-        if (statusImage) statusImage.SetActive(true);
+        if(statusImage) statusImage.SetActive(true);
+        if(kyarastatusImage) kyarastatusImage.SetActive(true);
+    }
+
+    public void kyarastatus()
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if(kyarastatusImage) kyarastatusImage.SetActive(true);
     }
 
     public void showInventory()  //ステータスimageと持ち物image表示
@@ -83,6 +97,17 @@ public class GetCanvas : MonoBehaviour
         HideAllImages();
         if(statusImage) statusImage.SetActive(true);
         if (bouguImage) bouguImage.SetActive(true);
+    }
+
+    public void settei()  //設定image表示
+    {
+        HideAllImages();
+        if(setteiImage) setteiImage.SetActive(true);
+    }
+
+    public void CloseInventry()
+    {
+        ShowStatusOnly();
     }
 
     void SetPlayerControl(bool enable)
