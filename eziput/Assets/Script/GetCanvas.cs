@@ -110,6 +110,11 @@ public class GetCanvas : MonoBehaviour
         ShowStatusOnly();
     }
 
+    public void BGMButton()
+    {
+        Debug.Log("押されてます");
+    }
+
     void SetPlayerControl(bool enable)
     {
         // 登録されているすべてのプレイヤースクリプトをオン/オフ
