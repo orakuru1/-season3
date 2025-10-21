@@ -37,9 +37,13 @@ public class Unit : MonoBehaviour
     public float moveSpeed = 4f; // interpolation speed
     public bool isMoving = false;
     private bool isAttacking = false;
+    private bool isAttackAnimation = false;
+    public bool isHitAnimation = false;
 
     private Vector3 originalPosition;
     private Animator anim;
+
+    public Unit Target;
 
     private void Awake()
     {
@@ -68,7 +72,7 @@ public class Unit : MonoBehaviour
     // 1�}�X�ړ��i�^�[�����̒��ڈړ��j
     public bool TryMove(Vector2Int dir)
     {
-        if (isMoving) return false;
+        if (isMoving || isAttacking) return false;
         Vector2Int next = gridPos + dir;
         var nextBlock = gridManager.GetBlock(next);
         if (nextBlock == null) return false;
@@ -148,6 +152,13 @@ public class Unit : MonoBehaviour
         float elapsed = 0f;
         float duration = 1f / moveSpeed;
 
+        Vector3 dir = (end - start).normalized;
+        dir.y = 0f; // 水平方向だけを考慮
+        if (dir != Vector3.zero)
+        transform.forward = dir;
+
+        anim.SetInteger("Run", 1);
+
         while (elapsed < duration)
         {
             transform.position = Vector3.Lerp(start, end, elapsed / duration);
@@ -155,6 +166,8 @@ public class Unit : MonoBehaviour
             yield return null;
         }
         transform.position = end;
+
+        anim.SetInteger("Run", 0);
 
         // �ŏI�X�V
         gridPos = block.gridPos;
@@ -165,8 +178,9 @@ public class Unit : MonoBehaviour
         // �v���C���[�Ȃ�^�[���I���ʒm
         if (team == Team.Player)
         {
-            TurnManager.Instance.EndPlayerTurn();
+            //TurnManager.Instance.EndPlayerTurn();
         }
+        TurnManager.Instance.NextTurn();
     }
 
     // �_�b�V���i�����}�X�j
@@ -193,21 +207,21 @@ public class Unit : MonoBehaviour
 
     public IEnumerator Attack(Unit target)
     {
-        if (target == null) yield break;
+        if (target == null || isMoving || isAttacking) yield break;
 
+        Target = target;
         // �U����Ƀ^�[�����I���i�v���C���[�Ȃ�G�^�[���ցj
-        if (isAttacking) yield break;
-
-        if (team == Team.Player)
-        {
-            isAttacking = true;///現在は攻撃アニメーションがプレイヤーにしか入っていないため、プレイヤー限定にする。
-        }
 
         if (anim != null)
         {
+            isAttacking = true;///現在は攻撃アニメーションがプレイヤーにしか入っていないため、プレイヤー限定にする。
             // �����ύX�i�U�������������j
-            Vector2 dir = (target.transform.position - transform.position).normalized;
-            transform.forward = new Vector3(dir.x, 0, dir.y);
+            Vector3 dir3D = (target.transform.position - transform.position).normalized;
+            dir3D.y = 0;
+            if (dir3D.sqrMagnitude > 0.001f)
+            {
+                transform.rotation = Quaternion.LookRotation(dir3D);
+            }
 
             yield return null;
 
@@ -218,17 +232,43 @@ public class Unit : MonoBehaviour
             anim.SetInteger("Attack", 1);
 
         }
-        
     }
 
-    public void AttackEnd()
+    private void HitAnimation()//ヒットのアニメーションを付けようと思ったが、ターゲット側のヒットがtrueになるため、お互いが進まなくなる。どうにかして、攻撃した人のヒットをtrueにしたい。
     {
+        Target.Target = this;
+        Animator animator = Target.GetComponent<Animator>();
+        animator.SetInteger("Hit", 1);
+    }
+
+    private void OnAttackAnimationEnd()
+    {
+        Debug.Log($"{this.name} attack animation ended.");
+        isAttackAnimation = true;
+        AnimationEnd();
+    }
+    
+    private void OnHitAnimationEnd()
+    {
+        anim.SetInteger("Hit", 0);
+        Debug.Log($"{this.name} hit animation ended.");
+        Target.isHitAnimation = true;//ここを攻撃した人のこれを変えるようにする。
+        Target.AnimationEnd();
+    }
+
+    public void AnimationEnd()
+    {
+        if (!isAttackAnimation || !isHitAnimation) return;
+        isAttackAnimation = false;
+        isHitAnimation = false;
         isAttacking = false;
-        anim.SetInteger("Attack",0);
+        anim.SetInteger("Attack", 0);
         // �U����Ƀ^�[�����I���i�v���C���[�Ȃ�G�^�[���ցj
+        TurnManager.Instance.NextTurn();
+
         if (team == Team.Player)
         {
-            TurnManager.Instance.NextTurn();
+            //TurnManager.Instance.NextTurn();
         }
     }
 

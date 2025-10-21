@@ -43,14 +43,14 @@ public class TurnManager : MonoBehaviour
         Debug.Log($"Turn start: {unit.name} ({unit.team})");
         OnTurnStart?.Invoke(unit);
 
-        // ƒvƒŒƒCƒ„[‚Ìê‡ InputHandler ‚ª‘€ì‚ğó‚¯•t‚¯‚é
+        // ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìê‡ InputHandler ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó‚¯•tï¿½ï¿½ï¿½ï¿½
         if (unit.team == Unit.Team.Player)
         {
             // nothing here: player's input will call TurnManager.EndPlayerTurn()
         }
         else
         {
-            // “G‚È‚çƒRƒ‹[ƒ`ƒ“‚ÅÀs
+            // ï¿½Gï¿½È‚ï¿½Rï¿½ï¿½ï¿½[ï¿½`ï¿½ï¿½ï¿½Åï¿½ï¿½s
             StartCoroutine(ExecuteEnemy(unit));
         }
     }
@@ -63,17 +63,17 @@ public class TurnManager : MonoBehaviour
             yield return StartCoroutine(ai.ExecuteEnemyTurn());
         }
 
-        // “G‚Ìƒ^[ƒ“I—¹ˆ—
-        NextTurn();
+        // ï¿½Gï¿½Ìƒ^ï¿½[ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        //NextTurn();
     }
 
-    // ƒvƒŒƒCƒ„[‚ªs“®‚ğI‚¦‚½‚Æ‚«‚ÉŒÄ‚ÔiEndPlayerTurnj
+    // ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ÉŒÄ‚ÔiEndPlayerTurnï¿½j
     public void EndPlayerTurn()
     {
         NextTurn();
     }
 
-    // SRPGŒİŠ·: Ÿ‚Ìƒ†ƒjƒbƒg‚Ö
+    // SRPGï¿½İŠï¿½: ï¿½ï¿½ï¿½Ìƒï¿½ï¿½jï¿½bï¿½gï¿½ï¿½
     public void NextTurn()
     {
         if (allUnits.Count == 0) return;
