@@ -41,7 +41,7 @@ public class Unit : MonoBehaviour
     public bool isHitAnimation = false;
 
     private Vector3 originalPosition;
-    private Animator anim;
+    public Animator anim;
 
     public Unit Target;
 
@@ -157,7 +157,7 @@ public class Unit : MonoBehaviour
         if (dir != Vector3.zero)
         transform.forward = dir;
 
-        anim.SetInteger("Run", 1);
+        if (anim != null) anim.SetInteger("Run", 1);
 
         while (elapsed < duration)
         {
@@ -167,7 +167,7 @@ public class Unit : MonoBehaviour
         }
         transform.position = end;
 
-        anim.SetInteger("Run", 0);
+        if (anim != null) anim.SetInteger("Run", 0);
 
         // �ŏI�X�V
         gridPos = block.gridPos;
@@ -226,11 +226,29 @@ public class Unit : MonoBehaviour
             yield return null;
 
             // �U������
-            target.TakeDamage(1); // ����1�_���[�W
 
             Debug.Log($"{name} attacked {target.name}!");
             anim.SetInteger("Attack", 1);
+        }
+        else
+        {
+            Debug.Log("アニメーターなしバージョン");
+            // �����ύX�i�U�������������j
+            Vector3 dir3D = (target.transform.position - transform.position).normalized;
+            dir3D.y = 0;
+            if (dir3D.sqrMagnitude > 0.001f)
+            {
+                transform.rotation = Quaternion.LookRotation(dir3D);
+            }
 
+            yield return null;
+
+            // �U������
+            target.TakeDamage(1); // ����1�_���[�W
+
+            Debug.Log($"{name} attacked {target.name}!");
+
+            TurnManager.Instance.NextTurn();
         }
     }
 
@@ -239,6 +257,8 @@ public class Unit : MonoBehaviour
         Target.Target = this;
         Animator animator = Target.GetComponent<Animator>();
         animator.SetInteger("Hit", 1);
+        Target.TakeDamage(1); // ����1�_���[�W
+
     }
 
     private void OnAttackAnimationEnd()
