@@ -1,4 +1,4 @@
-// === File: GridManager.cs ===
+ï»¿// === File: GridManager.cs ===
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,30 +8,34 @@ public class GridManager : MonoBehaviour
     public static GridManager Instance { get; private set; }
 
     [Header("Grid settings")]
+    public LayerMask wallLayer;
+    public GameObject floorPrefab;
     public int width = 20;
     public int height = 12;
-    public GameObject blockPrefab; // •Êƒ`[ƒ€‚ªƒ‰ƒ“ƒ_ƒ€¶¬‚·‚é‚Æ‚«‚Í‚±‚ÌƒvƒŒƒnƒu‚ğg‚Á‚Ä‚à‚ç‚¤
+    public GameObject blockPrefab; // åˆ¥ãƒãƒ¼ãƒ ãŒãƒ©ãƒ³ãƒ€ãƒ ç”Ÿæˆã™ã‚‹ã¨ãã¯ã“ã®ãƒ—ãƒ¬ãƒãƒ–ã‚’ä½¿ã£ã¦ã‚‚ã‚‰ã†
 
-    // ŠO•”ƒ‰ƒ“ƒ_ƒ€¶¬ƒ`[ƒ€Œü‚¯: ¶¬Ï‚İ‚ÌBlock‚ğ“o˜^‚·‚éd‘g‚İ‚ğc‚·
+    // å¤–éƒ¨ãƒ©ãƒ³ãƒ€ãƒ ç”Ÿæˆãƒãƒ¼ãƒ å‘ã‘: ç”Ÿæˆæ¸ˆã¿ã®Blockã‚’ç™»éŒ²ã™ã‚‹ä»•çµ„ã¿ã‚’æ®‹ã™
     private Dictionary<Vector2Int, GridBlock> gridMap = new Dictionary<Vector2Int, GridBlock>();
+    private List<Unit> allUnits;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+        allUnits = new List<Unit>(FindObjectsOfType<Unit>());
     }
 
     private void Start()
     {
-        // ©“®¶¬ƒIƒvƒVƒ‡ƒ“: blockPrefab ‚ªw’è‚³‚ê‚Ä‚¢‚éê‡ƒVƒ“ƒvƒ‹‚È•½–Ê‚ğì‚éB
+        // è‡ªå‹•ç”Ÿæˆã‚ªãƒ—ã‚·ãƒ§ãƒ³: blockPrefab ãŒæŒ‡å®šã•ã‚Œã¦ã„ã‚‹å ´åˆã‚·ãƒ³ãƒ—ãƒ«ãªå¹³é¢ã‚’ä½œã‚‹ã€‚
         if (blockPrefab != null && gridMap.Count == 0)
         {
-            GenerateFlatGrid();
+            GenerateMap();
         }
 
         Unit[] allUnits = FindObjectsOfType<Unit>();
 
-    foreach (var unit in allUnits)
+        foreach (var unit in allUnits)
     {
         Vector2Int pos = WorldToGrid(unit.transform.position);
         unit.gridPos = pos;
@@ -41,7 +45,7 @@ public class GridManager : MonoBehaviour
         {
             if (block.occupantUnit != null)
             {
-                Debug.LogWarning($"ˆÊ’u {pos} ‚Í {block.occupantUnit.name} ‚ª‚·‚Å‚Éè—L‚µ‚Ä‚¢‚Ü‚·B{unit.name} ‚ÍƒXƒLƒbƒvB");
+                Debug.LogWarning($"ä½ç½® {pos} ã¯ {block.occupantUnit.name} ãŒã™ã§ã«å æœ‰ã—ã¦ã„ã¾ã™ã€‚{unit.name} ã¯ã‚¹ã‚­ãƒƒãƒ—ã€‚");
                 continue;
             }
 
@@ -54,30 +58,42 @@ public class GridManager : MonoBehaviour
     public Vector2Int WorldToGrid(Vector3 worldPos)
     {
         int x = Mathf.RoundToInt(worldPos.x / 1);
-        int y = Mathf.RoundToInt(worldPos.z / 1); // Z‚ğY²ˆµ‚¢
+        int y = Mathf.RoundToInt(worldPos.z / 1); // Zã‚’Yè»¸æ‰±ã„
         return new Vector2Int(x, y);
     }
 
 
-    public void GenerateFlatGrid()
+    public void GenerateMap()
     {
         gridMap.Clear();
+
         for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int z = 0; z < height; z++)
             {
-                Vector3 pos = new Vector3(x, 0f, y);
-                var obj = Instantiate(blockPrefab, pos, Quaternion.identity, transform);
-                obj.name = $"Block_{x}_{y}";
-                var block = obj.GetComponent<GridBlock>();
-                if (block == null) block = obj.AddComponent<GridBlock>();
-                block.gridPos = new Vector2Int(x, y);
-                gridMap[new Vector2Int(x, y)] = block;
+                // åºŠã®ä½ç½®
+                Vector3 floorPos = new Vector3(x, 1, z);
+                // å£ãŒã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯ã™ã‚‹ä½ç½®ï¼ˆåºŠã®çœŸä¸Šï¼‰
+                Vector3 wallPos = new Vector3(x, 2, z);
+
+                // å£ã®æœ‰ç„¡ã‚’åˆ¤å®š
+                bool hasWall = Physics.CheckSphere(wallPos, 0.4f, wallLayer);
+                bool isWalkable = !hasWall;
+
+                // åºŠãƒ–ãƒ­ãƒƒã‚¯ç”Ÿæˆ
+                GameObject floor = Instantiate(floorPrefab, floorPos, Quaternion.identity, transform);
+                floor.name = $"Block_{x}_{z}";
+                GridBlock block = floor.GetComponent<GridBlock>();
+                block.gridPos = new Vector2Int(x, z);
+                block.isWalkable = isWalkable;
+
+                gridMap[new Vector2Int(x, z)] = block;
             }
         }
     }
 
-    // ŠO•”iƒ‰ƒ“ƒ_ƒ€¶¬ƒ`[ƒ€j‚ªŒÂ•Ê‚ÉƒuƒƒbƒN‚ğ¶¬‚µ‚Ä“o˜^‚·‚éê‡‚Í‚±‚¿‚ç‚ğŒÄ‚Ô
+
+    // å¤–éƒ¨ï¼ˆãƒ©ãƒ³ãƒ€ãƒ ç”Ÿæˆãƒãƒ¼ãƒ ï¼‰ãŒå€‹åˆ¥ã«ãƒ–ãƒ­ãƒƒã‚¯ã‚’ç”Ÿæˆã—ã¦ç™»éŒ²ã™ã‚‹å ´åˆã¯ã“ã¡ã‚‰ã‚’å‘¼ã¶
     public void RegisterBlock(GridBlock block)
     {
         if (block == null) return;
@@ -90,7 +106,7 @@ public class GridManager : MonoBehaviour
         return block;
     }
 
-    // ƒ[ƒ‹ƒhÀ•W‚©‚çƒOƒŠƒbƒhÀ•W‚ÖiSRPG‘¤‚ÌŠù‘¶ŒÄ‚Ño‚µŒİŠ·j
+    // ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‹ã‚‰ã‚°ãƒªãƒƒãƒ‰åº§æ¨™ã¸ï¼ˆSRPGå´ã®æ—¢å­˜å‘¼ã³å‡ºã—äº’æ›ï¼‰
     public Vector2Int GetGridPosition(Vector3 worldPosition)
     {
         return new Vector2Int(Mathf.RoundToInt(worldPosition.x), Mathf.RoundToInt(worldPosition.z));
@@ -108,7 +124,7 @@ public class GridManager : MonoBehaviour
         return gridMap.Values.ToList();
     }
 
-    // SRPG‚Åg‚Á‚Ä‚¢‚½GetMovableBlocks‚ğŒİŠ·“I‚Éc‚·iƒ[ƒOƒ‰ƒCƒN‚Å‚àQÆ‰Âj
+    // SRPGã§ä½¿ã£ã¦ã„ãŸGetMovableBlocksã‚’äº’æ›çš„ã«æ®‹ã™ï¼ˆãƒ­ãƒ¼ã‚°ãƒ©ã‚¤ã‚¯ã§ã‚‚å‚ç…§å¯ï¼‰
     public void GetMovableBlocks(Vector2Int startPos, int moveRange, out List<GridBlock> walkable, out List<GridBlock> unwalkable)
     {
         walkable = new List<GridBlock>();
@@ -137,7 +153,7 @@ public class GridManager : MonoBehaviour
                 if (!gridMap.TryGetValue(np, out var nb)) continue;
                 if (visited.Contains(nb)) continue;
 
-                // è—LE’ÊsE’i·ƒ`ƒFƒbƒN
+                // å æœ‰ãƒ»é€šè¡Œãƒ»æ®µå·®ãƒã‚§ãƒƒã‚¯
                 if (nb.occupantUnit != null && nb.occupantUnit != unit)
                 {
                     unwalkable.Add(nb);
@@ -161,16 +177,24 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        // Œ©‚½–Ú—p unwalkable ’Ç‰ÁiÈ—ª‰Âj
+        // è¦‹ãŸç›®ç”¨ unwalkable è¿½åŠ ï¼ˆçœç•¥å¯ï¼‰
         foreach (var b in gridMap.Values)
         {
             if (b.isWalkable && !walkable.Contains(b)) unwalkable.Add(b);
         }
     }
 
+    public Unit GetUnitAt(Vector2Int pos)
+{
+    foreach (var unit in allUnits)
+    {
+        if (unit.gridPos == pos)
+            return unit;
+    }
+    return null;
+}
 
-
-    // ŠÈˆÕ A*iSRPG‚Åg‚í‚ê‚Ä‚¢‚½FindPath‚ğ•œŒ³j
+    // ç°¡æ˜“ A*ï¼ˆSRPGã§ä½¿ã‚ã‚Œã¦ã„ãŸFindPathã‚’å¾©å…ƒï¼‰
     public List<GridBlock> FindPath(Vector2Int start, Vector2Int goal)
     {
         var open = new List<GridBlock>();
@@ -202,7 +226,7 @@ public class GridManager : MonoBehaviour
                 if (!neighbor.isWalkable || closed.Contains(neighbor))
                     continue;
 
-                // ‘¼‚Ìƒ†ƒjƒbƒg‚ª‚¢‚éƒ}ƒX‚ÍƒXƒLƒbƒv
+                // ä»–ã®ãƒ¦ãƒ‹ãƒƒãƒˆãŒã„ã‚‹ãƒã‚¹ã¯ã‚¹ã‚­ãƒƒãƒ—
                 if (neighbor.occupantUnit != null && neighbor != goalBlock)
                     continue;
 
@@ -237,7 +261,7 @@ public class GridManager : MonoBehaviour
         return Mathf.Abs(a.gridPos.x - b.gridPos.x) + Mathf.Abs(a.gridPos.y - b.gridPos.y);
     }
 
-    // ã‰º¶‰E‚Ì‚İ
+    // ä¸Šä¸‹å·¦å³ã®ã¿
     private List<GridBlock> GetNeighbors(GridBlock block)
     {
         var neighbors = new List<GridBlock>();
@@ -265,8 +289,21 @@ public class GridManager : MonoBehaviour
         float heightDelta = to.transform.position.y - from.transform.position.y;
         return Mathf.Abs(heightDelta) <= (unit != null ? unit.status.maxStepHeight : 999f);
     }
+    /// <summary>
+    /// æŒ‡å®šã—ãŸåº§æ¨™ãŒç§»å‹•å¯èƒ½ã‹ã©ã†ã‹ã‚’åˆ¤å®šã™ã‚‹
+    /// </summary>
+    public bool IsWalkable(Vector2Int pos)
+    {
+        if (!gridMap.ContainsKey(pos)) return false;
 
-    // ƒVƒ“ƒvƒ‹—Dæ“xƒLƒ…[
+        GridBlock block = gridMap[pos];
+        if (block == null) return false;
+
+        // å£ã‚„éšœå®³ç‰©ã§ã¯ãªã„ã€ã‹ã¤ãƒ¦ãƒ‹ãƒƒãƒˆãŒã„ãªã„ãƒã‚¹ã®ã¿é€šè¡Œå¯
+        return block.isWalkable && block.occupantUnit == null;
+    }
+
+    // ã‚·ãƒ³ãƒ—ãƒ«å„ªå…ˆåº¦ã‚­ãƒ¥ãƒ¼
     public class PriorityQueue<T>
     {
         private List<(T item, int priority)> elements = new List<(T, int)>();
