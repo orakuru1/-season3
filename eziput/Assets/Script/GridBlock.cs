@@ -1,11 +1,11 @@
-// === File: GridBlock.cs ===
+ï»¿// === File: GridBlock.cs ===
 using UnityEngine;
 
 public class GridBlock : MonoBehaviour
 {
-    public Vector2Int gridPos; // ƒOƒŠƒbƒhÀ•W
+    public Vector2Int gridPos; // ã‚°ãƒªãƒƒãƒ‰åº§æ¨™
     public bool isWalkable = true;
-    public Unit occupantUnit = null; // è—Lƒ†ƒjƒbƒg
+    public Unit occupantUnit = null; // å æœ‰ãƒ¦ãƒ‹ãƒƒãƒˆ
     public bool isRamp = false;
 
     private Renderer blockRenderer;
@@ -27,10 +27,10 @@ public class GridBlock : MonoBehaviour
         if (occupantUnit != null) occupantUnit = null;
     }
 
-    public void Highlight(bool on, Color? color = null)
+    public void Highlight(Color color)
     {
-        if (blockRenderer == null) return;
-        blockRenderer.material.color = on ? (color ?? new Color(0, 0.5f, 1f, 0.6f)) : originalColor;
+        if (blockRenderer != null)
+            blockRenderer.material.color = color;
     }
 
     public void SetColor(Color c)
@@ -39,9 +39,8 @@ public class GridBlock : MonoBehaviour
         blockRenderer.material.color = c;
     }
 
-    public void ResetColor()
+    public void ResetHighlight()
     {
-        if (blockRenderer == null) return;
-        blockRenderer.material.color = originalColor;
+        GetComponent<Renderer>().material.color = originalColor;
     }
 }

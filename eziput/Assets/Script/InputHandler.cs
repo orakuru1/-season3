@@ -1,4 +1,5 @@
-// === File: InputHandler.cs ===
+ï»¿// === File: InputHandler.cs ===
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InputHandler : MonoBehaviour
@@ -6,6 +7,11 @@ public class InputHandler : MonoBehaviour
     public Camera mainCamera;
     private Unit currentPlayerUnit;
 
+    public enum Move
+    {
+        W,A,S,D
+    }
+    public Move move;
     private void OnEnable()
     {
         TurnManager.OnTurnStart += OnTurnStart;
@@ -25,16 +31,41 @@ public class InputHandler : MonoBehaviour
 
     private void Update()
     {
+        if (TurnManager.Instance.currentTeam != Unit.Team.Player)
+            return;
         if (currentPlayerUnit == null) return;
 
-        // ƒL[ƒ{[ƒhˆÚ“®i1ƒ}ƒXj
-        if (Input.GetKeyDown(KeyCode.W)) { if (currentPlayerUnit.TryMove(Vector2Int.up)) { } }
-        if (Input.GetKeyDown(KeyCode.S)) { if (currentPlayerUnit.TryMove(Vector2Int.down)) { } }
-        if (Input.GetKeyDown(KeyCode.A)) { if (currentPlayerUnit.TryMove(Vector2Int.left)) { } }
-        if (Input.GetKeyDown(KeyCode.D)) { if (currentPlayerUnit.TryMove(Vector2Int.right)) { } }
+        // ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ç§»å‹•ï¼ˆ1ãƒã‚¹ï¼‰
+        if (Input.GetKeyDown(KeyCode.W)) { move = Move.W; }
+        if (Input.GetKeyDown(KeyCode.S)) { move = Move.S; }
+        if (Input.GetKeyDown(KeyCode.A)) { move = Move.A; }
+        if (Input.GetKeyDown(KeyCode.D)) { move = Move.D; }
+        if (Input.GetKeyDown(KeyCode.Return)) 
+        {
+            if(move == Move.W){currentPlayerUnit.TryMove(Vector2Int.up);}
+            if(move == Move.A){currentPlayerUnit.TryMove(Vector2Int.left);}
+            if(move == Move.S){currentPlayerUnit.TryMove(Vector2Int.down);}
+            if(move == Move.D){currentPlayerUnit.TryMove(Vector2Int.right);}
+        }
+        /*
+        if (currentPlayerUnit.attackSkills != null)
+        {
+            foreach (var skill in currentPlayerUnit.attackSkills)
+            {
+                if (Input.GetKeyDown(skill.triggerKey))
+                {
+                    currentPlayerUnit.status.attackPattern = skill.attackPattern;
+                    currentPlayerUnit.ShowAttackRange();
+                }
+            }
+        }
 
-        // ƒ_ƒbƒVƒ…iShift + dirj
-        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+        // æ”»æ’ƒã‚­ãƒ£ãƒ³ã‚»ãƒ«ãªã©ã§ç¯„å›²ã‚’æ¶ˆã™å ´åˆ
+        if (Input.GetKeyDown(KeyCode.Escape))
+            currentPlayerUnit.ClearAttackRange();
+        /*
+        // ãƒ€ãƒƒã‚·ãƒ¥ï¼ˆShift + dirï¼‰
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
             if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(currentPlayerUnit.Dash(Vector2Int.up, 7));
             if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(currentPlayerUnit.Dash(Vector2Int.down, 7));
@@ -42,7 +73,7 @@ public class InputHandler : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(currentPlayerUnit.Dash(Vector2Int.right, 7));
         }
         /*
-        // ƒ}ƒEƒXƒNƒŠƒbƒNˆÚ“®iŒo˜H’Tõ—˜—pj
+        // ãƒã‚¦ã‚¹ã‚¯ãƒªãƒƒã‚¯ç§»å‹•ï¼ˆçµŒè·¯æ¢ç´¢åˆ©ç”¨ï¼‰
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -51,12 +82,12 @@ public class InputHandler : MonoBehaviour
                 var block = hit.collider.GetComponent<GridBlock>();
                 if (block != null)
                 {
-                    // ˆÚ“®æ‚ª‘¶İ‚µŒo˜H‚ª‚ ‚é‚©
+                    // ç§»å‹•å…ˆãŒå­˜åœ¨ã—çµŒè·¯ãŒã‚ã‚‹ã‹
                     var start = gridPositionToVector2Int(currentPlayerUnit.gridPos);
                     var path = GridManager.Instance.FindPath(currentPlayerUnit.gridPos, block.gridPos);
                     if (path != null && path.Count > 0)
                     {
-                        // path ‚ğ GridBlock ƒŠƒXƒg‚Æ‚µ‚Ä“n‚· MoveAlongPath ‚ğg‚¤
+                        // path ã‚’ GridBlock ãƒªã‚¹ãƒˆã¨ã—ã¦æ¸¡ã™ MoveAlongPath ã‚’ä½¿ã†
                         StartCoroutine(currentPlayerUnit.MoveAlongPath(path));
                     }
                 }
