@@ -44,6 +44,7 @@ public class Unit : MonoBehaviour
     public Animator anim;
 
     public Unit Target;
+    public Unit attacker;
 
     private void Awake()
     {
@@ -230,7 +231,7 @@ public class Unit : MonoBehaviour
             Debug.Log($"{name} attacked {target.name}!");
             anim.SetInteger("Attack", 1);
         }
-        else
+        else////////////////////////////////
         {
             Debug.Log("アニメーターなしバージョン");
             // �����ύX�i�U�������������j
@@ -252,15 +253,17 @@ public class Unit : MonoBehaviour
         }
     }
 
-    private void HitAnimation()//ヒットのアニメーションを付けようと思ったが、ターゲット側のヒットがtrueになるため、お互いが進まなくなる。どうにかして、攻撃した人のヒットをtrueにしたい。
+    //相手側にヒットアニメーションを実行させる
+    private void HitAnimation()
     {
-        Target.Target = this;
+        Target.attacker = this;
         Animator animator = Target.GetComponent<Animator>();
         animator.SetInteger("Hit", 1);
         Target.TakeDamage(1); // ����1�_���[�W
 
     }
 
+    // 攻撃アニメーション終了通知
     private void OnAttackAnimationEnd()
     {
         Debug.Log($"{this.name} attack animation ended.");
@@ -268,28 +271,27 @@ public class Unit : MonoBehaviour
         AnimationEnd();
     }
     
+    // ヒットアニメーション終了通知
     private void OnHitAnimationEnd()
     {
         anim.SetInteger("Hit", 0);
         Debug.Log($"{this.name} hit animation ended.");
-        Target.isHitAnimation = true;//ここを攻撃した人のこれを変えるようにする。
-        Target.AnimationEnd();
+        attacker.isHitAnimation = true;//ここを攻撃した人のこれを変えるようにする。
+        attacker.AnimationEnd();
     }
 
+    //ヒットと攻撃のアニメーションが終わった時
     public void AnimationEnd()
     {
         if (!isAttackAnimation || !isHitAnimation) return;
         isAttackAnimation = false;
         isHitAnimation = false;
         isAttacking = false;
+        Target = null;
+        attacker = null;
         anim.SetInteger("Attack", 0);
         // �U����Ƀ^�[�����I���i�v���C���[�Ȃ�G�^�[���ցj
         TurnManager.Instance.NextTurn();
-
-        if (team == Team.Player)
-        {
-            //TurnManager.Instance.NextTurn();
-        }
     }
 
 
