@@ -56,7 +56,7 @@ public class Unit : MonoBehaviour
     private List<GridBlock> highlightedBlocks = new List<GridBlock>();
 
     public Unit Target;
-    private Unit attacker;
+    public Unit attacker;
 
     private void Awake()
     {
