@@ -62,6 +62,14 @@ public class Unit : MonoBehaviour
     {
         gridManager = GridManager.Instance;
         gridManager = FindObjectOfType<GridManager>();
+        if (team == Team.Player)
+        {
+            status.speed = 10;
+        }
+        else if (team == Team.Enemy)
+        {
+            status.speed = 4;
+        }
     }
 
     private void Start()
@@ -79,6 +87,8 @@ public class Unit : MonoBehaviour
         }
 
         anim = GetComponent<Animator>();
+        
+        
     }
 
     public IEnumerator MoveTo(Vector2Int targetGridPos)
@@ -332,17 +342,27 @@ public class Unit : MonoBehaviour
     // 相手側にヒットアニメーションを実行させる
     private void HitAnimation()
     {
-        if (Target == null) return;
         Target.attacker = this;
+        Animator animator = Target.GetComponent<Animator>();
 
-        Animator targetAnim = Target.GetComponent<Animator>();
-        if (targetAnim != null)
+        if (animator != null)
         {
-            targetAnim.SetInteger("Hit", 1);
+            animator.SetInteger("Hit", 1);
+        }
+        else
+        {
+            // 相手にアニメーションが無い場合 → 即完了扱い
+            Debug.Log($"【{Target.name}】はAnimatorなし、即完了扱い");
+            Target.TakeDamage(1);
+            isHitAnimation = true; // 攻撃側のHit完了フラグ
+            AnimationEnd();
+            return;
         }
 
+        // アニメーションある場合は通常処理
         Target.TakeDamage(1);
     }
+
 
     // 攻撃アニメーション終了通知（AnimationEventで呼ばれる）
     private void OnAttackAnimationEnd()
@@ -409,6 +429,18 @@ public class Unit : MonoBehaviour
         var block = gridManager.GetBlock(gridPos);
         if (block != null && block.occupantUnit == this) block.occupantUnit = null;
         TurnManager.Instance.RemoveUnit(this);
+        Debug.Log($"{name} は倒れた！");
+        // 死亡時のアニメーションを再生したいならここで
+        // anim.SetTrigger("Die");
+
+        // 攻撃者がいた場合は攻撃完了扱いにする
+        if (attacker != null)
+        {
+            attacker.isHitAnimation = true;
+            attacker.AnimationEnd();
+        }
+
+        // このユニットを削除
         Destroy(gameObject);
     }
 
