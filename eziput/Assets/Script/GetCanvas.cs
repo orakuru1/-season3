@@ -4,36 +4,136 @@ using UnityEngine;
 
 public class GetCanvas : MonoBehaviour
 {
+    [Header("ESCキーで開くパネル設定")]
     public GameObject panel;
-    // Start is called before the first frame update
+
+    [Header("持ち物画面(Imageなど)")]
+    public GameObject statusImage;  //全体image
+    public GameObject kyarastatusImage; //キャラのステータスimage
+    public GameObject bukiImage;    //武器image
+    public GameObject bouguImage;   //防具image
+    public GameObject inventoryImage;  //持ち物image
+    public GameObject setteiImage;  //設定image
+
+    [Header("プレイヤー操作スクリプト（PlayerMoveなど）")]
+    public MonoBehaviour[] playerControllers; // ← 複数登録できるように変更！
+
     void Start()
     {
-        panel.SetActive(false);
+        panel.SetActive(false);  //最初はすべて非表示
+        HideAllImages();  //最初はimageもすべて非表示
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //ESCキーが押されたトグル
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Debug.Log("押されてない");
             TogglePanel();
         }
     }
 
-    public void ShowPanel()
+    public void TogglePanel()  //ESCキーを押したとき表示非表示する
     {
-        panel.SetActive(true);
+        bool newState = !panel.activeSelf;
+
+        panel.SetActive(newState);
+        kyarastatusImage.SetActive(newState);
+        inventoryImage.SetActive(newState);
+        bukiImage.SetActive(newState);
+        bouguImage.SetActive(newState);
+        setteiImage.SetActive(newState);
+
+        if (newState)
+        {
+            ShowStatusOnly();
+            SetPlayerControl(false); // ← 停止！
+        }
+        else
+        {
+            SetPlayerControl(true); // ← 再開！
+        }
     }
 
-    public void HisPanel()
+    void HideAllImages()  //最初に全部非表示にするやつ
     {
-        panel.SetActive(false);
+        if (statusImage) statusImage.SetActive(false);
+        if(kyarastatusImage) kyarastatusImage.SetActive(false);
+        if (inventoryImage) inventoryImage.SetActive(false);
+        if (bukiImage) bukiImage.SetActive(false);
+        if (bouguImage) bouguImage.SetActive(false);
+        if(setteiImage) setteiImage.SetActive(false);
     }
 
-    public void TogglePanel()
+    public void ShowStatusOnly()  //ステータスimageだけ表示
     {
-        panel.SetActive(!panel.activeSelf);
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if(kyarastatusImage) kyarastatusImage.SetActive(true);
+    }
+
+    public void kyarastatus()
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if(kyarastatusImage) kyarastatusImage.SetActive(true);
+    }
+
+    public void showInventory()  //ステータスimageと持ち物image表示
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if (inventoryImage) inventoryImage.SetActive(true);
+    }
+
+    public void showbuki()  //ステータスimageと武器image表示
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if (bukiImage) bukiImage.SetActive(true);
+    }
+
+    public void showbougu()  //ステータスimageと防具image表示
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if (bouguImage) bouguImage.SetActive(true);
+    }
+
+    public void settei()  //設定image表示
+    {
+        HideAllImages();
+        if(setteiImage) setteiImage.SetActive(true);
+    }
+
+    public void CloseInventry()
+    {
+        ShowStatusOnly();
+    }
+
+    public void BGMButton()
+    {
+        Debug.Log("押されてます");
+    }
+
+    void SetPlayerControl(bool enable)
+    {
+        // 登録されているすべてのプレイヤースクリプトをオン/オフ
+        foreach (var script in playerControllers)
+        {
+            if (script != null)
+                script.enabled = enable;
+        }
+
+        // マウスカーソルも制御（UI操作しやすく）
+        if (!enable)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 }
