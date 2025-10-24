@@ -8,6 +8,10 @@ public class gamen : MonoBehaviour
     [SerializeField] private Image brightnessOverlay;
     [SerializeField] private Slider gamenSlider;
 
+    //一番暗くしても完全に黒にならないように
+    [Range(0f, 1f)]
+    [SerializeField] private float minAlpha = 0.8f; //この数値を調整
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,8 +31,9 @@ public class gamen : MonoBehaviour
     public void SetBrightness(float value)
     {
         //valueが0=明るい,1=暗いになるようにする
+        float alpha = Mathf.Lerp(0f, minAlpha, value);
         Color color = brightnessOverlay.color;
-        color.a = value; //a値をスライダー値に
+        color.a = alpha; //a値をスライダー値に
         brightnessOverlay.color = color;
     }
 }
