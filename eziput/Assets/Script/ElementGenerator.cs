@@ -1,159 +1,32 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-#if UNITY_AI_PRESENT
-using Unity.AI.Navigation;
-#endif
-
+/// <summary>
+/// DungeonGenerator からマップ情報を受け取り、
+/// 敵・罠・宝箱・ゴールなどを配置する
+/// </summary>
 public class ElementGenerator : MonoBehaviour
 {
-    [Header("Prefab設定")]
-    public GameObject playerPrefab;
+    public Transform stageParent;
     public GameObject enemyPrefab;
     public GameObject treasurePrefab;
+    public GameObject trapPrefab;
     public GameObject goalLightPrefab;
-
-    [Header("ステージ生成設定")]
-    public Transform stageParent;
-    public float cellSize = 2f;
-    public int mapWidth = 40;
-    public int mapHeight = 40;
-
-    [Header("ミニマップ設定")]
-    public UnityEngine.UI.RawImage minimapUI;
-    public int minimapScale = 4;
-    public int revealRadius = 3;
+    public float cellSize = 2.0f;
 
     private int[,] mapData;
-    private bool[,] explored;
-    private List<GameObject> spawnedObjects = new List<GameObject>();
-    private GameObject playerInstance;
-    private Texture2D minimapTexture;
 
-#if UNITY_AI_PRESENT
-    private NavMeshSurface surface;
-#endif
-
-    void Awake()
+    /// <summary>
+    /// DungeonGenerator から呼ばれる生成関数
+    /// </summary>
+    public void GenerateFromMap(int[,] mapData, DungeonSettings settings)
     {
-        Debug.Log("🧱 ElementGenerator 起動中...");
+        this.mapData = mapData;
+        ClearStage();
 
-        ReadResources();
-        GenerateDungeonRogueLike();
-        BuildStageObjects();
-
-#if UNITY_AI_PRESENT
-        SetupNavMeshSurface();
-#endif
-
-        InitMinimap();
-    }
-
-    // ----------------------------------------------------
-    // ✅ リソース確認
-    void ReadResources()
-    {
-        if (!playerPrefab) Debug.LogError("❌ Player プレハブが設定されていません！");
-        if (!enemyPrefab) Debug.LogError("❌ Enemy プレハブが設定されていません！");
-        if (!treasurePrefab) Debug.LogError("❌ Treasure プレハブが設定されていません！");
-        if (!goalLightPrefab) Debug.LogError("❌ Goal_Light プレハブが設定されていません！");
-    }
-
-    // ----------------------------------------------------
-    // 🏰 迷路＋部屋つきローグ風ダンジョン生成
-    void GenerateDungeonRogueLike()
-    {
-        mapData = new int[mapHeight, mapWidth];
-        explored = new bool[mapHeight, mapWidth];
-
-        // 初期化：すべて壁で埋める
-        for (int y = 0; y < mapHeight; y++)
-            for (int x = 0; x < mapWidth; x++)
-                mapData[y, x] = 1; // 壁
-
-        // 部屋をランダムに作る
-        int roomCount = Random.Range(6, 10);
-        List<Rect> rooms = new List<Rect>();
-
-        for (int i = 0; i < roomCount; i++)
+        // 床の生成
+        for (int y = 0; y < mapData.GetLength(0); y++)
         {
-            int w = Random.Range(4, 8);
-            int h = Random.Range(4, 8);
-            int x = Random.Range(1, mapWidth - w - 1);
-            int y = Random.Range(1, mapHeight - h - 1);
-            Rect newRoom = new Rect(x, y, w, h);
-
-            bool overlaps = false;
-            foreach (Rect room in rooms)
-            {
-                if (newRoom.Overlaps(room))
-                {
-                    overlaps = true;
-                    break;
-                }
-            }
-            if (!overlaps)
-            {
-                rooms.Add(newRoom);
-                CarveRoom(newRoom);
-            }
-        }
-
-        // 部屋同士を通路で接続
-        for (int i = 1; i < rooms.Count; i++)
-        {
-            Vector2Int prev = GetRoomCenter(rooms[i - 1]);
-            Vector2Int current = GetRoomCenter(rooms[i]);
-            CarveCorridor(prev, current);
-        }
-
-        Debug.Log($"✅ ダンジョン生成完了: 部屋={rooms.Count}, サイズ={mapWidth}x{mapHeight}");
-    }
-
-    void CarveRoom(Rect room)
-    {
-        for (int y = (int)room.yMin; y < (int)room.yMax; y++)
-            for (int x = (int)room.xMin; x < (int)room.xMax; x++)
-                mapData[y, x] = 0; // 床
-    }
-
-    void CarveCorridor(Vector2Int from, Vector2Int to)
-    {
-        // まず横に、次に縦に掘る（L字通路）
-        int x = from.x, y = from.y;
-        while (x != to.x)
-        {
-            mapData[y, x] = 0;
-            x += x < to.x ? 1 : -1;
-        }
-        while (y != to.y)
-        {
-            mapData[y, x] = 0;
-            y += y < to.y ? 1 : -1;
-        }
-    }
-
-    Vector2Int GetRoomCenter(Rect room)
-    {
-        return new Vector2Int(
-            Mathf.RoundToInt(room.x + room.width / 2),
-            Mathf.RoundToInt(room.y + room.height / 2)
-        );
-    }
-
-    // ----------------------------------------------------
-    // 🧱 3Dオブジェクト生成
-    void BuildStageObjects()
-    {
-        if (stageParent == null)
-        {
-            GameObject stageObj = new GameObject("StageMake");
-            stageParent = stageObj.transform;
-        }
-
-        for (int y = 0; y < mapHeight; y++)
-        {
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapData.GetLength(1); x++)
             {
                 if (mapData[y, x] == 0)
                 {
@@ -161,141 +34,67 @@ public class ElementGenerator : MonoBehaviour
                     GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     floor.transform.position = pos;
                     floor.transform.localScale = new Vector3(cellSize, 0.2f, cellSize);
-                    floor.GetComponent<Renderer>().material.color = Color.gray;
                     floor.transform.SetParent(stageParent);
+                    floor.GetComponent<Renderer>().material.color = new Color(0.5f, 0.5f, 0.5f);
                 }
             }
         }
 
-        // スポーン系
-        playerInstance = SpawnAtRandom(playerPrefab, "Player");
-        SpawnAtRandom(goalLightPrefab, "Goal_Light");
-        for (int i = 0; i < 10; i++) SpawnAtRandom(enemyPrefab, "Enemy");
-        for (int i = 0; i < 5; i++) SpawnAtRandom(treasurePrefab, "Treasure");
+        // 敵・宝箱・罠・ゴール配置
+        for (int i = 0; i < settings.enemyCount; i++) SpawnAtRandom(enemyPrefab, "Enemy");
+        for (int i = 0; i < settings.treasureCount; i++) SpawnAtRandom(treasurePrefab, "Treasure");
+        for (int i = 0; i < settings.trapCount; i++) SpawnAtRandom(trapPrefab, "Trap");
 
-        Debug.Log("✅ ステージオブジェクト生成完了");
+        // ゴールは1つだけ
+        SpawnAtRandom(goalLightPrefab, "Goal");
+
+        Debug.Log("✅ オブジェクト配置完了（ルート設定反映）");
     }
 
-    GameObject SpawnAtRandom(GameObject prefab, string nameTag)
+    /// <summary>
+    /// ステージの既存オブジェクトを削除
+    /// </summary>
+    void ClearStage()
     {
-        if (!prefab) return null;
-
-        for (int i = 0; i < 1000; i++)
+        if (stageParent != null)
         {
-            int x = Random.Range(0, mapWidth);
-            int y = Random.Range(0, mapHeight);
+            foreach (Transform child in stageParent)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 通行可能な床の上にランダムで配置
+    /// </summary>
+    void SpawnAtRandom(GameObject prefab, string label)
+    {
+        if (prefab == null) return;
+
+        int tries = 100;
+        while (tries-- > 0)
+        {
+            int x = Random.Range(1, mapData.GetLength(1) - 1);
+            int y = Random.Range(1, mapData.GetLength(0) - 1);
             if (mapData[y, x] == 0)
             {
-                Vector3 pos = new Vector3(x * cellSize, 1, y * cellSize);
+                Vector3 pos = new Vector3(x * cellSize, 0.5f, y * cellSize);
                 GameObject obj = Instantiate(prefab, pos, Quaternion.identity, stageParent);
-                obj.name = nameTag;
-                spawnedObjects.Add(obj);
-                return obj;
-            }
-        }
-        return null;
-    }
-
-#if UNITY_AI_PRESENT
-    void SetupNavMeshSurface()
-    {
-        surface = GetComponent<NavMeshSurface>();
-        if (surface == null)
-        {
-            surface = gameObject.AddComponent<NavMeshSurface>();
-            Debug.Log("🧭 NavMeshSurface を自動追加しました。");
-        }
-
-        surface.BuildNavMesh();
-        Debug.Log("✅ NavMesh Bake 完了（自動）");
-    }
-#endif
-
-    // ----------------------------------------------------
-    // 🗺️ ミニマップ初期化
-    void InitMinimap()
-    {
-        minimapTexture = new Texture2D(mapWidth * minimapScale, mapHeight * minimapScale);
-        minimapTexture.filterMode = FilterMode.Point;
-
-        if (minimapUI != null)
-            minimapUI.texture = minimapTexture;
-
-        UpdateMinimap();
-    }
-
-    void Update()
-    {
-        if (playerInstance == null) return;
-
-        Vector3 playerPos = playerInstance.transform.position;
-        int px = Mathf.RoundToInt(playerPos.x / cellSize);
-        int py = Mathf.RoundToInt(playerPos.z / cellSize);
-
-        RevealAround(px, py, revealRadius);
-        UpdateMinimap();
-    }
-
-    void RevealAround(int cx, int cy, int radius)
-    {
-        for (int y = -radius; y <= radius; y++)
-        {
-            for (int x = -radius; x <= radius; x++)
-            {
-                int nx = cx + x;
-                int ny = cy + y;
-                if (nx >= 0 && ny >= 0 && nx < mapWidth && ny < mapHeight)
-                    explored[ny, nx] = true;
+                obj.name = $"{label}_{x}_{y}";
+                break;
             }
         }
     }
 
-    void UpdateMinimap()
+    // --- 以下を ElementGenerator.cs の末尾に追加 ---
+    public int GetMapWidth()
     {
-        for (int y = 0; y < mapHeight; y++)
-        {
-            for (int x = 0; x < mapWidth; x++)
-            {
-                Color c = Color.black;
-
-                if (explored[y, x])
-                {
-                    c = (mapData[y, x] == 0) ? new Color(0.4f, 0.4f, 0.4f) : Color.black;
-                }
-
-                for (int yy = 0; yy < minimapScale; yy++)
-                    for (int xx = 0; xx < minimapScale; xx++)
-                        minimapTexture.SetPixel(x * minimapScale + xx, y * minimapScale + yy, c);
-            }
-        }
-
-        // 敵・宝箱・ゴールなどのマーカー
-        foreach (var obj in spawnedObjects)
-        {
-            if (obj == null) continue;
-            Vector3 pos = obj.transform.position;
-            int x = Mathf.RoundToInt(pos.x / cellSize);
-            int y = Mathf.RoundToInt(pos.z / cellSize);
-
-            if (x < 0 || y < 0 || x >= mapWidth || y >= mapHeight) continue;
-            if (!explored[y, x]) continue;
-
-            Color mark = Color.white;
-            if (obj.name.Contains("Enemy")) mark = Color.red;
-            else if (obj.name.Contains("Treasure")) mark = Color.yellow;
-            else if (obj.name.Contains("Goal")) mark = Color.cyan;
-            else if (obj.name.Contains("Player")) mark = Color.green;
-
-            for (int yy = 0; yy < minimapScale; yy++)
-                for (int xx = 0; xx < minimapScale; xx++)
-                    minimapTexture.SetPixel(x * minimapScale + xx, y * minimapScale + yy, mark);
-        }
-
-        minimapTexture.Apply();
+        return mapData != null ? mapData.GetLength(1) : 0;
     }
 
-    // ----------------------------------------------------
-    // Getter
-    public int GetMapWidth() => mapWidth;
-    public int GetMapHeight() => mapHeight;
+    public int GetMapHeight()
+    {
+        return mapData != null ? mapData.GetLength(0) : 0;
+    }
 }
