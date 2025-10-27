@@ -128,11 +128,11 @@ public class EnemyAI : MonoBehaviour
         Unit target = players
             .OrderBy(p => Vector2Int.Distance(unit.gridPos, p.gridPos))
             .FirstOrDefault();
-        unit.AttackNearestTarget();
+        yield return StartCoroutine(unit.AttackNearestTarget()); 
 
         Debug.Log($"{unit.name} が {target.name} を攻撃！");
         // ここにアニメーション処理を入れる
-        yield return new WaitForSeconds(2.5f);
+        //yield return new WaitForSeconds(2.5f);
     }
 
 }

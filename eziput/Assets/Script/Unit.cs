@@ -46,17 +46,13 @@ public class Unit : MonoBehaviour
     public Vector2Int gridPos;
     public float moveSpeed = 4f; // interpolation speed
     public bool isMoving = false;
-    public bool isAttacking = false;
-    private bool isAttackAnimation = false;
-    public bool isHitAnimation = false;
     public List<AttackSkill> attackSkills;
 
     private Vector3 originalPosition;
     public Animator anim;
     private List<GridBlock> highlightedBlocks = new List<GridBlock>();
 
-    public Unit Target;
-    public Unit attacker;
+    public AnimationController animationController;
 
     private void Awake()
     {
@@ -87,7 +83,7 @@ public class Unit : MonoBehaviour
         }
 
         anim = GetComponent<Animator>();
-        
+        animationController = GetComponent<AnimationController>();
         
     }
 
@@ -112,7 +108,7 @@ public class Unit : MonoBehaviour
     // 1マス移動（ターン中の直接移動）
     public bool TryMove(Vector2Int dir)
     {
-        if (isMoving) return false;
+        if (isMoving || animationController.isAttacking) return false;
         Vector2Int next = gridPos + dir;
         var nextBlock = gridManager.GetBlock(next);
         if (nextBlock == null) return false;
@@ -197,7 +193,8 @@ public class Unit : MonoBehaviour
         if (dir != Vector3.zero)
         transform.forward = dir;
 
-        if (anim != null) anim.SetInteger("Run", 1);
+        //if (anim != null) anim.SetInteger("Run", 1);
+        if(animationController != null) animationController.StartRunAnimation();
 
         while (elapsed < duration)
         {
@@ -207,7 +204,8 @@ public class Unit : MonoBehaviour
         }
         transform.position = end;
 
-        if (anim != null) anim.SetInteger("Run", 0);
+        //if (anim != null) anim.SetInteger("Run", 0);
+        if(animationController != null) animationController.StopRunAnimation();
 
         // === ここでoccupant更新 ===
         if (cur != null && cur.occupantUnit == this)
@@ -249,11 +247,11 @@ public class Unit : MonoBehaviour
     }
     public IEnumerator Attack(Unit target)
     {
-        if (target == null || isMoving || isAttacking)
+        if (target == null || isMoving || animationController.isAttacking)
             yield break;
 
-        Target = target;
-        isAttacking = true;
+        animationController.Initialize(target);
+        animationController.isAttacking = true;
 
         // 向き変更（相手の方向を向く）
         Vector3 dir3D = (target.transform.position - transform.position).normalized;
@@ -268,12 +266,13 @@ public class Unit : MonoBehaviour
         {
             Debug.Log($"{name} attacks {target.name} (with animation)");
 
-            // 攻撃アニメーション開始
-            anim.SetInteger("Attack", 1);
+            //ここで、違う種類の攻撃を変数として送ればよいと思う
+            animationController.AttackAnimation();
+            
 
             // 攻撃アニメーション → 相手のヒットアニメーションの流れは
             // Animator のイベント経由で OnAttackAnimationEnd() / OnHitAnimationEnd() へ
-            yield return new WaitUntil(() => !isAttacking);
+            yield return new WaitUntil(() => !animationController.isAttacking);
         }
         // ===== アニメーションなし =====
         else
@@ -282,9 +281,8 @@ public class Unit : MonoBehaviour
             yield return null;
 
             target.TakeDamage(1);
-            Debug.Log($"{name} attacked {target.name}!");
 
-            isAttacking = false;
+            animationController.isAttacking = false;
 
             // 攻撃終了後ターン進行
             if (team == Team.Player)
@@ -338,74 +336,11 @@ public class Unit : MonoBehaviour
 
     }
     */
-    //相手側にヒットアニメーションを実行させる
-    // 相手側にヒットアニメーションを実行させる
-    private void HitAnimation()
+
+
+    public void zangekiEffect()
     {
-        Target.attacker = this;
-        Animator animator = Target.GetComponent<Animator>();
-
-        if (animator != null)
-        {
-            animator.SetInteger("Hit", 1);
-        }
-        else
-        {
-            // 相手にアニメーションが無い場合 → 即完了扱い
-            Debug.Log($"【{Target.name}】はAnimatorなし、即完了扱い");
-            Target.TakeDamage(1);
-            isHitAnimation = true; // 攻撃側のHit完了フラグ
-            AnimationEnd();
-            return;
-        }
-
-        // アニメーションある場合は通常処理
-        Target.TakeDamage(1);
-    }
-
-
-    // 攻撃アニメーション終了通知（AnimationEventで呼ばれる）
-    private void OnAttackAnimationEnd()
-    {
-        Debug.Log($"{this.name} attack animation ended.");
-        isAttackAnimation = true;
-        AnimationEnd();
-    }
-
-    // ヒットアニメーション終了通知（AnimationEventで呼ばれる）
-    private void OnHitAnimationEnd()
-    {
-        anim.SetInteger("Hit", 0);
-        Debug.Log($"{this.name} hit animation ended.");
-
-        if (attacker != null)
-        {
-            attacker.isHitAnimation = true;
-            attacker.AnimationEnd();
-        }
-    }
-
-    // 攻撃・ヒット両方終わった時に呼ぶ
-    public void AnimationEnd()
-    {
-        if (!isAttackAnimation || !isHitAnimation)
-            return;
-
-        isAttackAnimation = false;
-        isHitAnimation = false;
-        isAttacking = false;
-
-        anim.SetInteger("Attack", 0);
-        Target = null;
-        attacker = null;
-
-        Debug.Log($"{name} both animations ended.");
-
-        // 攻撃終了 → ターン進行
-        if (team == Team.Player)
-        {
-            TurnManager.Instance.NextTurn();
-        }
+        EffectManager.Instance.PlayEffect(EffectManager.EffectType.Zangeki, transform.position + Vector3.up * 1f, transform, transform.rotation);
     }
 
 
@@ -434,10 +369,10 @@ public class Unit : MonoBehaviour
         // anim.SetTrigger("Die");
 
         // 攻撃者がいた場合は攻撃完了扱いにする
-        if (attacker != null)
+        if (animationController.attacker != null)
         {
-            attacker.isHitAnimation = true;
-            attacker.AnimationEnd();
+            animationController.attacker.isHitAnimation = true;
+            animationController.attacker.AnimationEnd();
         }
 
         // このユニットを削除
@@ -456,7 +391,7 @@ public class Unit : MonoBehaviour
         return false;
     }
 
-    public void AttackNearestTarget()
+    public IEnumerator AttackNearestTarget()
     {
         Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
         foreach (var d in dirs)
@@ -464,8 +399,8 @@ public class Unit : MonoBehaviour
             var b = gridManager.GetBlock(gridPos + d);
             if (b != null && b.occupantUnit != null && b.occupantUnit.team != this.team)
             {
-                 StartCoroutine(Attack(b.occupantUnit));
-                return;
+                yield return StartCoroutine(Attack(b.occupantUnit));
+                yield break;
             }
         }
     }
