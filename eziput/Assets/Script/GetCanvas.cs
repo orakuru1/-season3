@@ -8,6 +8,7 @@ public class GetCanvas : MonoBehaviour
     public GameObject panel;
 
     [Header("持ち物画面(Imageなど)")]
+    public Transform contentArea;
     public GameObject statusImage;  //全体image
     public GameObject kyarastatusImage; //キャラのステータスimage
     public GameObject bukiImage;    //武器image
