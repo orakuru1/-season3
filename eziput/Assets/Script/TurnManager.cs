@@ -42,7 +42,7 @@ public class TurnManager : MonoBehaviour
         var unit = allUnits[currentIndex];
         currentTeam = unit.team;  //  現在のチームを記録
 
-        Debug.Log($"Turn start: {unit.name} ({unit.team})");
+        //Debug.Log($"Turn start: {unit.name} ({unit.team})");
         OnTurnStart?.Invoke(unit);
         // プレイヤーターン → 敵全員ターン の交互にする
         bool isPlayerTurn = allUnits[currentIndex].team == Unit.Team.Player;
@@ -52,13 +52,13 @@ public class TurnManager : MonoBehaviour
             var playerUnit = allUnits.FirstOrDefault(u => u.team == Unit.Team.Player);
             if (playerUnit == null) return;
 
-            Debug.Log("Player Turn Start");
+            //Debug.Log("Player Turn Start");
             OnTurnStart?.Invoke(playerUnit);
             // プレイヤーの行動は InputHandler 側で EndPlayerTurn() を呼ぶ
         }
         else
         {
-            Debug.Log("Enemy Turn Start");
+            //Debug.Log("Enemy Turn Start");
             StartCoroutine(ExecuteAllEnemies());
         }
     }

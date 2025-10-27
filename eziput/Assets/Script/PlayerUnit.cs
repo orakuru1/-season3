@@ -4,12 +4,11 @@ using System.Collections;
 
 public class PlayerUnit : Unit
 {
-
     private void Update()
     {
-        if (isMoving || isAttacking) return;
+        if (isMoving || animationController.isAttacking) return;
 
-        // ŠeƒXƒLƒ‹‚Éİ’è‚³‚ê‚½ƒL[“ü—Í‚ğƒ`ƒFƒbƒN
+        // ï¿½eï¿½Xï¿½Lï¿½ï¿½ï¿½Éİ’è‚³ï¿½ê‚½ï¿½Lï¿½[ï¿½ï¿½ï¿½Í‚ï¿½ï¿½`ï¿½Fï¿½bï¿½N
         foreach (var skill in attackSkills)
         {
             if (Input.GetKeyDown(skill.triggerKey))
@@ -22,8 +21,8 @@ public class PlayerUnit : Unit
 
     private IEnumerator UseSkill(AttackSkill skill)
     {
-        isAttacking = true;
-        Debug.Log($"{status.unitName} ‚ª {skill.skillName} ‚ğg—pI");
+        animationController.isAttacking = true;
+        Debug.Log($"{status.unitName} ï¿½ï¿½ {skill.skillName} ï¿½ï¿½ï¿½gï¿½pï¿½I");
 
         List<Vector2Int> attackPositions = skill.attackPattern.GetPattern(gridPos);
         foreach (var pos in attackPositions)
@@ -35,11 +34,11 @@ public class PlayerUnit : Unit
                 var target = targetBlock.occupantUnit;
                 int damage = skill.power;
                 target.status.currentHP -= damage;
-                Debug.Log($"{target.status.unitName} ‚É {damage} ƒ_ƒ[ƒWI");
+                Debug.Log($"{target.status.unitName} ï¿½ï¿½ {damage} ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½I");
             }
         }
 
         yield return new WaitForSeconds(0.3f);
-        isAttacking = false;
+        animationController.isAttacking = false;
     }
 }
