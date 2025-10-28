@@ -12,7 +12,7 @@ public class EnemyUnit : Unit
         var skill = attackSkills[Random.Range(0, attackSkills.Count)];
         Debug.Log($"{status.unitName} ‚ª {skill.skillName} ‚ðŽg‚¨‚¤‚Æ‚µ‚Ä‚¢‚é");
 
-        List<Vector2Int> attackPositions = skill.attackPattern.GetPattern(gridPos);
+        List<Vector2Int> attackPositions = skill.attackPattern.GetPattern(gridPos,facingDir);
         foreach (var pos in attackPositions)
         {
             GridBlock block = gridManager.GetBlock(pos);

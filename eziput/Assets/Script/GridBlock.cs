@@ -32,6 +32,12 @@ public class GridBlock : MonoBehaviour
         if (blockRenderer != null)
             blockRenderer.material.color = color;
     }
+    public void SetHighlight(Color color)
+    {
+        var renderer = GetComponent<Renderer>();
+        if (renderer != null)
+            renderer.material.color = color;
+    }
 
     public void SetColor(Color c)
     {
