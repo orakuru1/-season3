@@ -8,7 +8,7 @@ public class Unit : MonoBehaviour
 {
     public GridManager gridManager;
 
-    
+
     [System.Serializable]
     public class UnitStatus
     {
@@ -27,7 +27,7 @@ public class Unit : MonoBehaviour
         public List<float> levelUpMultipliers = new List<float> { 1f, 1.1f, 1.2f };
         public AttackPatternBase attackPattern;
 
-        public List<Vector2Int> GetAttackRange(Vector2Int currentPos) => attackPattern != null ? attackPattern.GetPattern(currentPos) : new List<Vector2Int>();
+        //public List<Vector2Int> GetAttackRange(Vector2Int currentPos) => attackPattern != null ? attackPattern.GetPattern(currentPos,facingDir) : new List<Vector2Int>();
     }
 
     [System.Serializable]
@@ -37,6 +37,8 @@ public class Unit : MonoBehaviour
         public KeyCode triggerKey; // プレイヤー用（敵AIでは無視してOK）
         public AttackPatternBase attackPattern;
         public int power = 10;
+        public int animationID = 1;
+
     }
 
     public UnitStatus status = new UnitStatus();
@@ -46,18 +48,23 @@ public class Unit : MonoBehaviour
     public Vector2Int gridPos;
     public float moveSpeed = 4f; // interpolation speed
     public bool isMoving = false;
+    public bool isShowingAttackRange;
+
+    public Vector2Int facingDir;
     public List<AttackSkill> attackSkills;
 
     private Vector3 originalPosition;
     public Animator anim;
+    public AnimationController animationController;
     private List<GridBlock> highlightedBlocks = new List<GridBlock>();
 
-    public AnimationController animationController;
+
 
     private void Awake()
     {
         gridManager = GridManager.Instance;
         gridManager = FindObjectOfType<GridManager>();
+        animationController = GetComponent<AnimationController>();
         if (team == Team.Player)
         {
             status.speed = 10;
@@ -83,8 +90,8 @@ public class Unit : MonoBehaviour
         }
 
         anim = GetComponent<Animator>();
-        animationController = GetComponent<AnimationController>();
-        
+
+
     }
 
     public IEnumerator MoveTo(Vector2Int targetGridPos)
@@ -108,8 +115,7 @@ public class Unit : MonoBehaviour
     // 1マス移動（ターン中の直接移動）
     public bool TryMove(Vector2Int dir)
     {
-        if (isMoving || animationController.isAttacking) return false;
-        Vector2Int next = gridPos + dir;
+        if (isMoving || animationController.isAttacking) return false; Vector2Int next = gridPos + dir;
         var nextBlock = gridManager.GetBlock(next);
         if (nextBlock == null) return false;
 
@@ -179,7 +185,7 @@ public class Unit : MonoBehaviour
     {
         isMoving = true;
 
-        // ���݃u���b�N���
+        //    ݃u   b N   
         var cur = gridManager.GetBlock(gridPos);
         if (cur != null && cur.occupantUnit == this) cur.occupantUnit = null;
 
@@ -191,11 +197,9 @@ public class Unit : MonoBehaviour
         Vector3 dir = (end - start).normalized;
         dir.y = 0f; // 水平方向だけを考慮
         if (dir != Vector3.zero)
-        transform.forward = dir;
+            transform.forward = dir;
 
-        //if (anim != null) anim.SetInteger("Run", 1);
-        if(animationController != null) animationController.StartRunAnimation();
-
+        if (animationController != null) animationController.StartRunAnimation();
         while (elapsed < duration)
         {
             transform.position = Vector3.Lerp(start, end, elapsed / duration);
@@ -204,9 +208,7 @@ public class Unit : MonoBehaviour
         }
         transform.position = end;
 
-        //if (anim != null) anim.SetInteger("Run", 0);
-        if(animationController != null) animationController.StopRunAnimation();
-
+        if (animationController != null) animationController.StopRunAnimation();
         // === ここでoccupant更新 ===
         if (cur != null && cur.occupantUnit == this)
             cur.occupantUnit = null;
@@ -266,13 +268,13 @@ public class Unit : MonoBehaviour
         {
             Debug.Log($"{name} attacks {target.name} (with animation)");
 
-            //ここで、違う種類の攻撃を変数として送ればよいと思う
+            // 攻撃アニメーション開始
             animationController.AttackAnimation();
-            
-
             // 攻撃アニメーション → 相手のヒットアニメーションの流れは
             // Animator のイベント経由で OnAttackAnimationEnd() / OnHitAnimationEnd() へ
             yield return new WaitUntil(() => !animationController.isAttacking);
+            target.TakeDamage(status.attack);
+
         }
         // ===== アニメーションなし =====
         else
@@ -281,6 +283,7 @@ public class Unit : MonoBehaviour
             yield return null;
 
             target.TakeDamage(1);
+            Debug.Log($"{name} attacked {target.name}!");
 
             animationController.isAttacking = false;
 
@@ -337,12 +340,10 @@ public class Unit : MonoBehaviour
     }
     */
 
-
     public void zangekiEffect()
     {
         EffectManager.Instance.PlayEffect(EffectManager.EffectType.Zangeki, transform.position + Vector3.up * 1f, transform, transform.rotation);
     }
-
 
 
     public void TakeDamage(int damage)
@@ -423,7 +424,7 @@ public class Unit : MonoBehaviour
         {
             if (nextBlock.occupantUnit.team != this.team)
             {
-                 StartCoroutine(Attack(nextBlock.occupantUnit));
+                StartCoroutine(Attack(nextBlock.occupantUnit));
                 yield break;
             }
             else yield break;
@@ -467,22 +468,29 @@ public class Unit : MonoBehaviour
         }
     }
 
+
     public void ShowAttackRange()
     {
-        ClearAttackRange(); // 前の範囲をクリア
-        if (status.attackPattern == null) return;
+        ClearAttackRange();
+        if (status.attackPattern == null || gridManager == null) return;
 
-        var positions = status.attackPattern.GetPattern(gridPos);
-        foreach (var pos in positions)
+        isShowingAttackRange = true;
+
+        // 向きを考慮した攻撃範囲を取得
+        List<Vector2Int> pattern = status.attackPattern.GetPattern(gridPos, facingDir);
+
+        foreach (var pos in pattern)
         {
-            var block = GridManager.Instance.GetBlock(pos);
+            GridBlock block = gridManager.GetBlock(pos);
             if (block != null)
             {
-                block.Highlight(Color.red); // 赤く表示
+                block.SetHighlight(Color.red);
                 highlightedBlocks.Add(block);
             }
         }
     }
+
+
 
     // 攻撃範囲の表示を消す
     public void ClearAttackRange()
@@ -490,8 +498,21 @@ public class Unit : MonoBehaviour
         foreach (var b in highlightedBlocks)
             b.ResetHighlight();
         highlightedBlocks.Clear();
+        isShowingAttackRange = false;
     }
-
+    // 向きによって攻撃パターンを回転
+    private Vector2Int RotateByFacing(Vector2Int offset)
+    {
+        if (facingDir == Vector2Int.up)
+            return offset;
+        else if (facingDir == Vector2Int.right)
+            return new Vector2Int(offset.y, -offset.x);
+        else if (facingDir == Vector2Int.down)
+            return new Vector2Int(-offset.x, -offset.y);
+        else if (facingDir == Vector2Int.left)
+            return new Vector2Int(-offset.y, offset.x);
+        return offset;
+    }
     private Unit FindClosestEnemyUnit(Team targetTeam)
     {
         Unit[] all = FindObjectsOfType<Unit>();

@@ -1,99 +1,138 @@
-﻿// === File: InputHandler.cs ===
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class InputHandler : MonoBehaviour
 {
-    public Camera mainCamera;
     private Unit currentPlayerUnit;
-
-    public enum Move
-    {
-        W,A,S,D
-    }
-    public Move move;
-    private void OnEnable()
-    {
-        TurnManager.OnTurnStart += OnTurnStart;
-    }
-    private void OnDisable()
-    {
-        TurnManager.OnTurnStart -= OnTurnStart;
-    }
+    private GridBlock highlightedBlock;
+    private void OnEnable() => TurnManager.OnTurnStart += OnTurnStart;
+    private void OnDisable() => TurnManager.OnTurnStart -= OnTurnStart;
 
     private void OnTurnStart(Unit unit)
     {
-        if (unit.team == Unit.Team.Player)
-            currentPlayerUnit = unit;
-        else
-            currentPlayerUnit = null;
+        currentPlayerUnit = unit.team == Unit.Team.Player ? unit : null;
+        UpdateHighlight();
     }
 
     private void Update()
     {
-        if (TurnManager.Instance.currentTeam != Unit.Team.Player)
-            return;
+        if (TurnManager.Instance.currentTeam != Unit.Team.Player) return;
         if (currentPlayerUnit == null) return;
 
-        // キーボード移動（1マス）
-        if (Input.GetKeyDown(KeyCode.W)) { move = Move.W; }
-        if (Input.GetKeyDown(KeyCode.S)) { move = Move.S; }
-        if (Input.GetKeyDown(KeyCode.A)) { move = Move.A; }
-        if (Input.GetKeyDown(KeyCode.D)) { move = Move.D; }
-        if (Input.GetKeyDown(KeyCode.Return)) 
+        var player = currentPlayerUnit as PlayerUnit;
+        if (player == null) return;
+
+        // === 移動・攻撃中は方向転換禁止 ===
+        // === 攻撃・移動中は方向転換だけ禁止 ===
+        bool canRotate = !(player.isMoving || player.animationController.isAttacking);
+
+        // 攻撃範囲表示中などで方向転換を許可したい場合
+        if (canRotate && player.isShowingAttackRange)
         {
-            if(move == Move.W){currentPlayerUnit.TryMove(Vector2Int.up);}
-            if(move == Move.A){currentPlayerUnit.TryMove(Vector2Int.left);}
-            if(move == Move.S){currentPlayerUnit.TryMove(Vector2Int.down);}
-            if(move == Move.D){currentPlayerUnit.TryMove(Vector2Int.right);}
+            HandleDirectionChange(player);
         }
-        /*
-        if (currentPlayerUnit.attackSkills != null)
+        else if (canRotate)
         {
-            foreach (var skill in currentPlayerUnit.attackSkills)
+            HandleDirectionChange(player);
+        }
+
+
+        // === Enterで移動 or スキル発動 ===
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            if (player == null) return;
+
+            if (player.selectedSkill != null && player.isShowingAttackRange)
+            {
+                // スキル発動
+                Debug.Log("スキル発動: " + player.selectedSkill.skillName);
+                StartCoroutine(player.UseSkill(player.selectedSkill));
+            }
+            else
+            {
+                // 通常移動
+                Debug.Log("通常移動を試みます");
+                DoMove(player);
+            }
+
+            return;
+        }
+
+
+
+        // === スキル選択 ===
+        if (player.attackSkills != null)
+        {
+            foreach (var skill in player.attackSkills)
             {
                 if (Input.GetKeyDown(skill.triggerKey))
                 {
-                    currentPlayerUnit.status.attackPattern = skill.attackPattern;
-                    currentPlayerUnit.ShowAttackRange();
+                    player.selectedSkill = skill;
+                    player.status.attackPattern = skill.attackPattern;
+                    ClearHighlight();
+                    player.ShowAttackRange();
+                    return;
                 }
             }
         }
 
-        // 攻撃キャンセルなどで範囲を消す場合
+        // === ESCでキャンセル ===
         if (Input.GetKeyDown(KeyCode.Escape))
-            currentPlayerUnit.ClearAttackRange();
-        /*
-        // ダッシュ（Shift + dir）
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
-            if (Input.GetKeyDown(KeyCode.W)) StartCoroutine(currentPlayerUnit.Dash(Vector2Int.up, 7));
-            if (Input.GetKeyDown(KeyCode.S)) StartCoroutine(currentPlayerUnit.Dash(Vector2Int.down, 7));
-            if (Input.GetKeyDown(KeyCode.A)) StartCoroutine(currentPlayerUnit.Dash(Vector2Int.left, 7));
-            if (Input.GetKeyDown(KeyCode.D)) StartCoroutine(currentPlayerUnit.Dash(Vector2Int.right, 7));
+            player.ClearAttackRange();
+            player.selectedSkill = null;
+            ClearHighlight();
         }
-        /*
-        // マウスクリック移動（経路探索利用）
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out var hit))
-            {
-                var block = hit.collider.GetComponent<GridBlock>();
-                if (block != null)
-                {
-                    // 移動先が存在し経路があるか
-                    var start = gridPositionToVector2Int(currentPlayerUnit.gridPos);
-                    var path = GridManager.Instance.FindPath(currentPlayerUnit.gridPos, block.gridPos);
-                    if (path != null && path.Count > 0)
-                    {
-                        // path を GridBlock リストとして渡す MoveAlongPath を使う
-                        StartCoroutine(currentPlayerUnit.MoveAlongPath(path));
-                    }
-                }
-            }
-        }*/
     }
 
-    private Vector2Int gridPositionToVector2Int(Vector2Int v) => v;
+    private void HandleDirectionChange(PlayerUnit player)
+    {
+        bool dirChanged = false;
+        if (Input.GetKeyDown(KeyCode.W)) { player.facingDir = Vector2Int.up; dirChanged = true; }
+        if (Input.GetKeyDown(KeyCode.S)) { player.facingDir = Vector2Int.down; dirChanged = true; }
+        if (Input.GetKeyDown(KeyCode.A)) { player.facingDir = Vector2Int.left; dirChanged = true; }
+        if (Input.GetKeyDown(KeyCode.D)) { player.facingDir = Vector2Int.right; dirChanged = true; }
+
+        if (!dirChanged) return;
+
+        Vector3 dir3D = new Vector3(player.facingDir.x, 0, player.facingDir.y);
+        player.transform.rotation = Quaternion.LookRotation(dir3D);
+        UpdateHighlight();
+
+        if (player.isShowingAttackRange)
+            player.ShowAttackRange();
+    }
+
+    private void DoMove(PlayerUnit player)
+    {
+        ClearHighlight();
+        if (player.facingDir == Vector2Int.up) player.TryMove(Vector2Int.up);
+        if (player.facingDir == Vector2Int.down) player.TryMove(Vector2Int.down);
+        if (player.facingDir == Vector2Int.left) player.TryMove(Vector2Int.left);
+        if (player.facingDir == Vector2Int.right) player.TryMove(Vector2Int.right);
+    }
+
+    public void UpdateHighlight()
+    {
+        ClearHighlight();
+        if (currentPlayerUnit == null || GridManager.Instance == null)
+            return;
+
+        Vector2Int targetPos = currentPlayerUnit.gridPos + currentPlayerUnit.facingDir;
+        GridBlock block = GridManager.Instance.GetBlock(targetPos);
+        if (block != null)
+        {
+            block.SetHighlight(Color.blue);
+            highlightedBlock = block;
+        }
+    }
+
+    void ClearHighlight()
+    {
+        if (highlightedBlock != null)
+        {
+            highlightedBlock.ResetHighlight();
+            highlightedBlock = null;
+        }
+    }
 }
