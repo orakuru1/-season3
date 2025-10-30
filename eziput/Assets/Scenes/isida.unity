@@ -325,12 +325,9 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
-  isAttacking: 0
-  isHitAnimation: 0
   attackSkills: []
   anim: {fileID: 0}
-  Target: {fileID: 0}
-  attacker: {fileID: 0}
+  animationController: {fileID: 0}
 --- !u!136 &42471233
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1511,16 +1508,13 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
-  isAttacking: 0
-  isHitAnimation: 0
   attackSkills:
   - skillName: 
     triggerKey: 0
     attackPattern: {fileID: 0}
     power: 10
   anim: {fileID: 0}
-  Target: {fileID: 0}
-  attacker: {fileID: 0}
+  animationController: {fileID: 0}
 --- !u!136 &378460197
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -6721,6 +6715,7 @@ GameObject:
   m_Component:
   - component: {fileID: 915339430}
   - component: {fileID: 915339429}
+  - component: {fileID: 915339431}
   m_Layer: 0
   m_Name: "\u30BB\u30FC\u30D6\u30ED\u30FC\u30C9"
   m_TagString: Untagged
@@ -6756,6 +6751,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &915339431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915339428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 944c7c8caa1b5244b9331d552ebb8c76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allgods: []
 --- !u!1 &985892168
 GameObject:
   m_ObjectHideFlags: 0
@@ -6770,6 +6778,7 @@ GameObject:
   - component: {fileID: 985892171}
   - component: {fileID: 985892170}
   - component: {fileID: 985892169}
+  - component: {fileID: 985892175}
   m_Layer: 0
   m_Name: Sphere (2)
   m_TagString: Untagged
@@ -6824,12 +6833,9 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
-  isAttacking: 0
-  isHitAnimation: 0
   attackSkills: []
   anim: {fileID: 0}
-  Target: {fileID: 0}
-  attacker: {fileID: 0}
+  animationController: {fileID: 0}
 --- !u!135 &985892171
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6908,6 +6914,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 24
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &985892175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985892168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 0}
+  attacker: {fileID: 0}
+  animationState:
+    isAttacking: 0
+    isAttackAnimation: 0
+    isHitAnimation: 0
+  team: 0
 --- !u!1001 &988728333
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12925,6 +12950,7 @@ GameObject:
   - component: {fileID: 1111598862}
   - component: {fileID: 1111598861}
   - component: {fileID: 1111598860}
+  - component: {fileID: 1111598867}
   m_Layer: 0
   m_Name: Sphere (3)
   m_TagString: Untagged
@@ -12979,12 +13005,9 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
-  isAttacking: 0
-  isHitAnimation: 0
   attackSkills: []
   anim: {fileID: 0}
-  Target: {fileID: 0}
-  attacker: {fileID: 0}
+  animationController: {fileID: 0}
 --- !u!114 &1111598862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13075,6 +13098,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 25
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1111598867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111598859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 0}
+  attacker: {fileID: 0}
+  animationState:
+    isAttacking: 0
+    isAttackAnimation: 0
+    isHitAnimation: 0
+  team: 0
 --- !u!1 &1136321394 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: efe97d1000ec4414f888f64f26a3e675,
@@ -13116,12 +13158,9 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
-  isAttacking: 0
-  isHitAnimation: 0
   attackSkills: []
   anim: {fileID: 0}
-  Target: {fileID: 0}
-  attacker: {fileID: 0}
+  animationController: {fileID: 1136321401}
 --- !u!114 &1136321397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13148,6 +13187,25 @@ CapsuleCollider:
   m_Height: 2.44
   m_Direction: 1
   m_Center: {x: 0, y: 1.24, z: 0}
+--- !u!114 &1136321401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136321394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 0}
+  attacker: {fileID: 0}
+  animationState:
+    isAttacking: 0
+    isAttackAnimation: 0
+    isHitAnimation: 0
+  team: 0
 --- !u!1 &1140886060
 GameObject:
   m_ObjectHideFlags: 0
@@ -19164,12 +19222,9 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
-  isAttacking: 0
-  isHitAnimation: 0
   attackSkills: []
   anim: {fileID: 0}
-  Target: {fileID: 0}
-  attacker: {fileID: 0}
+  animationController: {fileID: 0}
 --- !u!136 &1541189277
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -19210,6 +19265,7 @@ GameObject:
   - component: {fileID: 1551123891}
   - component: {fileID: 1551123890}
   - component: {fileID: 1551123889}
+  - component: {fileID: 1551123895}
   m_Layer: 0
   m_Name: Sphere (1)
   m_TagString: Untagged
@@ -19264,12 +19320,9 @@ MonoBehaviour:
   gridPos: {x: -1, y: 0}
   moveSpeed: 4
   isMoving: 0
-  isAttacking: 0
-  isHitAnimation: 0
   attackSkills: []
   anim: {fileID: 0}
-  Target: {fileID: 0}
-  attacker: {fileID: 0}
+  animationController: {fileID: 0}
 --- !u!135 &1551123891
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -19348,6 +19401,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1551123895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1551123888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 0}
+  attacker: {fileID: 0}
+  animationState:
+    isAttacking: 0
+    isAttackAnimation: 0
+    isHitAnimation: 0
+  team: 0
 --- !u!1 &1582695771 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: efe97d1000ec4414f888f64f26a3e675,
@@ -19514,16 +19586,13 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
-  isAttacking: 0
-  isHitAnimation: 0
   attackSkills:
   - skillName: 
     triggerKey: 0
     attackPattern: {fileID: 0}
     power: 0
   anim: {fileID: 0}
-  Target: {fileID: 0}
-  attacker: {fileID: 0}
+  animationController: {fileID: 1870630952}
 --- !u!136 &1870630949
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -19538,6 +19607,38 @@ CapsuleCollider:
   m_Height: 2.49
   m_Direction: 1
   m_Center: {x: 0, y: 1.27, z: 0}
+--- !u!114 &1870630952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1870630942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Target: {fileID: 0}
+  attacker: {fileID: 0}
+  animationState:
+    isAttacking: 0
+    isAttackAnimation: 0
+    isHitAnimation: 0
+  team: 0
+--- !u!114 &1870630955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1870630942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a792bd860f623c4e8c4109666d6f2c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownedGods: []
 --- !u!1 &1950682423 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ef678eaafe5de2409b47bb133233f49,
@@ -19579,12 +19680,9 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
-  isAttacking: 0
-  isHitAnimation: 0
   attackSkills: []
   anim: {fileID: 0}
-  Target: {fileID: 0}
-  attacker: {fileID: 0}
+  animationController: {fileID: 0}
 --- !u!136 &1950682427
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -8,14 +8,13 @@ public class AnimationController : MonoBehaviour
 
     public AnimationController Target; // 攻撃する先
     public AnimationController attacker; // 攻撃してきた人
-
-    public bool isAttacking = false;//下３つを違うスクリプトに移動予定
-    public bool isAttackAnimation = false;
-    public bool isHitAnimation = false;
+    public AnimationState animationState = new AnimationState();//条件を構造体にまとめた
 
     private Animator anim;
 
     public Unit.Team team;
+
+    public System.Action onAnimationEnd;// アニメーション終了時に呼ばれるイベント
 
     void Start()
     {
@@ -26,8 +25,8 @@ public class AnimationController : MonoBehaviour
 
     public void Initialize(Unit target)
     {
-        Target = target.gameObject.GetComponent<AnimationController>();
-        isAttacking = true;
+        Target = target.GetComponent<AnimationController>();
+        animationState.isAttacking = true;
     }
 
     public void StartRunAnimation()
@@ -55,17 +54,18 @@ public class AnimationController : MonoBehaviour
     }
 
     // 攻撃アニメーション終了通知（AnimationEventで呼ばれる）
-    private void OnAttackAnimationEnd()
+    public void OnAttackAnimationEnd()
     {
-        Debug.Log($"{this.name} attack animation ended.");
-        isAttackAnimation = true;
+        Debug.Log("攻撃終わり―");
+        animationState.isAttackAnimation = true;
         AnimationEnd();
     }
 
-    private void HitAnimation()
+    public void HitAnimation()
     {
+        Debug.Log("ヒットアニメーション開始");
         Target.attacker = this;
-        Animator animator = Target.gameObject.GetComponent<Animator>();
+        Animator animator = Target.GetComponent<Animator>();
 
         if (animator != null)
         {
@@ -75,8 +75,8 @@ public class AnimationController : MonoBehaviour
         {
             // 相手にアニメーションが無い場合 → 即完了扱い
             Debug.Log($"【{Target.name}】はAnimatorなし、即完了扱い");
-            Target.gameObject.GetComponent<Unit>().TakeDamage(1);
-            isHitAnimation = true; // 攻撃側のHit完了フラグ
+            Target.GetComponent<Unit>().TakeDamage(1);
+            animationState.isHitAnimation = true; // 攻撃側のHit完了フラグ
             AnimationEnd();
             return;
         }
@@ -86,14 +86,15 @@ public class AnimationController : MonoBehaviour
     }
 
     // ヒットアニメーション終了通知（AnimationEventで呼ばれる）
-    private void OnHitAnimationEnd()
+    public void OnHitAnimationEnd()
     {
+
         anim.SetInteger("Hit", 0);
-        Debug.Log($"{this.name} hit animation ended.");
+        Debug.Log("ヒット終わり―");
 
         if (attacker != null)
         {
-            attacker.isHitAnimation = true;
+            attacker.animationState.isHitAnimation = true;
             attacker.AnimationEnd();
         }
     }
@@ -101,12 +102,10 @@ public class AnimationController : MonoBehaviour
     // 攻撃・ヒット両方終わった時に呼ぶ
     public void AnimationEnd()
     {
-        if (!isAttackAnimation || !isHitAnimation)
+        if (!animationState.isAttackAnimation || !animationState.isHitAnimation)
             return;
 
-        isAttackAnimation = false;
-        isHitAnimation = false;
-        isAttacking = false;
+        animationState.Reset();
 
         anim.SetInteger("Attack", 0);
 
@@ -115,11 +114,7 @@ public class AnimationController : MonoBehaviour
 
         Debug.Log($"{name} both animations ended.");
 
-        // 攻撃終了 → ターン進行
-        if (team == Unit.Team.Player)
-        {
-            TurnManager.Instance.NextTurn();
-        }
+        onAnimationEnd?.Invoke();
     }
 
 

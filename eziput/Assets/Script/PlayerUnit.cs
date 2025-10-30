@@ -6,7 +6,7 @@ public class PlayerUnit : Unit
 {
     private void Update()
     {
-        if (isMoving || animationController.isAttacking) return;
+        if (isMoving || animationController.animationState.isAttacking) return;
 
         // �e�X�L���ɐݒ肳�ꂽ�L�[���͂��`�F�b�N
         foreach (var skill in attackSkills)
@@ -21,7 +21,7 @@ public class PlayerUnit : Unit
 
     private IEnumerator UseSkill(AttackSkill skill)
     {
-        animationController.isAttacking = true;
+        animationController.animationState.isAttacking = true;
         Debug.Log($"{status.unitName} �� {skill.skillName} ���g�p�I");
 
         List<Vector2Int> attackPositions = skill.attackPattern.GetPattern(gridPos);
@@ -39,6 +39,6 @@ public class PlayerUnit : Unit
         }
 
         yield return new WaitForSeconds(0.3f);
-        animationController.isAttacking = false;
+        animationController.animationState.isAttacking = false;
     }
 }
