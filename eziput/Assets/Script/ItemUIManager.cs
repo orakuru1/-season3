@@ -15,6 +15,15 @@ public class ItemUIManager : MonoBehaviour
     private Dictionary<string, (GameObject button, int count)> itemData 
         = new Dictionary<string, (GameObject, int)>();
 
+    //アイテム名 Spriteの対応辞書
+    [System.Serializable]
+    public class ItemSpriteData
+    {
+        public string itemName;
+        public Sprite itemSprite;
+    }
+    [SerializeField] private List<ItemSpriteData> itemSpriteList = new List<ItemSpriteData>();
+
     private void Awake()
     {
         instance = this;
@@ -41,7 +50,6 @@ public class ItemUIManager : MonoBehaviour
                 existinglabel.text = $"{itemName} ×{data.count}";
             }
             
-
             return;
         }
 
@@ -55,7 +63,13 @@ public class ItemUIManager : MonoBehaviour
         {
             newlabel.text = itemName;
         }
-        // 個数テキスト初期化
+        
+        //アイコン設定
+        Image icon = newButton.GetComponentInChildren<Image>();
+        if(icon != null)
+        {
+            icon.sprite = GetSpriteByName(itemName);
+        }
         
 
         // データ登録
@@ -64,6 +78,19 @@ public class ItemUIManager : MonoBehaviour
         // ボタンクリック処理
         Button btn = newButton.GetComponent<Button>();
         btn.onClick.AddListener(() => OnItemButtonClicked(itemName));
+    }
+
+    //Sprite取得関数
+    private Sprite GetSpriteByName(string itemName)
+    {
+    foreach (var data in itemSpriteList)
+    {
+        if (data.itemName == itemName)
+            return data.itemSprite;
+    }
+
+    // 見つからなかった場合、デフォルト画像（nullでもOK）
+    return null;
     }
 
     /// <summary>
