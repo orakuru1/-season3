@@ -6,7 +6,7 @@ using System.Linq;
 public class PlayerUnit : Unit
 {
     public AttackSkill selectedSkill = null; // InputHandlerから指定
-    public bool isUsingSkill = false; // スキル実行中フラグ
+    public bool isUsingSkill = false; // スキル実行中フラグ        
 
     // スキル使用
     public IEnumerator UseSkill(AttackSkill skill)
@@ -19,7 +19,7 @@ public class PlayerUnit : Unit
             yield break;
         }
 
-        animationController.isAttacking = true;
+        animationController.animationState.isAttacking = true;
         Debug.Log($"{status.unitName} が {skill.skillName} を使用しようとしています");
 
         // 攻撃対象候補を取得
@@ -40,7 +40,7 @@ public class PlayerUnit : Unit
         if (targets.Count == 0)
         {
             Debug.Log("敵が範囲内にいないため、スキルは発動しません。");
-            animationController.isAttacking = false;
+            animationController.animationState.isAttacking = false;
             selectedSkill = null;
             isUsingSkill = false; // 終了時に解除
             ClearAttackRange();
@@ -81,12 +81,12 @@ public class PlayerUnit : Unit
 
         // プレイヤーの攻撃アニメーション終了を待つ
         if (anim != null)
-            yield return new WaitUntil(() => !animationController.isAttacking);
+            yield return new WaitUntil(() => !animationController.animationState.isAttacking);
         else
             yield return null;
 
         // 終了処理
-        animationController.isAttacking = false;
+        animationController.animationState.isAttacking = false;
         selectedSkill = null;
         isUsingSkill = false; // 終了時に解除
         ClearAttackRange();

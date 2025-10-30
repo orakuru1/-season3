@@ -90,6 +90,21 @@ public class Unit : MonoBehaviour
         }
 
         anim = GetComponent<Animator>();
+        animationController = GetComponent<AnimationController>();
+
+        if(animationController != null)
+        {
+            animationController.onAnimationEnd = () =>
+            {
+                // 攻撃終了後ターン進行
+                if (team == Team.Player)
+                {
+                    TurnManager.Instance.NextTurn();
+                }
+            };
+        }
+
+        
 
 
     }
@@ -115,7 +130,7 @@ public class Unit : MonoBehaviour
     // 1マス移動（ターン中の直接移動）
     public bool TryMove(Vector2Int dir)
     {
-        if (isMoving || animationController.isAttacking) return false; Vector2Int next = gridPos + dir;
+        if (isMoving || animationController.animationState.isAttacking) return false; Vector2Int next = gridPos + dir;
         var nextBlock = gridManager.GetBlock(next);
         if (nextBlock == null) return false;
 
@@ -249,11 +264,11 @@ public class Unit : MonoBehaviour
     }
     public IEnumerator Attack(Unit target)
     {
-        if (target == null || isMoving || animationController.isAttacking)
+        if (target == null || isMoving || animationController.animationState.isAttacking)
             yield break;
 
         animationController.Initialize(target);
-        animationController.isAttacking = true;
+        animationController.animationState.isAttacking = true;
 
         // 向き変更（相手の方向を向く）
         Vector3 dir3D = (target.transform.position - transform.position).normalized;
@@ -272,7 +287,7 @@ public class Unit : MonoBehaviour
             animationController.AttackAnimation();
             // 攻撃アニメーション → 相手のヒットアニメーションの流れは
             // Animator のイベント経由で OnAttackAnimationEnd() / OnHitAnimationEnd() へ
-            yield return new WaitUntil(() => !animationController.isAttacking);
+            yield return new WaitUntil(() => !animationController.animationState.isAttacking);
             target.TakeDamage(status.attack);
 
         }
@@ -285,7 +300,7 @@ public class Unit : MonoBehaviour
             target.TakeDamage(1);
             Debug.Log($"{name} attacked {target.name}!");
 
-            animationController.isAttacking = false;
+            animationController.animationState.isAttacking = false;
 
             // 攻撃終了後ターン進行
             if (team == Team.Player)
@@ -372,7 +387,7 @@ public class Unit : MonoBehaviour
         // 攻撃者がいた場合は攻撃完了扱いにする
         if (animationController.attacker != null)
         {
-            animationController.attacker.isHitAnimation = true;
+            animationController.attacker.animationState.isHitAnimation = true;
             animationController.attacker.AnimationEnd();
         }
 

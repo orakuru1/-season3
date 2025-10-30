@@ -36,8 +36,8 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 6
-    m_ConditionEvent: Attack2
-    m_EventTreshold: 1
+    m_ConditionEvent: Attack
+    m_EventTreshold: 2
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2472211510136951782}
   m_Solo: 0
@@ -272,7 +272,7 @@ AnimatorStateMachine:
     m_Position: {x: 410, y: 760, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -9106846874797209586}
-    m_Position: {x: 700, y: 150, z: 0}
+    m_Position: {x: 720, y: 150, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 4809637051513018986}
     m_Position: {x: 580, y: 530, z: 0}
@@ -284,7 +284,7 @@ AnimatorStateMachine:
     m_Position: {x: -99.21179, y: 953.21356, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2472211510136951782}
-    m_Position: {x: 40, y: 310, z: 0}
+    m_Position: {x: 740, y: 10, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -345,12 +345,6 @@ AnimatorController:
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
   - m_Name: Hit
-    m_Type: 3
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 0}
-  - m_Name: Attack2
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -607,7 +601,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 3
-    m_ConditionEvent: Attack2
+    m_ConditionEvent: Attack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 4145728827614255089}
