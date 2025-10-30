@@ -6,6 +6,7 @@ public class animation : MonoBehaviour
 {
     public Animator animator; //AnimatorをInspectorでアタッチ
     public Transform player; //プレイヤーを指定
+    public GameObject itemObject;
     public string itemName = "Sphere"; //宝箱の中身
     public float itemGetDelay = 1.5f; //アニメーション終了から取得するまでの時間
 
@@ -55,6 +56,12 @@ public class animation : MonoBehaviour
         else
         {
             Debug.Log("ItemUImanagerがシーン内に見つかりません!");
+        }
+
+        //アイテムオブジェクトを消す
+        if(itemObject != null)
+        {
+            itemObject.SetActive(false);
         }
     }
 }

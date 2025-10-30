@@ -325,6 +325,8 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
+  isShowingAttackRange: 0
+  facingDir: {x: 0, y: 0}
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
@@ -1508,13 +1510,23 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
+  isShowingAttackRange: 0
+  facingDir: {x: 0, y: 0}
   attackSkills:
   - skillName: 
     triggerKey: 0
     attackPattern: {fileID: 0}
     power: 10
+    animationID: 1
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  selectedSkill:
+    skillName: 
+    triggerKey: 0
+    attackPattern: {fileID: 0}
+    power: 10
+    animationID: 1
+  isUsingSkill: 0
 --- !u!136 &378460197
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1692,8 +1704,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b132b27a84c667144aa186b003aec080, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 1081269425}
-  move: 0
 --- !u!4 &445968921
 Transform:
   m_ObjectHideFlags: 0
@@ -6833,6 +6843,8 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
+  isShowingAttackRange: 0
+  facingDir: {x: 0, y: 0}
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
@@ -13005,6 +13017,8 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
+  isShowingAttackRange: 0
+  facingDir: {x: 0, y: 0}
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
@@ -13158,6 +13172,8 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
+  isShowingAttackRange: 0
+  facingDir: {x: 0, y: 0}
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 1136321401}
@@ -19222,6 +19238,8 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
+  isShowingAttackRange: 0
+  facingDir: {x: 0, y: 0}
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
@@ -19320,6 +19338,8 @@ MonoBehaviour:
   gridPos: {x: -1, y: 0}
   moveSpeed: 4
   isMoving: 0
+  isShowingAttackRange: 0
+  facingDir: {x: 0, y: 0}
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
@@ -19586,11 +19606,14 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
+  isShowingAttackRange: 0
+  facingDir: {x: 0, y: 0}
   attackSkills:
   - skillName: 
     triggerKey: 0
     attackPattern: {fileID: 0}
     power: 0
+    animationID: 1
   anim: {fileID: 0}
   animationController: {fileID: 1870630952}
 --- !u!136 &1870630949
@@ -19638,7 +19661,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a792bd860f623c4e8c4109666d6f2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ownedGods: []
+  ownedGods:
+  - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
 --- !u!1 &1950682423 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4ef678eaafe5de2409b47bb133233f49,
@@ -19680,6 +19704,8 @@ MonoBehaviour:
   gridPos: {x: 0, y: 0}
   moveSpeed: 4
   isMoving: 0
+  isShowingAttackRange: 0
+  facingDir: {x: 0, y: 0}
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
