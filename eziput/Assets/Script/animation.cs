@@ -51,7 +51,7 @@ public class animation : MonoBehaviour
         if(ItemUIManager.instance != null)
         {
             Debug.Log($"{itemName}を取得しました");
-            ItemUIManager.instance.AddItem(itemName);
+            ItemUIManager.instance.AddItem($"{itemName}");
         }
         else
         {

@@ -35,11 +35,12 @@ public class ItemUIManager : MonoBehaviour
             itemData[itemName] = data;
 
             // テキスト更新（CountText を想定）
-            TextMeshProUGUI countText = data.button.transform.Find("CountText")?.GetComponent<TextMeshProUGUI>();
-            if (countText != null)
+            Text existinglabel = data.button.GetComponentInChildren<Text>();
+            if(existinglabel != null)
             {
-                countText.text = "×" + data.count.ToString();
+                existinglabel.text = $"{itemName} ×{data.count}";
             }
+            
 
             return;
         }
@@ -48,19 +49,14 @@ public class ItemUIManager : MonoBehaviour
         GameObject newButton = Instantiate(itemButtonPrefab, contentParent);
         newButton.name = itemName;
 
-        // アイテム名表示
-        TextMeshProUGUI nameText = newButton.transform.Find("ItemName")?.GetComponent<TextMeshProUGUI>();
-        if (nameText != null)
+        //テキスト設定
+        Text newlabel = newButton.GetComponentInChildren<Text>();
+        if(newlabel != null)
         {
-            nameText.text = itemName;
+            newlabel.text = itemName;
         }
-
         // 個数テキスト初期化
-        TextMeshProUGUI countTextNew = newButton.transform.Find("CountText")?.GetComponent<TextMeshProUGUI>();
-        if (countTextNew != null)
-        {
-            countTextNew.text = "×1";
-        }
+        
 
         // データ登録
         itemData[itemName] = (newButton, 1);
