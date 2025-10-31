@@ -49,26 +49,36 @@ public class PlayerUnit : Unit
 
         Debug.Log($"{status.unitName} が {skill.skillName} を使用！ 対象数: {targets.Count}");
 
-        // プレイヤー攻撃アニメーション（1回だけ）
         if (anim != null)
         {
-            GetComponent<AnimationController>().Initialize(targets[0]);
-            anim.SetInteger("Attack", skill.animationID);
-        }
-
-        // 各ターゲットのヒットアニメーションを同時に開始
-        foreach (var target in targets)
-        {
-            // 攻撃アニメーションのTarget（targets[0]）には重複してHitアニメをかけない
-            if (target != targets[0])
+            if (targets.Count == 1)
             {
-                StartCoroutine(HitTarget(target, skill.power));
+                animationController.Initialize(targets[0], skill.power);
+                animationController.AttackAnimation(skill.animationID);
             }
+            else
+            {
+
+                animationController.Initialize(targets, skill.power);
+                animationController.AttackAnimation(skill.animationID);
+            }
+
         }
+/*
+            // 各ターゲットのヒットアニメーションを同時に開始
+            foreach (var target in targets)
+            {
+                // 攻撃アニメーションのTarget（targets[0]）には重複してHitアニメをかけない
+                if (target != targets[0])
+                {
+                    StartCoroutine(HitTarget(target, skill.power));
+                }
+            }
+*/
 
         // ヒットアニメーションが見える時間だけ待機
         yield return new WaitForSeconds(0.3f);
-
+/*
         // ダメージ適用＆アニメーションリセット
         foreach (var target in targets)
         {
@@ -78,6 +88,7 @@ public class PlayerUnit : Unit
             target.TakeDamage(skill.power);
             Debug.Log($"{target.status.unitName} に {skill.power} ダメージ！");
         }
+*/
 
         // プレイヤーの攻撃アニメーション終了を待つ
         if (anim != null)
