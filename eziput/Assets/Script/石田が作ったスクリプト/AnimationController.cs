@@ -8,19 +8,18 @@ public class AnimationController : MonoBehaviour
 
     public List<Unit> Target = new List<Unit>(); // 攻撃する先
     public int damage;
+    private int remaininghits;
     public AnimationController attacker; // 攻撃してきた人
     public AnimationState animationState = new AnimationState();//条件を構造体にまとめた
 
     private Animator anim;
 
-    public Unit.Team team;
 
     public System.Action onAnimationEnd;// アニメーション終了時に呼ばれるイベント
 
     void Start()
     {
         Im = GetComponent<Unit>();
-        team = Im.team;
         anim = GetComponent<Animator>();
     }
 
@@ -77,6 +76,7 @@ public class AnimationController : MonoBehaviour
         if (animationState.ismultipleTaget)
         {
             Debug.Log("マルチターゲットヒットアニメーション開始");
+            remaininghits = Target.Count;
             foreach (var ttt in Target)
             {
                 AnimationController tgt = ttt.GetComponent<AnimationController>();
@@ -98,11 +98,16 @@ public class AnimationController : MonoBehaviour
                 }
                 else
                 {
+                    remaininghits--;
                     // 相手にアニメーションが無い場合 → 即完了扱い
                     Debug.Log($"【{tgt.name}】はAnimatorなし、即完了扱い");
                     ttt.TakeDamage(damage);
-                    animationState.isHitAnimation = true; // 攻撃側のHit完了フラグ
-                    AnimationEnd();
+                    if (remaininghits <= 0)
+                    {
+                        animationState.isHitAnimation = true; // 攻撃側のHit完了フラグ
+                        AnimationEnd();        
+                    }
+
                     //return;
                 }
             }
@@ -110,6 +115,7 @@ public class AnimationController : MonoBehaviour
         else
         {
             Debug.Log("シングルターゲットヒットアニメーション開始");
+            remaininghits = 1;
             AnimationController tgt = Target[0].GetComponent<AnimationController>();
             Debug.Log("ヒットアニメーション開始");
             tgt.attacker = this;
@@ -152,8 +158,13 @@ public class AnimationController : MonoBehaviour
 
         if (attacker != null)
         {
-            attacker.animationState.isHitAnimation = true;
-            attacker.AnimationEnd();
+            attacker.remaininghits--;
+            if (attacker.remaininghits <= 0)
+            {
+                attacker.animationState.isHitAnimation = true;
+                attacker.AnimationEnd();   
+            }
+
         }
     }
 
@@ -168,6 +179,7 @@ public class AnimationController : MonoBehaviour
         anim.SetInteger("Attack", 0);
 
         Target.Clear();
+        damage = 1;
         attacker = null;
 
         Debug.Log($"{name} both animations ended.");
