@@ -2398,8 +2398,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b132b27a84c667144aa186b003aec080, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 161352995}
-  move: 0
 --- !u!4 &489621013
 Transform:
   m_ObjectHideFlags: 0
@@ -2725,7 +2723,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1523797058122769978}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1306971126}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cc61416c2534014eb84852ed083c62b, type: 3}
@@ -5348,6 +5346,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1523797058065858524, guid: 56ac3c9c02ec72d4c8b6e6846aaae69b,
     type: 3}
   m_PrefabInstance: {fileID: 2069304444}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1306971126 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1865885010750298462, guid: 56ac3c9c02ec72d4c8b6e6846aaae69b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1523797058122769978}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1306990096
 GameObject:
@@ -8964,6 +8968,8 @@ MonoBehaviour:
   gridPos: {x: 2, y: 0}
   moveSpeed: 4
   isMoving: 0
+  isShowingAttackRange: 0
+  facingDir: {x: 0, y: 0}
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
@@ -9259,17 +9265,17 @@ PrefabInstance:
     - target: {fileID: 1346334553124307940, guid: 56ac3c9c02ec72d4c8b6e6846aaae69b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3
+      value: 1.37
       objectReference: {fileID: 0}
     - target: {fileID: 1346334553124307940, guid: 56ac3c9c02ec72d4c8b6e6846aaae69b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 1.551
       objectReference: {fileID: 0}
     - target: {fileID: 1346334553124307940, guid: 56ac3c9c02ec72d4c8b6e6846aaae69b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.5
+      value: -0.28
       objectReference: {fileID: 0}
     - target: {fileID: 1346334553124307940, guid: 56ac3c9c02ec72d4c8b6e6846aaae69b,
         type: 3}
@@ -9325,7 +9331,7 @@ PrefabInstance:
         type: 3}
       propertyPath: itemObject
       value: 
-      objectReference: {fileID: 1678440592}
+      objectReference: {fileID: 1306971126}
     - target: {fileID: 1523797058646313885, guid: 56ac3c9c02ec72d4c8b6e6846aaae69b,
         type: 3}
       propertyPath: itemUIManager

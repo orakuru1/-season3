@@ -15,6 +15,15 @@ public class ItemUIManager : MonoBehaviour
     private Dictionary<string, (GameObject button, int count)> itemData 
         = new Dictionary<string, (GameObject, int)>();
 
+    //アイテム名 Spriteの対応辞書
+    [System.Serializable]
+    public class ItemSpriteData
+    {
+        public string itemName;
+        public Sprite itemSprite;
+    }
+    [SerializeField] private List<ItemSpriteData> itemSpriteList = new List<ItemSpriteData>();
+
     private void Awake()
     {
         instance = this;
@@ -35,12 +44,12 @@ public class ItemUIManager : MonoBehaviour
             itemData[itemName] = data;
 
             // テキスト更新（CountText を想定）
-            TextMeshProUGUI countText = data.button.transform.Find("CountText")?.GetComponent<TextMeshProUGUI>();
-            if (countText != null)
+            Text existinglabel = data.button.GetComponentInChildren<Text>();
+            if(existinglabel != null)
             {
-                countText.text = "×" + data.count.ToString();
+                existinglabel.text = $"{itemName} ×{data.count}";
             }
-
+            
             return;
         }
 
@@ -48,19 +57,20 @@ public class ItemUIManager : MonoBehaviour
         GameObject newButton = Instantiate(itemButtonPrefab, contentParent);
         newButton.name = itemName;
 
-        // アイテム名表示
-        TextMeshProUGUI nameText = newButton.transform.Find("ItemName")?.GetComponent<TextMeshProUGUI>();
-        if (nameText != null)
+        //テキスト設定
+        Text newlabel = newButton.GetComponentInChildren<Text>();
+        if(newlabel != null)
         {
-            nameText.text = itemName;
+            newlabel.text = itemName;
         }
-
-        // 個数テキスト初期化
-        TextMeshProUGUI countTextNew = newButton.transform.Find("CountText")?.GetComponent<TextMeshProUGUI>();
-        if (countTextNew != null)
+        
+        //アイコン設定
+        Image icon = newButton.GetComponentInChildren<Image>();
+        if(icon != null)
         {
-            countTextNew.text = "×1";
+            icon.sprite = GetSpriteByName(itemName);
         }
+        
 
         // データ登録
         itemData[itemName] = (newButton, 1);
@@ -68,6 +78,19 @@ public class ItemUIManager : MonoBehaviour
         // ボタンクリック処理
         Button btn = newButton.GetComponent<Button>();
         btn.onClick.AddListener(() => OnItemButtonClicked(itemName));
+    }
+
+    //Sprite取得関数
+    private Sprite GetSpriteByName(string itemName)
+    {
+    foreach (var data in itemSpriteList)
+    {
+        if (data.itemName == itemName)
+            return data.itemSprite;
+    }
+
+    // 見つからなかった場合、デフォルト画像（nullでもOK）
+    return null;
     }
 
     /// <summary>
