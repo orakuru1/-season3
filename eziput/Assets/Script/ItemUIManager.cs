@@ -10,6 +10,10 @@ public class ItemUIManager : MonoBehaviour
     [Header("UI設定")]
     [SerializeField] private Transform contentParent;      // ScrollView の Content
     [SerializeField] private GameObject itemButtonPrefab;  // アイテムボタンのプレハブ
+    [SerializeField] private GameObject confirmPanel; //[使いますか？]のパネル
+    [SerializeField] private Text confirmText;  //確認メッセージ
+
+    private string selectedItemName;  //選ばれたアイテム名
 
     // アイテムと個数を管理
     private Dictionary<string, (GameObject button, int count)> itemData 
@@ -99,6 +103,23 @@ public class ItemUIManager : MonoBehaviour
     private void OnItemButtonClicked(string itemName)
     {
         Debug.Log($"「{itemName}」を選択しました！");
+        selectedItemName = itemName;
+        confirmText.text = $"{itemName}を使いますか？";
+        confirmPanel.SetActive(true);
         // 装備・使用などのUI呼び出しはここに
     }
+
+    //はいボタン
+    public void OnConfirmYes()
+    {
+        Debug.Log($"{selectedItemName}を使用しました");
+        confirmPanel.SetActive(false);
+    }
+
+    //いいえボタン
+    public void OnConfirmNO()
+    {
+        confirmPanel.SetActive(false);
+    }
+
 }
