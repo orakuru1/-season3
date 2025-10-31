@@ -10,12 +10,14 @@ public class AnimationState
     public bool isAttacking;
     public bool isAttackAnimation;
     public bool isHitAnimation;
+    public bool ismultipleTaget;
 
     public void Reset()
     {
         isAttacking = false;
         isAttackAnimation = false;
         isHitAnimation = false;
+        ismultipleTaget = false;
     }
 }
 

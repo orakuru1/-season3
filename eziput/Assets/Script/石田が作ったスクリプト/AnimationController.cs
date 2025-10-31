@@ -6,7 +6,8 @@ public class AnimationController : MonoBehaviour
 {
     private Unit Im;
 
-    public AnimationController Target; // 攻撃する先
+    public List<Unit> Target = new List<Unit>(); // 攻撃する先
+    public int damage;
     public AnimationController attacker; // 攻撃してきた人
     public AnimationState animationState = new AnimationState();//条件を構造体にまとめた
 
@@ -23,10 +24,20 @@ public class AnimationController : MonoBehaviour
         anim = GetComponent<Animator>();
     }
 
-    public void Initialize(Unit target)
+    public void Initialize(Unit target, int dmg = 1)
     {
-        Target = target.GetComponent<AnimationController>();
+        Target.Clear();
+        Target.Add(target);
+        damage = dmg;
         animationState.isAttacking = true;
+        animationState.ismultipleTaget = false;
+    }
+    public void Initialize(List<Unit> targets, int dmg = 1)
+    {
+        Target = targets;
+        damage = dmg;
+        animationState.isAttacking = true;
+        animationState.ismultipleTaget = true;
     }
 
     public void StartRunAnimation()
@@ -45,11 +56,11 @@ public class AnimationController : MonoBehaviour
         }
     }
 
-    public void AttackAnimation()
+    public void AttackAnimation(int animationID = 1)
     {
         if (anim != null)
         {
-            anim.SetInteger("Attack", 1);
+            anim.SetInteger("Attack", animationID);
         }
     }
 
@@ -63,23 +74,70 @@ public class AnimationController : MonoBehaviour
 
     public void HitAnimation()
     {
-        Debug.Log("ヒットアニメーション開始");
-        Target.attacker = this;
-        Animator animator = Target.GetComponent<Animator>();
-
-        if (animator != null)
+        if (animationState.ismultipleTaget)
         {
-            animator.SetInteger("Hit", 1);
+            Debug.Log("マルチターゲットヒットアニメーション開始");
+            foreach (var ttt in Target)
+            {
+                AnimationController tgt = ttt.GetComponent<AnimationController>();
+                Debug.Log("ヒットアニメーション開始");
+                tgt.attacker = this;
+                Animator animator = tgt.GetComponent<Animator>();
+
+                if (animator != null)
+                {
+                    ttt.TakeDamage(damage);//ダメージを受ける処理を先にすることで、生きてるか死んでるかで、どっちのアニメーションをするか分けれる。
+                    if (ttt.status.currentHP <= 0)
+                    {
+                        //animator.SetInteger("Hit", 2); // 死亡アニメーション
+                    }
+                    else
+                    {
+                        animator.SetInteger("Hit", 1);
+                    }    
+                }
+                else
+                {
+                    // 相手にアニメーションが無い場合 → 即完了扱い
+                    Debug.Log($"【{tgt.name}】はAnimatorなし、即完了扱い");
+                    ttt.TakeDamage(damage);
+                    animationState.isHitAnimation = true; // 攻撃側のHit完了フラグ
+                    AnimationEnd();
+                    //return;
+                }
+            }
         }
         else
         {
-            // 相手にアニメーションが無い場合 → 即完了扱い
-            Debug.Log($"【{Target.name}】はAnimatorなし、即完了扱い");
-            Target.GetComponent<Unit>().TakeDamage(1);
-            animationState.isHitAnimation = true; // 攻撃側のHit完了フラグ
-            AnimationEnd();
-            return;
+            Debug.Log("シングルターゲットヒットアニメーション開始");
+            AnimationController tgt = Target[0].GetComponent<AnimationController>();
+            Debug.Log("ヒットアニメーション開始");
+            tgt.attacker = this;
+            Animator animator = tgt.GetComponent<Animator>();
+
+            if (animator != null)
+            {
+                Target[0].TakeDamage(damage);//ダメージを受ける処理を先にすることで、生きてるか死んでるかで、どっちのアニメーションをするか分けれる。
+                if (Target[0].status.currentHP <= 0)
+                {
+                    //animator.SetInteger("Hit", 2); // 死亡アニメーション
+                }
+                else
+                {
+                    animator.SetInteger("Hit", 1);
+                }   
+            }
+            else
+            {
+                // 相手にアニメーションが無い場合 → 即完了扱い
+                Debug.Log($"【{tgt.name}】はAnimatorなし、即完了扱い");
+                Target[0].TakeDamage(damage);
+                animationState.isHitAnimation = true; // 攻撃側のHit完了フラグ
+                AnimationEnd();
+                return;
+            } 
         }
+
 
         // アニメーションある場合は通常処理
         //Target.TakeDamage(1);
@@ -109,7 +167,7 @@ public class AnimationController : MonoBehaviour
 
         anim.SetInteger("Attack", 0);
 
-        Target = null;
+        Target.Clear();
         attacker = null;
 
         Debug.Log($"{name} both animations ended.");
