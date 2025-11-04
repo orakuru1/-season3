@@ -1,125 +1,171 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class ItemUIManager : MonoBehaviour
 {
     public static ItemUIManager instance;
 
-    [Header("UI設定")]
-    [SerializeField] private Transform contentParent;      // ScrollView の Content
-    [SerializeField] private GameObject itemButtonPrefab;  // アイテムボタンのプレハブ
-    [SerializeField] private GameObject confirmPanel; //[使いますか？]のパネル
-    [SerializeField] private Text confirmText;  //確認メッセージ
+    [SerializeField] private Transform contentParent; // ScrollViewのContent
+    [SerializeField] private GameObject itemButtonPrefab; // アイテムボタンのプレハブ
 
-    private string selectedItemName;  //選ばれたアイテム名
+    private Dictionary<string, (int count, GameObject button)> itemData = new Dictionary<string, (int, GameObject)>();
+    private Dictionary<string, (int count, GameObject button)> itemDataDict = new Dictionary<string, (int count, GameObject button)>();
 
-    // アイテムと個数を管理
-    private Dictionary<string, (GameObject button, int count)> itemData 
-        = new Dictionary<string, (GameObject, int)>();
+    [Header("確認UI")]
+    [SerializeField] private GameObject confirmPanel;
+    [SerializeField] private Text confirmText;
 
-    //アイテム名 Spriteの対応辞書
-    [System.Serializable]
-    public class ItemSpriteData
-    {
-        public string itemName;
-        public Sprite itemSprite;
-    }
-    [SerializeField] private List<ItemSpriteData> itemSpriteList = new List<ItemSpriteData>();
+    private GameObject selectedButton;
+    private string selectedItemName;
+
+    
 
     private void Awake()
     {
         instance = this;
-        // ゲーム開始時にリセット（重複防止）
-        itemData.Clear();
     }
 
-    /// <summary>
-    /// アイテム追加処理
-    /// </summary>
+    //=====================
+    // アイテム追加処理
+    //=====================
     public void AddItem(string itemName)
     {
-        // すでに持っている場合：カウントアップのみ
+        Debug.Log($"{itemName}");
+        // すでに持っているか確認
         if (itemData.ContainsKey(itemName))
         {
-            var data = itemData[itemName];
-            data.count++;
-            itemData[itemName] = data;
-
-            // テキスト更新（CountText を想定）
-            Text existinglabel = data.button.GetComponentInChildren<Text>();
-            if(existinglabel != null)
+            // もし削除済み（ボタンが存在しない）なら再生成する
+            if (itemData[itemName].button == null)
             {
-                existinglabel.text = $"{itemName} ×{data.count}";
+                GameObject newButton = CreateItemButton(itemName);
+                itemData[itemName] = (1, newButton);
             }
-            
-            return;
-        }
+            else
+            {
+                // ボタンが残ってるならカウントを増やす
+                var data = itemData[itemName];
+                data.count++;
+                itemData[itemName] = data;
 
-        // 初めてのアイテムなら新規生成
+                // 数量テキスト更新
+                UpdateItemCountText(data.button, data.count);
+            }
+        }
+        else
+        {
+            // 初取得：新しいボタンを生成
+            GameObject newButton = CreateItemButton(itemName);
+            itemData.Add(itemName, (1, newButton));
+        }
+    }
+
+    //=====================
+    // ボタン作成
+    //=====================
+    private GameObject CreateItemButton(string itemName)
+    {
+        Debug.Log($"{itemName}");
         GameObject newButton = Instantiate(itemButtonPrefab, contentParent);
         newButton.name = itemName;
 
-        //テキスト設定
-        Text newlabel = newButton.GetComponentInChildren<Text>();
-        if(newlabel != null)
+        // ボタン内テキスト更新
+        Text label = newButton.GetComponentInChildren<Text>(true);
+        if(label == null)
         {
-            newlabel.text = itemName;
+            //子階層に"Text"という名前のオブジェクトがあるなら
+            Transform textTransform = newButton.transform.Find("Text");
+            if(textTransform != null)
+            {
+                label = textTransform.GetComponent<Text>();
+            }
         }
-        
-        //アイコン設定
-        Image icon = newButton.GetComponentInChildren<Image>();
-        if(icon != null)
+        if (label != null)
         {
-            icon.sprite = GetSpriteByName(itemName);
+            if(itemDataDict != null && itemDataDict.ContainsKey(itemName))
+            {
+                var itemData = itemDataDict[itemName];
+                label.text = $"{itemName}×{itemData.count}";
+            }
+            else
+            {
+                label.text = itemName; //初回取得時
+            }
+            
         }
-        
 
-        // データ登録
-        itemData[itemName] = (newButton, 1);
-
-        // ボタンクリック処理
         Button btn = newButton.GetComponent<Button>();
-        btn.onClick.AddListener(() => OnItemButtonClicked(itemName));
+        btn.onClick.RemoveAllListeners();
+
+        // ボタンを渡す形でイベント登録
+        GameObject btnCopy = newButton;
+        btn.onClick.AddListener(() => OnItemButtonClicked(btnCopy));
+
+        return newButton;
     }
 
-    //Sprite取得関数
-    private Sprite GetSpriteByName(string itemName)
+    //=====================
+    // ボタン押下処理
+    //=====================
+    public void OnItemButtonClicked(GameObject button)
     {
-    foreach (var data in itemSpriteList)
-    {
-        if (data.itemName == itemName)
-            return data.itemSprite;
-    }
-
-    // 見つからなかった場合、デフォルト画像（nullでもOK）
-    return null;
-    }
-
-    /// <summary>
-    /// ボタン押下時処理
-    /// </summary>
-    private void OnItemButtonClicked(string itemName)
-    {
-        Debug.Log($"「{itemName}」を選択しました！");
+        string itemName = button.name;
+        selectedButton = button;
         selectedItemName = itemName;
         confirmText.text = $"{itemName}を使いますか？";
         confirmPanel.SetActive(true);
-        // 装備・使用などのUI呼び出しはここに
     }
 
-    //はいボタン
+    //=====================
+    // 使用確認の「はい」ボタンなどで呼ぶ処理
+    //=====================
+    public void UseSelectedItem()
+    {
+        if (string.IsNullOrEmpty(selectedItemName)) return;
+
+        if (itemData.ContainsKey(selectedItemName))
+        {
+            var data = itemData[selectedItemName];
+            data.count--;
+
+            if (data.count <= 0)
+            {
+                // ボタンを削除（後で再取得できるように null 登録）
+                Destroy(data.button);
+                itemData[selectedItemName] = (0, null);
+            }
+            else
+            {
+                // カウント減少を反映
+                itemData[selectedItemName] = data;
+                UpdateItemCountText(data.button, data.count);
+            }
+        }
+
+        confirmPanel.SetActive(false);
+    }
+
     public void OnConfirmYes()
     {
-        Debug.Log($"{selectedItemName}を使用しました");
+        Debug.Log($"{selectedItemName}を使用しました！！");
+        Destroy(selectedButton);
         confirmPanel.SetActive(false);
     }
 
-    //いいえボタン
-    public void OnConfirmNO()
+    public void OnConfirmNo()
     {
         confirmPanel.SetActive(false);
     }
 
+    //=====================
+    // 数量テキスト更新
+    //=====================
+    private void UpdateItemCountText(GameObject button, int count)
+    {
+        Text countText = button.transform.Find("CountText")?.GetComponent<Text>();
+        if (countText != null)
+        {
+            countText.text = (count > 1) ? $"×{count}" : "";
+        }
+    }
 }
