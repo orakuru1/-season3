@@ -31,7 +31,7 @@ public class SaveLoad : MonoBehaviour
 
     public void Save()
     {
-
+        statussavedata.Clear();
         foreach (var c in players)//今インスタンス化されてるプレイヤーの数
         {
             statussavedata.Add(new StatusSaveData //*******************セーブ専用のデータにプレイヤーのデータ達を入れてる
@@ -54,7 +54,7 @@ public class SaveLoad : MonoBehaviour
         //wr.Close();
         File.WriteAllText(SavePath, json);//****************ReadWritterを省略した書き方。自動上書き.close()兼ねてる
         Debug.Log("保存しました:" + SavePath);
-        statussavedata.Clear();
+
     }
     
     public void Load()

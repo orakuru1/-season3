@@ -8,12 +8,14 @@ public class GetCanvas : MonoBehaviour
     public GameObject panel;
 
     [Header("持ち物画面(Imageなど)")]
+    public Transform contentArea;
     public GameObject statusImage;  //全体image
     public GameObject kyarastatusImage; //キャラのステータスimage
     public GameObject bukiImage;    //武器image
     public GameObject bouguImage;   //防具image
     public GameObject inventoryImage;  //持ち物image
     public GameObject setteiImage;  //設定image
+    public GameObject itempanel;  //アイテム使いますか？panel
 
     [Header("プレイヤー操作スクリプト（PlayerMoveなど）")]
     public MonoBehaviour[] playerControllers; // ← 複数登録できるように変更！
@@ -42,6 +44,7 @@ public class GetCanvas : MonoBehaviour
         bukiImage.SetActive(newState);
         bouguImage.SetActive(newState);
         setteiImage.SetActive(newState);
+        itempanel.SetActive(newState);
 
         if (newState)
         {
@@ -62,6 +65,7 @@ public class GetCanvas : MonoBehaviour
         if (bukiImage) bukiImage.SetActive(false);
         if (bouguImage) bouguImage.SetActive(false);
         if(setteiImage) setteiImage.SetActive(false);
+        if(itempanel) itempanel.SetActive(false);
     }
 
     public void ShowStatusOnly()  //ステータスimageだけ表示
@@ -103,6 +107,12 @@ public class GetCanvas : MonoBehaviour
     {
         HideAllImages();
         if(setteiImage) setteiImage.SetActive(true);
+    }
+
+    public void itemsiyou()
+    {
+        HideAllImages();
+        if(itempanel) itempanel.SetActive(true);
     }
 
     public void CloseInventry()
