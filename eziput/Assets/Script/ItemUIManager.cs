@@ -6,18 +6,25 @@ public class ItemUIManager : MonoBehaviour
 {
     public static ItemUIManager instance;
 
-    [SerializeField] private Transform contentParent; // ScrollViewのContent
-    [SerializeField] private GameObject itemButtonPrefab; // アイテムボタンのプレハブ
+    [Header("各カテゴリのScrollview Content")]
+    [SerializeField] private Transform itemcontentParent; // 持ち物用ScrollViewのContent
+    [SerializeField] private Transform weaponcontentParent;  //武器
+    [SerializeField] private Transform armorcontentParent;  //防具
 
-    private Dictionary<string, (int count, GameObject button)> itemData = new Dictionary<string, (int, GameObject)>();
-    private Dictionary<string, (int count, GameObject button)> itemDataDict = new Dictionary<string, (int count, GameObject button)>();
+    [Header("ボタンプレハブ全共通")]
+    [SerializeField] private GameObject itemButtonPrefab; // アイテムボタンのプレハブ
 
     [Header("確認UI")]
     [SerializeField] private GameObject confirmPanel;
     [SerializeField] private Text confirmText;
 
+    private Dictionary<string, (int count, GameObject button)> itemDict = new();
+    private Dictionary<string, (int count, GameObject button)> WeaponDict = new();
+    private Dictionary<string, (int count, GameObject button)> armorDict = new();
+
     private GameObject selectedButton;
     private string selectedItemName;
+    private string selectedCategory;
 
     
 
@@ -29,44 +36,79 @@ public class ItemUIManager : MonoBehaviour
     //=====================
     // アイテム追加処理
     //=====================
-    public void AddItem(string itemName)
+    public void AddItem(string itemName, string category)
     {
         Debug.Log($"{itemName}");
-        // すでに持っているか確認
-        if (itemData.ContainsKey(itemName))
+        switch (category.ToLower())
         {
-            // もし削除済み（ボタンが存在しない）なら再生成する
-            if (itemData[itemName].button == null)
+            case "item":
+            case "持ち物":
+                addToCategory(itemName, itemDict, itemcontentParent);
+                break;
+            case "weapon":
+            case "武器":
+                addToCategory(itemName, WeaponDict, weaponcontentParent);
+                break;
+            case "armor":
+            case "防具":
+                addToCategory(itemName, armorDict, armorcontentParent);
+                break;
+            default:
+                Debug.Log($"不明なカテゴリです: {category}");
+                break;
+        }
+    }
+
+    public void AddItem(string itemName)
+    {
+        addToCategory(itemName, itemDict, itemcontentParent);
+    }
+
+    public void AddWeapon(string itemName)
+    {
+        addToCategory(itemName, WeaponDict, weaponcontentParent);
+    }
+
+    public void AddArmor(string itemName)
+    {
+        addToCategory(itemName, armorDict, armorcontentParent);
+    }
+
+    //カテゴリに応じてアイテムを追加
+    private void addToCategory(string itemName, Dictionary<string, (int count, GameObject button)> dict, Transform parent)
+    {
+        if(dict.ContainsKey(itemName))
+        {
+            //同じアイテムが既にある場合カウントアップ
+            var data = dict[itemName];
+            if(data.button == null)
             {
-                GameObject newButton = CreateItemButton(itemName);
-                itemData[itemName] = (1, newButton);
+                //ボタンが削除されていたら再生成
+                GameObject newButton = CreateItemButton(itemName, parent);
+                dict[itemName] = (1, newButton);
             }
             else
             {
-                // ボタンが残ってるならカウントを増やす
-                var data = itemData[itemName];
                 data.count++;
-                itemData[itemName] = data;
-
-                // 数量テキスト更新
+                dict[itemName] = data;
                 UpdateItemCountText(data.button, data.count);
             }
         }
         else
         {
-            // 初取得：新しいボタンを生成
-            GameObject newButton = CreateItemButton(itemName);
-            itemData.Add(itemName, (1, newButton));
+            //新規アイテム
+            GameObject newButton = CreateItemButton(itemName, parent);
+            dict[itemName] = (1, newButton);
         }
     }
 
     //=====================
     // ボタン作成
     //=====================
-    private GameObject CreateItemButton(string itemName)
+    private GameObject CreateItemButton(string itemName, Transform parent)
     {
         Debug.Log($"{itemName}");
-        GameObject newButton = Instantiate(itemButtonPrefab, contentParent);
+        GameObject newButton = Instantiate(itemButtonPrefab, parent);
         newButton.name = itemName;
 
         // ボタン内テキスト更新
@@ -82,16 +124,7 @@ public class ItemUIManager : MonoBehaviour
         }
         if (label != null)
         {
-            if(itemDataDict != null && itemDataDict.ContainsKey(itemName))
-            {
-                var itemData = itemDataDict[itemName];
-                label.text = $"{itemName}×{itemData.count}";
-            }
-            else
-            {
-                label.text = itemName; //初回取得時
-            }
-            
+            label.text = itemName;
         }
 
         Button btn = newButton.GetComponent<Button>();
@@ -112,6 +145,8 @@ public class ItemUIManager : MonoBehaviour
         string itemName = button.name;
         selectedButton = button;
         selectedItemName = itemName;
+        selectedCategory = GetItemCategory(itemName);
+
         confirmText.text = $"{itemName}を使いますか？";
         confirmPanel.SetActive(true);
     }
@@ -119,35 +154,30 @@ public class ItemUIManager : MonoBehaviour
     //=====================
     // 使用確認の「はい」ボタンなどで呼ぶ処理
     //=====================
-    public void UseSelectedItem()
+    public void UseSelectedItem(string itemName, string category)
     {
-        if (string.IsNullOrEmpty(selectedItemName)) return;
+       Dictionary<string, (int count, GameObject button)> dict = GetDictionaryByCategory(category);
+       if(!dict.ContainsKey(itemName)) return;
 
-        if (itemData.ContainsKey(selectedItemName))
-        {
-            var data = itemData[selectedItemName];
-            data.count--;
+       var data = dict[itemName];
+       data.count--;
 
-            if (data.count <= 0)
-            {
-                // ボタンを削除（後で再取得できるように null 登録）
-                Destroy(data.button);
-                itemData[selectedItemName] = (0, null);
-            }
-            else
-            {
-                // カウント減少を反映
-                itemData[selectedItemName] = data;
-                UpdateItemCountText(data.button, data.count);
-            }
-        }
-
-        confirmPanel.SetActive(false);
+       if(data.count <= 0)
+       {
+        Destroy(data.button);
+        dict[itemName] = (0, null);
+       }
+       else
+       {
+        dict[itemName] = data;
+        UpdateItemCountText(data.button, data.count);
+       }
     }
 
     public void OnConfirmYes()
     {
         Debug.Log($"{selectedItemName}を使用しました！！");
+        UseSelectedItem(selectedItemName, selectedCategory);
         Destroy(selectedButton);
         confirmPanel.SetActive(false);
     }
@@ -167,5 +197,26 @@ public class ItemUIManager : MonoBehaviour
         {
             countText.text = (count > 1) ? $"×{count}" : "";
         }
+    }
+
+    //アイテムが属するカテゴリを判定
+    private string GetItemCategory(string itemName)
+    {
+        if(itemDict.ContainsKey(itemName)) return "item";
+        if(WeaponDict.ContainsKey(itemName)) return "weapon";
+        if(armorDict.ContainsKey(itemName)) return "armor";
+        return null;
+    }
+
+    //カテゴリ名から辞書を取得
+    private Dictionary<string, (int count, GameObject button)> GetDictionaryByCategory(string category)
+    {
+        return category switch
+        {
+            "item" => itemDict,
+            "weapon" => WeaponDict,
+            "armor" => armorDict,
+            _ => null
+        };
     }
 }

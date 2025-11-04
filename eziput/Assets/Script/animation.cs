@@ -10,6 +10,9 @@ public class animation : MonoBehaviour
     public string itemName = "Sphere"; //宝箱の中身
     public float itemGetDelay = 1.5f; //アニメーション終了から取得するまでの時間
 
+    public enum ItemType{Item, Weapon, Armor}
+    public ItemType itemType = ItemType.Item;
+
     private bool isOpened = false; //一度だけ開く
     
 
@@ -51,7 +54,19 @@ public class animation : MonoBehaviour
         if(ItemUIManager.instance != null)
         {
             Debug.Log($"{itemName}を取得しました");
-            ItemUIManager.instance.AddItem($"{itemName}");
+            
+            switch (itemType)
+            {
+                case ItemType.Item:
+                    ItemUIManager.instance.AddItem(itemName);
+                    break;
+                case ItemType.Weapon:
+                    ItemUIManager.instance.AddWeapon(itemName);
+                    break;
+                case ItemType.Armor:
+                    ItemUIManager.instance.AddArmor(itemName);
+                    break;
+            }
         }
         else
         {
