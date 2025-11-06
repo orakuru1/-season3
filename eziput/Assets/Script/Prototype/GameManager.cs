@@ -1,102 +1,41 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum RouteType { Safe, Danger }
-
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    public static GameManager Instance { get; private set; }
 
-    public int currentStage = 1;
-    public RouteType currentRoute = RouteType.Safe;
+    // 現在選択されているルート
+    public RouteType CurrentRoute { get; private set; } = RouteType.Safe;
 
-    [Header("Environment References")]
-    [SerializeField] private Light mainLight;
-    [SerializeField] private Material safeFloorMaterial;
-    [SerializeField] private Material dangerFloorMaterial;
-    [SerializeField] private Renderer[] floorRenderers;
-
-    void Awake()
+    private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
-    void Start()
+    public void SelectSafeRoute()
     {
-        ApplyEnvironmentSettings();
+        CurrentRoute = RouteType.Safe;
+        Debug.Log("Safeルートを選択しました。");
+        SceneManager.LoadScene("Hamada");
     }
 
-    void OnEnable()
+    public void SelectDangerRoute()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        CurrentRoute = RouteType.Danger;
+        Debug.Log("Dangerルートを選択しました。");
+        SceneManager.LoadScene("Hamada");
     }
 
-    void OnDisable()
+    public void LoadSelectScene()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        // シーンロード後に環境設定を再適用
-        ApplyEnvironmentSettings();
-    }
-
-    private void ApplyEnvironmentSettings()
-    {
-        // メインライトが未設定なら探す
-        if (mainLight == null)
-            mainLight = FindObjectOfType<Light>();
-
-        // 床Rendererを再取得
-        floorRenderers = FindObjectsOfType<Renderer>();
-
-        if (currentRoute == RouteType.Safe)
-        {
-            // Safeルート設定
-            if (mainLight != null)
-            {
-                mainLight.color = Color.white;
-                mainLight.intensity = 1.2f;
-            }
-
-            RenderSettings.ambientLight = new Color(0.7f, 0.8f, 1.0f);
-
-            foreach (var r in floorRenderers)
-            {
-                if (r.CompareTag("Floor"))
-                    r.material = safeFloorMaterial;
-            }
-        }
-        else
-        {
-            // Dangerルート設定
-            if (mainLight != null)
-            {
-                mainLight.color = new Color(1f, 0.5f, 0.3f);
-                mainLight.intensity = 0.8f;
-            }
-
-            RenderSettings.ambientLight = new Color(0.3f, 0.1f, 0.1f);
-
-            foreach (var r in floorRenderers)
-            {
-                if (r.CompareTag("Floor"))
-                    r.material = dangerFloorMaterial;
-            }
-        }
-    }
-
-    public void SetRoute(RouteType route)
-    {
-        currentRoute = route;
+        SceneManager.LoadScene("Scene_Select");
     }
 }

@@ -1,126 +1,379 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
-/// Safe／Dangerルートに応じてダンジョン全体の構造を生成する
+/// Phase2 完全版: BSPで部屋を作り、必ず接続（掘削）するダンジョン生成器
+/// - 生成した rooms, startRoom, endRoom, mapData を公開
+/// - ElementGenerator.GenerateFromMap(mapData, settings, rooms, startRoom, endRoom) を呼ぶ
 /// </summary>
-[System.Serializable]
-public class DungeonSettings
-{
-    public int mapWidth = 50;
-    public int mapHeight = 50;
-    public int roomCount = 8;
-    public int enemyCount = 5;
-    public int treasureCount = 3;
-    public int trapCount = 2;
-}
-
 public class DungeonGenerator : MonoBehaviour
 {
-    public DungeonSettings safeSettings = new DungeonSettings
-    {
-        mapWidth = 40,
-        mapHeight = 40,
-        roomCount = 6,
-        enemyCount = 3,
-        treasureCount = 5,
-        trapCount = 1
-    };
+    [Header("マップ基本設定")]
+    public int width = 80;
+    public int height = 60;
+    public float cellSize = 1f;
 
-    public DungeonSettings dangerSettings = new DungeonSettings
-    {
-        mapWidth = 60,
-        mapHeight = 60,
-        roomCount = 10,
-        enemyCount = 10,
-        treasureCount = 2,
-        trapCount = 5
-    };
+    [Header("BSP設定")]
+    public int minRoomSize = 6;
+    public int maxRoomSize = 16;
+    public int maxDepth = 5;
 
-    private DungeonSettings activeSettings;
+    [Header("可視化プレハブ (任意)")]
+    public GameObject floorPrefab;
+    public GameObject wallPrefab;
+    public Transform stageParent;
+
+    [Header("連携")]
+    public ElementGenerator elementGenerator;
+    public DungeonSettings settings; // 既存の設定オブジェクト（Inspectorで割当て）
+
+    // map: 0=floor, 1=wall
     private int[,] mapData;
+    private List<Room> rooms = new List<Room>();
 
-    void Start()
+    // 入口/出口（部屋）
+    public Room startRoom { get; private set; }
+    public Room endRoom { get; private set; }
+
+    // 公開アクセス
+    public int[,] MapData => mapData;
+    public IReadOnlyList<Room> Rooms => rooms;
+    public int MapWidth => width;
+    public int MapHeight => height;
+    public float CellSize => cellSize;
+
+    IEnumerator Start()
     {
-        // Safe/Dangerの切り替え
-        var route = GameManager.Instance.currentRoute;
-        activeSettings = route == RouteType.Safe ? safeSettings : dangerSettings;
+        // small delay to let inspector values settle when pressing Play
+        yield return null;
 
-        Debug.Log(route == RouteType.Safe ? "🔵 Safeルート用ダンジョンを生成中..." : "🔴 Dangerルート用ダンジョンを生成中...");
+        if (settings == null)
+        {
+            Debug.LogWarning("[DungeonGenerator] DungeonSettings が Inspector に割当てられていません。既定値で生成します。");
+        }
 
-        GenerateDungeon();
+        GenerateNow();
+    }
+
+    [ContextMenu("Generate Now")]
+    public void GenerateNow()
+    {
+        // safety fix
+        if (minRoomSize < 3) minRoomSize = 3;
+        if (maxRoomSize < minRoomSize) maxRoomSize = minRoomSize + 1;
+        if (width < 10 || height < 10) Debug.LogWarning("[DungeonGenerator] 小さいマップサイズが設定されています。推奨は >= 20");
+
+        // init
+        mapData = new int[height, width];
+        for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
+                mapData[y, x] = 1; // wall
+
+        rooms.Clear();
+        startRoom = null;
+        endRoom = null;
+
+        // BSP start
+        SplitArea(new RectInt(1, 1, width - 2, height - 2), 0);
+
+        // connect rooms (ensures connectivity)
+        ConnectRoomsByTree();
+
+        // Decide start/end rooms (choose two rooms far apart if possible)
+        AssignStartAndEnd();
+
+        Debug.Log($"[DungeonGenerator] 生成完了: rooms={rooms.Count} map={width}x{height}");
+
+        // Visualize if prefabs assigned
+        if (floorPrefab != null && wallPrefab != null)
+            VisualizeMap();
+
+        // Notify ElementGenerator
         NotifyElementGenerator();
     }
 
-    void GenerateDungeon()
+    // -----------------------
+    // BSP（領域分割） -> 部屋生成
+    // -----------------------
+    private void SplitArea(RectInt area, int depth)
     {
-        mapData = new int[activeSettings.mapHeight, activeSettings.mapWidth];
-
-        // 初期化（全て壁）
-        for (int y = 0; y < activeSettings.mapHeight; y++)
+        if (depth >= maxDepth || area.width < minRoomSize * 2 || area.height < minRoomSize * 2)
         {
-            for (int x = 0; x < activeSettings.mapWidth; x++)
+            CreateRoomInArea(area);
+            return;
+        }
+
+        // decide split direction
+        bool splitVert = area.width >= area.height;
+        if (Random.value > 0.5f) splitVert = !splitVert;
+
+        if (splitVert)
+        {
+            int min = area.x + minRoomSize;
+            int max = area.x + area.width - minRoomSize;
+            if (max <= min)
             {
-                mapData[y, x] = 1;
+                CreateRoomInArea(area);
+                return;
+            }
+            int splitX = Random.Range(min, max);
+            RectInt left = new RectInt(area.x, area.y, splitX - area.x, area.height);
+            RectInt right = new RectInt(splitX, area.y, area.x + area.width - splitX, area.height);
+            SplitArea(left, depth + 1);
+            SplitArea(right, depth + 1);
+        }
+        else
+        {
+            int min = area.y + minRoomSize;
+            int max = area.y + area.height - minRoomSize;
+            if (max <= min)
+            {
+                CreateRoomInArea(area);
+                return;
+            }
+            int splitY = Random.Range(min, max);
+            RectInt bottom = new RectInt(area.x, area.y, area.width, splitY - area.y);
+            RectInt top = new RectInt(area.x, splitY, area.width, area.y + area.height - splitY);
+            SplitArea(bottom, depth + 1);
+            SplitArea(top, depth + 1);
+        }
+    }
+
+    private void CreateRoomInArea(RectInt area)
+    {
+        int roomW = Random.Range(minRoomSize, Mathf.Min(maxRoomSize, area.width) + 1);
+        int roomH = Random.Range(minRoomSize, Mathf.Min(maxRoomSize, area.height) + 1);
+        int roomX = Random.Range(area.x, area.x + area.width - roomW + 1);
+        int roomY = Random.Range(area.y, area.y + area.height - roomH + 1);
+
+        Room r = new Room(roomX, roomY, roomW, roomH);
+        rooms.Add(r);
+
+        // dig room
+        for (int y = r.y; y < r.y + r.height; y++)
+            for (int x = r.x; x < r.x + r.width; x++)
+                if (IsInBounds(x, y))
+                    mapData[y, x] = 0;
+    }
+
+    // -----------------------
+    // 接続ロジック（全部屋を確実に接続）
+    // - アプローチ：rooms を MST 的に接続しつつ追加接続をいくつか作る
+    // -----------------------
+    private void ConnectRoomsByTree()
+    {
+        if (rooms.Count < 2) return;
+
+        // Build simple MST-like connection using Prim's algorithm variant (to ensure full connectivity and reasonable corridors)
+        var connected = new HashSet<int>();
+        var remaining = new HashSet<int>();
+        for (int i = 0; i < rooms.Count; i++) remaining.Add(i);
+
+        // start from first
+        connected.Add(0);
+        remaining.Remove(0);
+
+        while (remaining.Count > 0)
+        {
+            int bestFrom = -1;
+            int bestTo = -1;
+            float bestDist = float.MaxValue;
+
+            foreach (int c in connected)
+            {
+                foreach (int r in remaining)
+                {
+                    float d = Vector2Int.Distance(rooms[c].Center, rooms[r].Center);
+                    if (d < bestDist)
+                    {
+                        bestDist = d;
+                        bestFrom = c;
+                        bestTo = r;
+                    }
+                }
+            }
+
+            if (bestFrom >= 0 && bestTo >= 0)
+            {
+                // create corridor between bestFrom and bestTo
+                CreateCorridorBetweenPoints(rooms[bestFrom].Center, rooms[bestTo].Center);
+                connected.Add(bestTo);
+                remaining.Remove(bestTo);
+            }
+            else
+            {
+                // fallback: connect arbitrary
+                var en = new System.Collections.Generic.List<int>(remaining);
+                int r = en[0];
+                CreateCorridorBetweenPoints(rooms[0].Center, rooms[r].Center);
+                connected.Add(r);
+                remaining.Remove(r);
             }
         }
 
-        // ランダム部屋生成
-        for (int i = 0; i < activeSettings.roomCount; i++)
+        // Add some random extra corridors for loops
+        int extras = Mathf.Max(1, rooms.Count / 6);
+        for (int i = 0; i < extras; i++)
         {
-            int roomW = Random.Range(4, 8);
-            int roomH = Random.Range(4, 8);
-            int roomX = Random.Range(1, activeSettings.mapWidth - roomW - 1);
-            int roomY = Random.Range(1, activeSettings.mapHeight - roomH - 1);
+            int a = Random.Range(0, rooms.Count);
+            int b = Random.Range(0, rooms.Count);
+            if (a != b) CreateCorridorBetweenPoints(rooms[a].Center, rooms[b].Center);
+        }
+    }
 
-            for (int y = roomY; y < roomY + roomH; y++)
+    // carve L-shaped corridor (ensures mapData[y,x] = 0)
+    private void CreateCorridorBetweenPoints(Vector2Int a, Vector2Int b)
+    {
+        // choose random order
+        if (Random.value < 0.5f)
+        {
+            // horizontal then vertical
+            int y = a.y;
+            for (int x = Mathf.Min(a.x, b.x); x <= Mathf.Max(a.x, b.x); x++) if (IsInBounds(x, y)) mapData[y, x] = 0;
+            int xEnd = b.x;
+            for (int y2 = Mathf.Min(a.y, b.y); y2 <= Mathf.Max(a.y, b.y); y2++) if (IsInBounds(xEnd, y2)) mapData[y2, xEnd] = 0;
+        }
+        else
+        {
+            // vertical then horizontal
+            int x = a.x;
+            for (int y = Mathf.Min(a.y, b.y); y <= Mathf.Max(a.y, b.y); y++) if (IsInBounds(x, y)) mapData[y, x] = 0;
+            int yEnd = b.y;
+            for (int x2 = Mathf.Min(a.x, b.x); x2 <= Mathf.Max(a.x, b.x); x2++) if (IsInBounds(x2, yEnd)) mapData[yEnd, x2] = 0;
+        }
+    }
+
+    private bool IsInBounds(int x, int y) => x >= 0 && x < width && y >= 0 && y < height;
+
+    // -----------------------
+    // start/end room assignment (pick distant pair)
+    // -----------------------
+    private void AssignStartAndEnd()
+    {
+        if (rooms.Count == 0) return;
+
+        // find pair with max distance (approx)
+        int bestA = 0;
+        int bestB = 0;
+        float bestDist = -1f;
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            for (int j = i + 1; j < rooms.Count; j++)
             {
-                for (int x = roomX; x < roomX + roomW; x++)
+                float d = Vector2Int.Distance(rooms[i].Center, rooms[j].Center);
+                if (d > bestDist)
                 {
-                    mapData[y, x] = 0; // 床
+                    bestDist = d;
+                    bestA = i;
+                    bestB = j;
                 }
             }
         }
 
-        // 部屋間の通路を掘る
-        for (int i = 0; i < activeSettings.roomCount - 1; i++)
-        {
-            int x1 = Random.Range(1, activeSettings.mapWidth - 1);
-            int y1 = Random.Range(1, activeSettings.mapHeight - 1);
-            int x2 = Random.Range(1, activeSettings.mapWidth - 1);
-            int y2 = Random.Range(1, activeSettings.mapHeight - 1);
-
-            DigCorridor(x1, y1, x2, y2);
-        }
-
-        Debug.Log($"✅ マップ生成完了 ({activeSettings.mapWidth}x{activeSettings.mapHeight})");
+        startRoom = rooms[bestA];
+        endRoom = rooms[bestB];
     }
 
-    void DigCorridor(int x1, int y1, int x2, int y2)
+    // -----------------------
+    // Visualize
+    // -----------------------
+    [ContextMenu("Visualize Map")]
+    public void VisualizeMap()
     {
-        while (x1 != x2)
+        if (floorPrefab == null || wallPrefab == null)
         {
-            mapData[y1, x1] = 0;
-            x1 += x1 < x2 ? 1 : -1;
+            Debug.LogWarning("[DungeonGenerator] floorPrefab / wallPrefab が未設定です。可視化をスキップします。");
+            return;
         }
 
-        while (y1 != y2)
+        // prepare parent
+        if (stageParent == null)
         {
-            mapData[y1, x1] = 0;
-            y1 += y1 < y2 ? 1 : -1;
+            GameObject go = GameObject.Find("StageParent");
+            if (go == null) go = new GameObject("StageParent");
+            stageParent = go.transform;
+        }
+
+        // clear previous children (Editor safe)
+#if UNITY_EDITOR
+        for (int i = stageParent.childCount - 1; i >= 0; i--)
+            DestroyImmediate(stageParent.GetChild(i).gameObject);
+#else
+        for (int i = stageParent.childCount - 1; i >= 0; i--)
+            Destroy(stageParent.GetChild(i).gameObject);
+#endif
+
+        // instantiate tiles
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                GameObject prefab = (mapData[y, x] == 0) ? floorPrefab : wallPrefab;
+                Vector3 pos = new Vector3(x * cellSize, 0f, y * cellSize);
+                GameObject obj = Instantiate(prefab, pos, Quaternion.identity, stageParent);
+                obj.name = (mapData[y, x] == 0) ? $"Floor_{x}_{y}" : $"Wall_{x}_{y}";
+            }
+        }
+
+        // optional: mark start/end visually
+        if (startRoom != null)
+        {
+            Vector3 s = new Vector3(startRoom.Center.x * cellSize, 0.1f, startRoom.Center.y * cellSize);
+            GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            marker.transform.position = s;
+            marker.transform.localScale = Vector3.one * cellSize * 0.8f;
+            marker.GetComponent<Renderer>().material.color = Color.green;
+            marker.name = "StartMarker";
+            marker.transform.SetParent(stageParent, true);
+        }
+        if (endRoom != null)
+        {
+            Vector3 e = new Vector3(endRoom.Center.x * cellSize, 0.1f, endRoom.Center.y * cellSize);
+            GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            marker.transform.position = e;
+            marker.transform.localScale = Vector3.one * cellSize * 0.8f;
+            marker.GetComponent<Renderer>().material.color = Color.red;
+            marker.name = "EndMarker";
+            marker.transform.SetParent(stageParent, true);
         }
     }
 
-    void NotifyElementGenerator()
+    // -----------------------
+    // Notify ElementGenerator
+    // -----------------------
+    private void NotifyElementGenerator()
     {
-        ElementGenerator eg = FindObjectOfType<ElementGenerator>();
-        if (eg != null)
+        if (elementGenerator == null)
+            elementGenerator = FindObjectOfType<ElementGenerator>();
+
+        if (elementGenerator == null)
         {
-            eg.GenerateFromMap(mapData, activeSettings);
-            Debug.Log("📡 ElementGenerator にマップデータを送信しました");
+            Debug.LogWarning("[DungeonGenerator] ElementGenerator が見つかりません。要素配置をスキップします。");
+            return;
         }
-        else
+
+        // if settings is null, construct a default minimal settings (expects fields enemyCount/treasureCount/trapCount)
+        DungeonSettings s = settings;
+        if (s == null)
         {
-            Debug.LogWarning("⚠️ ElementGenerator がシーンに存在しません");
+            s = new DungeonSettings(); // ← ScriptableObjectではなく普通のクラスとして生成
+            s.ApplyRouteSettings(GameManager.Instance.CurrentRoute);
         }
+
+        // call with rooms list and start/end
+        elementGenerator.GenerateFromMap(mapData, s, rooms, startRoom, endRoom);
+
     }
+}
+
+/// <summary>
+/// 部屋データ
+/// </summary>
+[System.Serializable]
+public class Room
+{
+    public int x, y, width, height;
+    public Room(int x, int y, int width, int height) { this.x = x; this.y = y; this.width = width; this.height = height; }
+    public Vector2Int Center => new Vector2Int(x + width / 2, y + height / 2);
 }
