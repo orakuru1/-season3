@@ -13,6 +13,9 @@ public class GetStatus : MonoBehaviour
     [SerializeField] private Text AttackText;
     [SerializeField] private Text DefenceText;
     [SerializeField] private Text SpeedText;
+    [SerializeField] private Text soubiText;
+    [SerializeField] private Text bukisoubiText;
+    [SerializeField] private Text bougusoubiText;
 
     [SerializeField] private Image statusPanel; //ステータス全体
 
@@ -47,6 +50,9 @@ public class GetStatus : MonoBehaviour
         AttackText.text = $"ATK: {playerUnit.status.attack}";
         DefenceText.text = $"DEF: {playerUnit.status.defense}";
         SpeedText.text = $"Speed: {playerUnit.status.speed}";
+        soubiText.text = "装備中";
+        bukisoubiText.text = "武器";
+        bougusoubiText.text = "防具";
 
     }
 }
