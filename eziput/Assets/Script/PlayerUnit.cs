@@ -105,6 +105,13 @@ public class PlayerUnit : Unit
         // ターン進行は自然に敵が動くように管理
     }
 
+    public void Heal(int amount)
+    {
+        status.currentHP = Mathf.Min(status.currentHP + amount, status.maxHP); //maxを超えない
+        Debug.Log($"{status.unitName}のHPが{amount}回復！");
+
+    }
+
     // 敵ヒット用コルーチン
     private IEnumerator HitTarget(Unit target, int damage)
     {

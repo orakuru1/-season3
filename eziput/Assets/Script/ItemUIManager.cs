@@ -244,8 +244,8 @@ public class ItemUIManager : MonoBehaviour
         if(selectedCategory == "item")
         {
             Debug.Log($"{selectedItemName}を使用しました！！");
-            UseSelectedItem(selectedItemName, selectedCategory);
-            Destroy(selectedButton);
+            UseSelectedItem(selectedItemName, selectedCategory);  //アイテムを消費
+            ActivateItemEffect(selectedItemName);  //アイテム効果発動
         }
         else if(selectedCategory == "weapon" || selectedCategory == "armor")
         {
@@ -260,6 +260,29 @@ public class ItemUIManager : MonoBehaviour
     public void OnConfirmNo()
     {
         confirmPanel.SetActive(false);
+    }
+
+    private void ActivateItemEffect(string itemName)  //アイテム効果を発動させるための処理
+    {
+        //プレイヤーの取得
+        PlayerUnit player = FindObjectOfType<PlayerUnit>();
+        if(player == null)
+        {
+            Debug.Log("プレイヤーが見つかりません!");
+            return;
+        }
+
+        switch(itemName)
+        {
+            case "薬草":
+                player.Heal(20);
+                Debug.Log("薬草を使ってHPを20回復しました");
+                break;
+            
+            default:
+                Debug.Log($"{itemName}には効果がみっせていです");
+                break;
+        }
     }
 
     //装備処理
