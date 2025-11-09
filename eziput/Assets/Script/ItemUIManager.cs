@@ -29,6 +29,7 @@ public class ItemUIManager : MonoBehaviour
     [Header("アイテム画像登録用")]
     public Sprite potionSprite;
     public Sprite kosinunoSprite;
+    public Sprite tatesprite;
     public Sprite panSprite;
     public Sprite bouSprite;
     public Sprite kinobouSprite;
@@ -56,10 +57,11 @@ public class ItemUIManager : MonoBehaviour
         instance = this;
 
         //名前と画像を辞書に登録
-        itemSpriteDict["ポーション"] = potionSprite;
+        itemSpriteDict["薬草"] = potionSprite;
         itemSpriteDict["bou"] = bouSprite;
         itemSpriteDict["木の枝"] = kinobouSprite;
         itemSpriteDict["神の腰布"] = kosinunoSprite;
+        itemSpriteDict["盾"] = tatesprite;
         itemSpriteDict["パン"] = panSprite;
     }
 
