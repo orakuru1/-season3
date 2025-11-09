@@ -243,9 +243,20 @@ public class ItemUIManager : MonoBehaviour
     {
         if(selectedCategory == "item")
         {
-            Debug.Log($"{selectedItemName}を使用しました！！");
-            UseSelectedItem(selectedItemName, selectedCategory);  //アイテムを消費
-            ActivateItemEffect(selectedItemName);  //アイテム効果発動
+            Debug.Log($"{selectedItemName}を使用しようとしています");
+
+            bool used = ActivateItemEffect(selectedItemName);
+
+            if(used)
+            {
+                Debug.Log($"{selectedItemName}を使用しました！！");
+                UseSelectedItem(selectedItemName, selectedCategory);  //アイテムを消費
+            }
+            else
+            {
+                Debug.Log($"{selectedItemName}は使用できませんでした。");
+            }
+
         }
         else if(selectedCategory == "weapon" || selectedCategory == "armor")
         {
@@ -262,26 +273,31 @@ public class ItemUIManager : MonoBehaviour
         confirmPanel.SetActive(false);
     }
 
-    private void ActivateItemEffect(string itemName)  //アイテム効果を発動させるための処理
+    private bool ActivateItemEffect(string itemName)  //アイテム効果を発動させるための処理
     {
         //プレイヤーの取得
         PlayerUnit player = FindObjectOfType<PlayerUnit>();
         if(player == null)
         {
             Debug.Log("プレイヤーが見つかりません!");
-            return;
+            return false;
         }
 
         switch(itemName)
         {
             case "薬草":
+                if(player.status.currentHP >= player.status.maxHP)
+                {
+                    return false;
+                }
+
                 player.Heal(20);
                 Debug.Log("薬草を使ってHPを20回復しました");
-                break;
+                return true;
             
             default:
                 Debug.Log($"{itemName}には効果がみっせていです");
-                break;
+                return false;
         }
     }
 

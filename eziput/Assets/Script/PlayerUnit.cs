@@ -107,7 +107,17 @@ public class PlayerUnit : Unit
 
     public void Heal(int amount)
     {
+        //Hpが満タンかチェック
+        if(status.currentHP >= status.maxHP)
+        {
+            Debug.Log($"{status.unitName}のHpはすでに満タンです。回復アイテムを使う必要はない！！");
+            return;
+        }
+
+        int oldHP = status.currentHP;
         status.currentHP = Mathf.Min(status.currentHP + amount, status.maxHP); //maxを超えない
+
+        int healedAmount = status.currentHP - oldHP;  //実際に回復した量
         Debug.Log($"{status.unitName}のHPが{amount}回復！");
 
     }
