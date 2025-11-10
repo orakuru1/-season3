@@ -7,7 +7,7 @@ public class PlayerUnit : Unit
 {
     public AttackSkill selectedSkill = null; // InputHandlerから指定
     public bool isUsingSkill = false; // スキル実行中フラグ        
-
+    
     // スキル使用
     public IEnumerator UseSkill(AttackSkill skill)
     {
@@ -116,6 +116,23 @@ public class PlayerUnit : Unit
 
         // ターン進行は自然に敵が動くように管理
 
+
+    }
+
+    public void Heal(int amount)
+    {
+        //Hpが満タンかチェック
+        if(status.currentHP >= status.maxHP)
+        {
+            Debug.Log($"{status.unitName}のHpはすでに満タンです。回復アイテムを使う必要はない！！");
+            return;
+        }
+
+        int oldHP = status.currentHP;
+        status.currentHP = Mathf.Min(status.currentHP + amount, status.maxHP); //maxを超えない
+
+        int healedAmount = status.currentHP - oldHP;  //実際に回復した量
+        Debug.Log($"{status.unitName}のHPが{amount}回復！");
 
     }
 

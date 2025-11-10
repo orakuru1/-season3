@@ -18,19 +18,51 @@ public class ItemUIManager : MonoBehaviour
     [SerializeField] private GameObject confirmPanel;
     [SerializeField] private Text confirmText;
 
-    private Dictionary<string, (int count, GameObject button)> itemDict = new();
-    private Dictionary<string, (int count, GameObject button)> WeaponDict = new();
-    private Dictionary<string, (int count, GameObject button)> armorDict = new();
+    [Header("装備スロット（左側）")]
+    [SerializeField] private Transform weaponSlotParent;
+    [SerializeField] private Transform armorSlotParent;
+
+    [Header("ステータス画面表示用")]
+    [SerializeField] private Image weaponStatusImage;
+    [SerializeField] private Image armorStatusImage;
+
+    [Header("アイテム画像登録用")]
+    public Sprite potionSprite;
+    public Sprite kosinunoSprite;
+    public Sprite tatesprite;
+    public Sprite panSprite;
+    public Sprite bouSprite;
+    public Sprite kinobouSprite;
+
+    private Dictionary<string, (int count, GameObject button)> itemDict = new(); //持ち物用辞書
+    private Dictionary<string, (int count, GameObject button)> WeaponDict = new(); //武器用辞書
+    private Dictionary<string, (int count, GameObject button)> armorDict = new(); //防具用辞書
+    
+    public Dictionary<string, Sprite> itemSpriteDict = new Dictionary<string, Sprite>(); //アイテム画像用辞書
 
     private GameObject selectedButton;
     private string selectedItemName;
     private string selectedCategory;
+
+    private GameObject equippedWeapon;
+    private GameObject equippedArmor;
+
+    private GameObject equippedWeaponButton;
+    private GameObject equippedArmorButton;
 
     
 
     private void Awake()
     {
         instance = this;
+
+        //名前と画像を辞書に登録
+        itemSpriteDict["薬草"] = potionSprite;
+        itemSpriteDict["bou"] = bouSprite;
+        itemSpriteDict["木の枝"] = kinobouSprite;
+        itemSpriteDict["神の腰布"] = kosinunoSprite;
+        itemSpriteDict["盾"] = tatesprite;
+        itemSpriteDict["パン"] = panSprite;
     }
 
     //=====================
@@ -124,7 +156,18 @@ public class ItemUIManager : MonoBehaviour
         }
         if (label != null)
         {
-            label.text = itemName;
+            label.text = $"{itemName}";
+        }
+
+        //画像設定
+        Image icon = newButton.GetComponentInChildren<Image>();
+        if(icon != null && itemSpriteDict.ContainsKey(itemName))
+        {
+            icon.sprite = itemSpriteDict[itemName];
+        }
+        else
+        {
+            Debug.Log($"画像が登録されていないアイテム: {itemName}");
         }
 
         Button btn = newButton.GetComponent<Button>();
@@ -137,6 +180,13 @@ public class ItemUIManager : MonoBehaviour
         return newButton;
     }
 
+    private Transform GetParentByCategory(string itemName)
+    {
+        if(itemName.Contains("剣") || itemName.Contains("武器")) return weaponcontentParent;
+        if(itemName.Contains("神の腰布") || itemName.Contains("防具")) return armorcontentParent;
+        return itemcontentParent;
+    }
+
     //=====================
     // ボタン押下処理
     //=====================
@@ -147,7 +197,22 @@ public class ItemUIManager : MonoBehaviour
         selectedItemName = itemName;
         selectedCategory = GetItemCategory(itemName);
 
-        confirmText.text = $"{itemName}を使いますか？";
+        //すでに装備中なら何もしない
+        if((selectedCategory == "weapon" && button == equippedWeaponButton) || (selectedCategory == "armor" && button == equippedArmorButton))
+        {
+            Debug.Log($"{itemName}はすでに装備中です。");
+            return;
+        }
+        
+        if(selectedCategory == "item")
+        {
+            confirmText.text = $"{itemName}を使いますか？";
+        }
+        else if(selectedCategory == "weapon"  || selectedCategory == "armor")
+        {
+            confirmText.text = $"{itemName}を装備しますか？";
+        }
+        
         confirmPanel.SetActive(true);
     }
 
@@ -176,15 +241,131 @@ public class ItemUIManager : MonoBehaviour
 
     public void OnConfirmYes()
     {
-        Debug.Log($"{selectedItemName}を使用しました！！");
-        UseSelectedItem(selectedItemName, selectedCategory);
-        Destroy(selectedButton);
+        if(selectedCategory == "item")
+        {
+            Debug.Log($"{selectedItemName}を使用しようとしています");
+
+            bool used = ActivateItemEffect(selectedItemName);
+
+            if(used)
+            {
+                Debug.Log($"{selectedItemName}を使用しました！！");
+                UseSelectedItem(selectedItemName, selectedCategory);  //アイテムを消費
+            }
+            else
+            {
+                Debug.Log($"{selectedItemName}は使用できませんでした。");
+            }
+
+        }
+        else if(selectedCategory == "weapon" || selectedCategory == "armor")
+        {
+            Debug.Log($"{selectedItemName}を装備しました！");
+            EquidItem(selectedButton, selectedCategory);
+        }
+        
         confirmPanel.SetActive(false);
+        //↓アイテムの効果を発動させる処理
     }
 
     public void OnConfirmNo()
     {
         confirmPanel.SetActive(false);
+    }
+
+    private bool ActivateItemEffect(string itemName)  //アイテム効果を発動させるための処理
+    {
+        //プレイヤーの取得
+        PlayerUnit player = FindObjectOfType<PlayerUnit>();
+        if(player == null)
+        {
+            Debug.Log("プレイヤーが見つかりません!");
+            return false;
+        }
+
+        switch(itemName)
+        {
+            case "薬草":
+                if(player.status.currentHP >= player.status.maxHP)
+                {
+                    return false;
+                }
+
+                player.Heal(20);
+                Debug.Log("薬草を使ってHPを20回復しました");
+                return true;
+            
+            default:
+                Debug.Log($"{itemName}には効果がみっせていです");
+                return false;
+        }
+    }
+
+    //装備処理
+    private void EquidItem(GameObject button, string category)
+    {
+        if(category == "weapon")
+        {
+            if(equippedWeapon != null)
+            {
+                //ReturnToList(equippedWeapon, weaponcontentParent);
+                SetEquippedVisual(equippedWeapon, false);
+            }
+
+            equippedWeaponButton = selectedButton;
+            equippedWeapon = button; //新しい武器を装備
+            button.transform.SetSiblingIndex(0); //一番左に移動
+            SetEquippedVisual(button, true); //見た目変更
+            //MoveToSlot(button, weaponSlotParent);
+
+            Image icon = button.GetComponentInChildren<Image>();
+            if(icon != null && weaponStatusImage != null)
+            {
+               weaponStatusImage.sprite = icon.sprite;
+            }
+        }
+        else if(category == "armor")
+        {
+            if(equippedArmor != null)
+            {
+                //ReturnToList(equippdArmor, armorcontentParent);
+                SetEquippedVisual(equippedArmor, false);
+            }
+
+            equippedArmorButton = selectedButton;
+            equippedArmor = button; //新しい武器を装備
+            button.transform.SetSiblingIndex(0);  //一番左に移動
+            SetEquippedVisual(button, true); //見た目変更
+            //MoveToSlot(button, armorSlotParent);
+
+            Image icon = button.GetComponentInChildren<Image>();
+            if(icon != null && armorStatusImage != null)
+            {
+                armorStatusImage.sprite = icon.sprite;
+            }
+        }
+    }
+
+    //装備ボタンを左側に移動
+    private void MoveToSlot(GameObject button, Transform slotParent)
+    {
+        button.transform.SetParent(slotParent);
+        button.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+    }
+
+    //リストに戻す
+    /*private void ReturnToList(GameObject button, Transform listParent)
+    {
+        button.transform.SetParent(listParent);
+    }*/
+
+    private void SetEquippedVisual(GameObject button, bool equipped)
+    {
+        Image bg = button.GetComponent<Image>();
+        if(bg != null)
+        {
+            bg.color = equipped ? new Color(0.8f, 0.8f, 1f) : Color.white;
+        }
     }
 
     //=====================
