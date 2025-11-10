@@ -35,18 +35,6 @@ public class GodPlayer : MonoBehaviour
     }
     
     //ランダムな神を追加する（デバッグ用）
-    public void AddRandomGod()
-    {
-        GodData randomGod = GodManeger.Instance.GetRandomGod();
-        if (randomGod != null)
-        {
-            AddGod(randomGod);
-        }
-        else
-        {
-            Debug.Log("利用可能な神が存在しません。");
-        }
-    }
 
     void Start()
     {
@@ -61,7 +49,7 @@ public class GodPlayer : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.G))
         {
-            GodManeger.Instance.UseGodAbility(ownedGods[0].abilities, this.gameObject, this.gameObject);
+            //GodManeger.Instance.UseGodAbility(ownedGods[0].abilities, this.gameObject, this.gameObject);
         }
     }
 }

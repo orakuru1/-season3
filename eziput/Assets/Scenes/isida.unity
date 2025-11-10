@@ -330,6 +330,7 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  godPlayer: {fileID: 0}
 --- !u!136 &42471233
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -359,7 +360,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: efe97d1000ec4414f888f64f26a3e675,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: efe97d1000ec4414f888f64f26a3e675,
         type: 3}
@@ -369,7 +370,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: efe97d1000ec4414f888f64f26a3e675,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: efe97d1000ec4414f888f64f26a3e675,
         type: 3}
@@ -1226,6 +1227,7 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 122653492}
+  godPlayer: {fileID: 0}
 --- !u!136 &122653495
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2416,6 +2418,7 @@ MonoBehaviour:
     animationID: 1
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  godPlayer: {fileID: 0}
   selectedSkill:
     skillName: 
     triggerKey: 0
@@ -7670,6 +7673,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allgods: []
+  isActiveGod: 0
 --- !u!1 &985892168
 GameObject:
   m_ObjectHideFlags: 0
@@ -7744,6 +7748,7 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  godPlayer: {fileID: 0}
 --- !u!135 &985892171
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -8708,7 +8713,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1001784754
 Transform:
   m_ObjectHideFlags: 0
@@ -13919,6 +13924,7 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  godPlayer: {fileID: 0}
 --- !u!114 &1111598862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14075,6 +14081,7 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 1136321401}
+  godPlayer: {fileID: 0}
 --- !u!114 &1136321397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14121,6 +14128,20 @@ MonoBehaviour:
     isAttackAnimation: 0
     isHitAnimation: 0
     ismultipleTaget: 0
+--- !u!114 &1136321404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136321394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a792bd860f623c4e8c4109666d6f2c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownedGods:
+  - {fileID: 11400000, guid: befeb862df9bc7f41b4ac3be606d23a0, type: 2}
 --- !u!1 &1140886060
 GameObject:
   m_ObjectHideFlags: 0
@@ -19317,7 +19338,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: efe97d1000ec4414f888f64f26a3e675,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: efe97d1000ec4414f888f64f26a3e675,
         type: 3}
@@ -20142,6 +20163,7 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  godPlayer: {fileID: 0}
 --- !u!136 &1541189277
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -20242,6 +20264,7 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  godPlayer: {fileID: 0}
 --- !u!135 &1551123891
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -20569,6 +20592,7 @@ MonoBehaviour:
     animationID: 2
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  godPlayer: {fileID: 0}
   selectedSkill:
     skillName: 
     triggerKey: 0
@@ -20622,6 +20646,7 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  godPlayer: {fileID: 0}
 --- !u!136 &1950682427
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -20680,6 +20705,8 @@ MonoBehaviour:
   zangekiEffectPrefab: {fileID: 5180975185701532720, guid: fe852ec7f407c4a4aa7ae8cfc01de71d,
     type: 3}
   MagicSicleEffectPrefab: {fileID: 7408263510171040624, guid: 74b84378aecfac94289149a3ae1d784d,
+    type: 3}
+  HaniSicleEffectPrefab: {fileID: 4500872971279360412, guid: 2ce15ebc402ab5d4b86a8c947fd6b6f9,
     type: 3}
 --- !u!4 &2005886360
 Transform:
@@ -21612,6 +21639,11 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 141e3a4bcc08bb64daec1a621d1fa4a9, type: 2}
+    - target: {fileID: 5866666021909216657, guid: f0dbabf7b15654c4baad31893a31537c,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7590463572098032643, guid: f0dbabf7b15654c4baad31893a31537c,
         type: 3}
       propertyPath: m_LocalPosition.x

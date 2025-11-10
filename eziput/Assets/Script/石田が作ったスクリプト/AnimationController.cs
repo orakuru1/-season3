@@ -86,7 +86,7 @@ public class AnimationController : MonoBehaviour
 
                 if (animator != null)
                 {
-                    ttt.TakeDamage(damage);//ダメージを受ける処理を先にすることで、生きてるか死んでるかで、どっちのアニメーションをするか分けれる。
+                    ttt.TakeDamage(damage, Im);//ダメージを受ける処理を先にすることで、生きてるか死んでるかで、どっちのアニメーションをするか分けれる。
                     if (ttt.status.currentHP <= 0)
                     {
                         //animator.SetInteger("Hit", 2); // 死亡アニメーション
@@ -101,7 +101,7 @@ public class AnimationController : MonoBehaviour
                     remaininghits--;
                     // 相手にアニメーションが無い場合 → 即完了扱い
                     Debug.Log($"【{tgt.name}】はAnimatorなし、即完了扱い");
-                    ttt.TakeDamage(damage);
+                    ttt.TakeDamage(damage, Im);
                     if (remaininghits <= 0)
                     {
                         animationState.isHitAnimation = true; // 攻撃側のHit完了フラグ
@@ -123,7 +123,7 @@ public class AnimationController : MonoBehaviour
 
             if (animator != null)
             {
-                Target[0].TakeDamage(damage);//ダメージを受ける処理を先にすることで、生きてるか死んでるかで、どっちのアニメーションをするか分けれる。
+                Target[0].TakeDamage(damage, Im);//ダメージを受ける処理を先にすることで、生きてるか死んでるかで、どっちのアニメーションをするか分けれる。
                 if (Target[0].status.currentHP <= 0)
                 {
                     //animator.SetInteger("Hit", 2); // 死亡アニメーション
@@ -137,7 +137,7 @@ public class AnimationController : MonoBehaviour
             {
                 // 相手にアニメーションが無い場合 → 即完了扱い
                 Debug.Log($"【{tgt.name}】はAnimatorなし、即完了扱い");
-                Target[0].TakeDamage(damage);
+                Target[0].TakeDamage(damage, Im);
                 animationState.isHitAnimation = true; // 攻撃側のHit完了フラグ
                 AnimationEnd();
                 return;
@@ -174,7 +174,7 @@ public class AnimationController : MonoBehaviour
         if (!animationState.isAttackAnimation || !animationState.isHitAnimation)
             return;
 
-        animationState.Reset();
+        animationState.Reset();//変数を全部falseに
 
         anim.SetInteger("Attack", 0);
 
@@ -184,7 +184,11 @@ public class AnimationController : MonoBehaviour
 
         Debug.Log($"{name} both animations ended.");
 
-        onAnimationEnd?.Invoke();
+        //onAnimationEnd?.Invoke();//Team.Playerだけ次のターンへ
+        //プレイヤーの攻撃アニメーションだけ
+        //プレイヤーとスキルのアニメーション
+        //敵の攻撃アニメーション（現在は敵の攻撃アニメーションがないので使わないようになっている）
+        //敵の両方のアニメーション
     }
 
 

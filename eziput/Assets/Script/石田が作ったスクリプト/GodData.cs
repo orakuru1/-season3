@@ -24,11 +24,13 @@ public class GodAbility
     public int power;              // 効果の強さ
     public AbilityTrigger trigger; // 発動タイプ
     public AbilityType type;       // 力の種類（攻撃・回復・強化など）
+    public GodAttackPattern attackPattern; // 攻撃パターン（攻撃タイプの場合）
 
     [Header("発動管理")]
     public float cooldown;         // クールダウン時間
     [HideInInspector] public float floatcurrentCooldown; // 現在のクールダウン時間
     [HideInInspector] public bool isActive;        // 発動中かどうか
+    public int GodAnimationID;//普通の数字はプレイヤーの攻撃で使ってるけど、神の攻撃は1000番台を使おう
 }
 
 public enum AbilityTrigger
@@ -48,6 +50,15 @@ public enum AbilityType
     Buff,
     Debuff,
     Special
+}
+
+public enum GodAttackPattern
+{
+    None,
+    Surround8,  // 自分の周囲8マス
+    Forward3,   // 前方3マス
+    Cross5,     // 上下左右＋中央
+    Global      // 敵全体
 }
 
 
