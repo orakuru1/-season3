@@ -58,6 +58,14 @@ public class Unit : MonoBehaviour
     public AnimationController animationController;
     private List<GridBlock> highlightedBlocks = new List<GridBlock>();
 
+    //装備による補正値
+    public int equidpAttackBonus = 0;
+    public int equipDefenseBonus = 0;
+
+    //現在の総合ステータス計算
+    public int TotalAttack => status.attack + equidpAttackBonus;
+    public int Totaldefense => status.defense + equipDefenseBonus;
+
 
 
     private void Awake()
@@ -288,7 +296,7 @@ public class Unit : MonoBehaviour
             // 攻撃アニメーション → 相手のヒットアニメーションの流れは
             // Animator のイベント経由で OnAttackAnimationEnd() / OnHitAnimationEnd() へ
             yield return new WaitUntil(() => !animationController.animationState.isAttacking);
-            target.TakeDamage(status.attack);
+            target.TakeDamage(TotalAttack);
 
         }
         // ===== アニメーションなし =====

@@ -295,6 +295,16 @@ public class ItemUIManager : MonoBehaviour
                 Debug.Log("薬草を使ってHPを20回復しました");
                 return true;
             
+            case "パン":
+                 if(player.status.currentHP >= player.status.maxHP)
+                 {
+                    return false;
+                 }
+
+                 player.Heal(50);
+                 Debug.Log("パンを使ってHPを50回復しました");
+                 return true;
+            
             default:
                 Debug.Log($"{itemName}には効果がみっせていです");
                 return false;
@@ -304,6 +314,8 @@ public class ItemUIManager : MonoBehaviour
     //装備処理
     private void EquidItem(GameObject button, string category)
     {
+        PlayerUnit player = FindObjectOfType<PlayerUnit>();
+        if(player == null) return;
         if(category == "weapon")
         {
             if(equippedWeapon != null)
@@ -323,6 +335,27 @@ public class ItemUIManager : MonoBehaviour
             {
                weaponStatusImage.sprite = icon.sprite;
             }
+
+            //ステータス補正
+            //ここでボタンの名前やアイテム情報から攻撃力補正を決める
+            int atkBonus = 0;
+            switch(selectedItemName)
+            {
+                case "木の枝": atkBonus = 5; break;
+                default: atkBonus = 0; break;
+            }
+
+            player.equidpAttackBonus = atkBonus;
+
+            //ステータスUI更新
+            GetStatus statusUI = FindObjectOfType<GetStatus>();
+            if(statusUI != null)
+            {
+                statusUI.equippedWeaponName = selectedItemName;
+                statusUI.UpdateStatus();
+            }
+
+            Debug.Log($"{selectedItemName}を装備！ 攻撃力 + {atkBonus}");
         }
         else if(category == "armor")
         {
@@ -343,6 +376,58 @@ public class ItemUIManager : MonoBehaviour
             {
                 armorStatusImage.sprite = icon.sprite;
             }
+            //ステータス補正
+            //ここでボタンの名前やアイテム情報から攻撃力補正を決める
+            int defBonus = 0;
+            switch(selectedItemName)
+            {
+                case "神の腰布": defBonus = 5; break;
+                default: defBonus = 0; break;
+            }
+
+            player.equipDefenseBonus = defBonus;
+
+            //ステータスUI更新
+            GetStatus statusUI = FindObjectOfType<GetStatus>();
+            if(statusUI != null)
+            {
+                statusUI.equippedArmorName = selectedItemName;
+                statusUI.UpdateStatus();
+            }
+
+            Debug.Log($"{selectedItemName}を装備！ 防御力 + {defBonus}");
+        }
+    }
+
+    private void ApplyEquipBonus(PlayerUnit player, string category, string itemName)
+    {
+        switch(category)
+        {
+            case "weapon":
+                switch(itemName)
+                {
+                    case "木の枝":
+                        player.equidpAttackBonus = 5;
+                        Debug.Log("攻撃力 + 5");
+                        break;
+                    default:
+                        player.equidpAttackBonus = 0;
+                        break;
+                }
+                break;
+            
+            case "armor":
+                switch(itemName)
+                {
+                    case "神の腰布":
+                        player.equipDefenseBonus = 8;
+                        Debug.Log("防御力 + 8");
+                        break;
+                    default:
+                        player.equipDefenseBonus = 0;
+                        break;
+                }
+                break;
         }
     }
 
@@ -373,10 +458,11 @@ public class ItemUIManager : MonoBehaviour
     //=====================
     private void UpdateItemCountText(GameObject button, int count)
     {
-        Text countText = button.transform.Find("CountText")?.GetComponent<Text>();
+        Text countText = button.transform.Find("Text")?.GetComponent<Text>();
         if (countText != null)
         {
             countText.text = (count > 1) ? $"×{count}" : "";
+            Debug.Log($"{count}");
         }
     }
 
