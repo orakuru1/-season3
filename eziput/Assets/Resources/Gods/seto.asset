@@ -21,8 +21,9 @@ MonoBehaviour:
     abilityName: 
     description: 
     power: 0
-    trigger: 0
+    trigger: 3
     type: 0
+    attackPattern: 2
     cooldown: 30
     floatcurrentCooldown: 0
     isActive: 0
