@@ -7,11 +7,16 @@ public class animation : MonoBehaviour
     public Animator animator; //AnimatorをInspectorでアタッチ
     public Transform player; //プレイヤーを指定
     public GameObject itemObject;
-    public string itemName = "Sphere"; //宝箱の中身
     public float itemGetDelay = 1.5f; //アニメーション終了から取得するまでの時間
 
+    [Header("ランダムアイテム設定")]
+    public List<string> itemList = new List<string>(){"薬草", "パン", "木の枝", "神の腰布"};
+    public List<ItemType> itemTypeList = new List<ItemType>(){ItemType.Item, ItemType.Item, ItemType.Weapon, ItemType.Armor};
+
+    private string itemName; //選ばれたアイテム名
+    private ItemType itemType; //選ばれたタイプ
+
     public enum ItemType{Item, Weapon, Armor}
-    public ItemType itemType = ItemType.Item;
 
     private bool isOpened = false; //一度だけ開く
     
@@ -19,6 +24,11 @@ public class animation : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //開始時に中身をランダム決定
+        int randomIndex = Random.Range(0, itemList.Count);
+        itemName = itemList[randomIndex];
+        itemType = itemTypeList[randomIndex];
+        Debug.Log($"宝箱の中身は：{itemName}({itemType})");
         //audio = GetComponent<AudioSource>(); //SE追加
     }
 
