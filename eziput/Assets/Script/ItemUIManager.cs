@@ -382,6 +382,7 @@ public class ItemUIManager : MonoBehaviour
             switch(selectedItemName)
             {
                 case "神の腰布": defBonus = 5; break;
+                case "盾": defBonus = 10; break;
                 default: defBonus = 0; break;
             }
 
@@ -458,10 +459,11 @@ public class ItemUIManager : MonoBehaviour
     //=====================
     private void UpdateItemCountText(GameObject button, int count)
     {
-        Text countText = button.transform.Find("Text")?.GetComponent<Text>();
+        Text countText = button.GetComponentInChildren<Text>();
         if (countText != null)
         {
-            countText.text = (count > 1) ? $"×{count}" : "";
+            string itemName = button.name;
+            countText.text = (count > 1) ? $"{itemName}×{count}" : itemName;
             Debug.Log($"{count}");
         }
     }
