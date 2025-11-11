@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class animation : MonoBehaviour
 {
+    [Header("基本設定")]
     public Animator animator; //AnimatorをInspectorでアタッチ
     public Transform player; //プレイヤーを指定
     public GameObject itemObject;
