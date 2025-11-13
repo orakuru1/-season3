@@ -6,10 +6,12 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
     private Unit unit;
+    private EnemyUnit enemyUnit;
 
     private void Awake()
     {
         unit = GetComponent<Unit>();
+        enemyUnit = GetComponent<EnemyUnit>();
     }
 
     public IEnumerator ExecuteEnemyTurn()
@@ -47,6 +49,16 @@ public class EnemyAI : MonoBehaviour
                 {
                     var next = path[1]; // 次のマス
                     yield return StartCoroutine(unit.MoveTowardNearestPlayerCoroutine());
+                }
+            }
+            if (CanAttackPlayer())
+            {
+                // 向き変更（相手の方向を向く）
+                Vector3 dir3D = (target.transform.position - transform.position).normalized;
+                dir3D.y = 0;
+                if (dir3D.sqrMagnitude > 0.001f)
+                {
+                    transform.rotation = Quaternion.LookRotation(dir3D);
                 }
             }
         }
@@ -107,6 +119,7 @@ public class EnemyAI : MonoBehaviour
         var players = FindObjectsOfType<Unit>()
             .Where(u => u.team == Unit.Team.Player)
             .ToList();
+
         if (players.Count == 0) return false;
 
         Unit target = players
@@ -114,8 +127,22 @@ public class EnemyAI : MonoBehaviour
             .FirstOrDefault();
 
         float distance = Vector2Int.Distance(unit.gridPos, target.gridPos);
-        return distance <= unit.status.attackRange;
+
+        // 🔹 まず通常攻撃範囲内にいる場合
+        if (distance <= unit.status.attackRange)
+            return true;
+
+        // 🔹 次にスキル使用可能か（EnemyUnitならTrySelectSkillを使う）
+        if (enemyUnit != null && enemyUnit.TrySelectSkill())
+        {
+            // スキルが選択されたら true を返す（後で UseSelectedSkill で使用）
+            return true;
+        }
+
+        return false;
     }
+
+
 
     // 攻撃実行（攻撃アニメーションなど入れる場所）
     public IEnumerator AttackNearestPlayer()
@@ -128,9 +155,13 @@ public class EnemyAI : MonoBehaviour
         Unit target = players
             .OrderBy(p => Vector2Int.Distance(unit.gridPos, p.gridPos))
             .FirstOrDefault();
-        yield return StartCoroutine(unit.AttackNearestTarget()); 
+        yield return StartCoroutine(unit.AttackNearestTarget());
 
-        Debug.Log($"{unit.name} が {target.name} を攻撃！");
+        if (target != null)
+            Debug.Log($"{unit.name} が {target.name} を攻撃！");
+        else
+            Debug.Log($"{unit.name} が 消滅した対象を攻撃しようとしました（既に倒れている）");
+
         // ここにアニメーション処理を入れる
         //yield return new WaitForSeconds(2.5f);
     }
