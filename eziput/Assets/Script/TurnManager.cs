@@ -129,4 +129,9 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    public List<Unit> GetAllUnits()
+    {
+        return allUnits;
+    }
+
 }
