@@ -317,7 +317,7 @@ public class Unit : MonoBehaviour
             // 攻撃終了後ターン進行
             if (team == Team.Player)
             {
-                TurnManager.Instance.NextTurn();
+                //TurnManager.Instance.NextTurn();
             }
         }
         yield return StartCoroutine(GodManeger.Instance.TriggerAbilities(this.gameObject, AbilityTrigger.Passive_OnAttack));
@@ -375,7 +375,7 @@ public class Unit : MonoBehaviour
 
     public void GodSicleEffect()
     {
-        EffectManager.Instance.PlayEffect(EffectManager.PlayerEffectType.GodHaniScicle, transform.position + Vector3.up * 1f, transform, 3f, transform.rotation);
+        EffectManager.Instance.PlayEffect(EffectManager.PlayerEffectType.GodHaniScicle, transform.position + Vector3.up * 1f, transform, 1.5f, transform.rotation);
     }
 
 

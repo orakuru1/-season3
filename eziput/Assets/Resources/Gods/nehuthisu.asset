@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c0917b37f750974c8b4509aa43d13fe, type: 3}
   m_Name: nehuthisu
   m_EditorClassIdentifier: 
+  id: 4
+  fusionGroupid: 2
+  fusionGod: {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
   godName: "\u30CD\u30D5\u30C6\u30A3\u30B9"
   title: 
   mythOrigin: "\u30A8\u30B8\u30D7\u30C8\u795E\u8A71"
@@ -27,3 +30,4 @@ MonoBehaviour:
     cooldown: 30
     floatcurrentCooldown: 0
     isActive: 0
+    GodAnimationID: 0

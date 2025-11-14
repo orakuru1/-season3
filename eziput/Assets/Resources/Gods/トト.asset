@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c0917b37f750974c8b4509aa43d13fe, type: 3}
   m_Name: "\u30C8\u30C8"
   m_EditorClassIdentifier: 
+  id: 1
+  fusionGroupid: 2
+  fusionGod: {fileID: 11400000, guid: befeb862df9bc7f41b4ac3be606d23a0, type: 2}
   godName: "\u30C8\u30C8"
   title: "\u77E5\u6075\u306E\u795E"
   mythOrigin: "\u30A8\u30B8\u30D7\u30C8\u795E\u8A71"

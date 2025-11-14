@@ -12,7 +12,7 @@ public class TurnManager : MonoBehaviour
     public delegate void OnTurnStartDelegate(Unit unit);
     public static event OnTurnStartDelegate OnTurnStart;
 
-    private List<Unit> allUnits = new List<Unit>();
+    public List<Unit> allUnits = new List<Unit>();
     private int currentIndex = 0;
 
     public Unit CurrentUnit => allUnits.Count > 0 ? allUnits[currentIndex] : null;
@@ -71,13 +71,20 @@ public class TurnManager : MonoBehaviour
         // --- 攻撃できる敵を先に実行 ---
         foreach (var enemy in enemies)
         {
+            var eUnit = enemy.GetComponent<EnemyUnit>();
+            if (eUnit != null && eUnit.TrySelectSkill())
+            {
+                yield return StartCoroutine(eUnit.UseSelectedSkill());
+                continue; // 攻撃済みの敵はここでスキップ
+            }
+
             var ai = enemy.GetComponent<EnemyAI>();
             if (ai != null && ai.CanAttackPlayer())
             {
-                // 攻撃アニメーション中は待つ
                 yield return StartCoroutine(ai.AttackNearestPlayer());
             }
         }
+
 
         // --- 残り（攻撃できなかった敵）を一斉移動 ---
         List<Coroutine> moveCoroutines = new List<Coroutine>();
@@ -127,6 +134,11 @@ public class TurnManager : MonoBehaviour
             allUnits.Remove(unit);
             if (idx <= currentIndex && currentIndex > 0) currentIndex--;
         }
+    }
+
+    public List<Unit> GetAllUnits()
+    {
+        return allUnits;
     }
 
 }

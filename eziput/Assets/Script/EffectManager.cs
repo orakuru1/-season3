@@ -42,12 +42,12 @@ public class EffectManager : MonoBehaviour
         if(type == PlayerEffectType.Zangeki)
         {
             GameObject sicle = Instantiate(MagicSicleEffectPrefab, position + transform.forward * 0.2f, yRotation);       
-            Destroy(sicle, time);     
+            Destroy(sicle, 2);     
         }
 
 
         // エフェクトの再生後に自動で削除
-        Destroy(effect, 1f); // 1秒後に削除
+        Destroy(effect, time); // 1秒後に削除
         
 
     }
