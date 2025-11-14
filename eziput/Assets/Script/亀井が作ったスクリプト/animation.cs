@@ -65,6 +65,19 @@ public class animation : MonoBehaviour
         if(ItemUIManager.instance != null)
         {
             Debug.Log($"{itemName}を取得しました");
+
+            //ポップアップ表示用のスプライト取得
+            Sprite icon = null;
+            if(ItemUIManager.instance.itemSpriteDict.ContainsKey(itemName))
+            {
+                icon = ItemUIManager.instance.itemSpriteDict[itemName];
+            }
+
+            //取得ポップアップ表示
+            if(GetItemPopUi.instance != null)
+            {
+                GetItemPopUi.instance.Show(itemName, icon);
+            }
             
             switch (itemType)
             {
