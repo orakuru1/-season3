@@ -595,10 +595,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 26
+    m_FontSize: 21
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 0
     m_MaxSize: 40
     m_Alignment: 3
     m_AlignByGeometry: 0
@@ -1920,6 +1920,8 @@ MonoBehaviour:
   bukisoubiText: {fileID: 1096795347}
   bougusoubiText: {fileID: 1975331624}
   statusPanel: {fileID: 1192253698}
+  equippedWeaponName: "\u306A\u3057"
+  equippedArmorName: "\u306A\u3057"
 --- !u!1 &272905233
 GameObject:
   m_ObjectHideFlags: 0
@@ -2396,10 +2398,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 26
+    m_FontSize: 21
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 0
     m_MaxSize: 40
     m_Alignment: 3
     m_AlignByGeometry: 0
@@ -4357,10 +4359,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 26
+    m_FontSize: 21
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 0
     m_MaxSize: 40
     m_Alignment: 3
     m_AlignByGeometry: 0
@@ -5720,10 +5722,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 26
+    m_FontSize: 21
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 0
     m_MaxSize: 40
     m_Alignment: 3
     m_AlignByGeometry: 0
@@ -10217,6 +10219,9 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  equidpAttackBonus: 0
+  equipDefenseBonus: 0
+  godPlayer: {fileID: 0}
   selectedSkill:
     skillName: 
     triggerKey: 0
@@ -10484,12 +10489,12 @@ PrefabInstance:
     - target: {fileID: 1523797058646313885, guid: 56ac3c9c02ec72d4c8b6e6846aaae69b,
         type: 3}
       propertyPath: itemName
-      value: "\u6728\u306E\u679D"
+      value: "\u30D1\u30F3"
       objectReference: {fileID: 0}
     - target: {fileID: 1523797058646313885, guid: 56ac3c9c02ec72d4c8b6e6846aaae69b,
         type: 3}
       propertyPath: itemType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1523797058646313885, guid: 56ac3c9c02ec72d4c8b6e6846aaae69b,
         type: 3}
