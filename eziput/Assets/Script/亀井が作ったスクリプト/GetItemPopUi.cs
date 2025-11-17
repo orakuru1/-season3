@@ -20,7 +20,7 @@ public class GetItemPopUi : MonoBehaviour
     public void Show(string itemName, Sprite icon)
     {
         gameObject.SetActive(true);
-        
+
         StartCoroutine(ShowPopup(itemName, icon));
     }
 
