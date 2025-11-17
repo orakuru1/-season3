@@ -63,31 +63,10 @@ public class PlayerUnit : Unit
             }
 
         }
-        /*
-                            // 各ターゲットのヒットアニメーションを同時に開始
-                            foreach (var target in targets)
-                            {
-                                // 攻撃アニメーションのTarget（targets[0]）には重複してHitアニメをかけない
-                                if (target != targets[0])
-                                {
-                                    StartCoroutine(HitTarget(target, skill.power));
-                                }
-                            }
-                */
+
 
         // ヒットアニメーションが見える時間だけ待機
         yield return new WaitForSeconds(0.3f);
-        /*
-                // ダメージ適用＆アニメーションリセット
-                foreach (var target in targets)
-                {
-                    if (target.anim != null)
-                        target.anim.SetInteger("Hit", 0);
-
-                    target.TakeDamage(skill.power);
-                    Debug.Log($"{target.status.unitName} に {skill.power} ダメージ！");
-                }
-        */
 
         // プレイヤーの攻撃アニメーション終了を待つ
         if (anim != null)
@@ -95,20 +74,17 @@ public class PlayerUnit : Unit
         else
             yield return null;
 
+        //攻撃の後に神の力をゲットできるか毎回しよう
+        yield return StartCoroutine(GodManeger.Instance.GrantGodToPlayer());
 
-        StartCoroutine(GodManeger.Instance.TriggerAbilities(this.gameObject, AbilityTrigger.Passive_OnAttack));//攻撃する時共通
+        yield return StartCoroutine(GodManeger.Instance.TriggerAbilities(this.gameObject, AbilityTrigger.Passive_OnAttack));//攻撃する時共通,攻撃時
         yield return null;
-        //攻撃時に発動するのは、攻撃系以外に何があるかな？なかったら、プレイヤーの攻撃の後。
-        //もうすでにアニメーションが実行されてるから、ゴッドアニメーションが発動しない。↑の関数を呼んだ時に、boolを返すようにしてAnimatorControllerで神のアニメーションをするかを考えさすか。
-        // プレイヤーの攻撃アニメーション終了を待つ
-        if (anim != null)
-        {
-            yield return new WaitUntil(() => !GodManeger.Instance.isActiveGod);
-        }
-        else
-            yield return null;
+
+        yield return StartCoroutine(GodManeger.Instance.GrantGodToPlayer());
+
 
         // 終了処理
+        TurnManager.Instance.NextTurn();
         animationController.animationState.isAttacking = false;
         selectedSkill = null;
         isUsingSkill = false; // 終了時に解除

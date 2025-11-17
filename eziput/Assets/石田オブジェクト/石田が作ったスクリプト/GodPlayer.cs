@@ -12,7 +12,7 @@ public class GodPlayer : MonoBehaviour
     public IEnumerator AddGod(GodData newGod)
     {
         //合成できるかのチェック関数
-        List<GodData> fusionTargets  = CheckFusion(newGod);
+        List<GodData> fusionTargets  = GodManeger.Instance.CheckFusion(ownedGods, newGod);
         if (fusionTargets.Count != 0)
         {
             Debug.Log($"{newGod}と合成できる力があります！");
@@ -92,10 +92,17 @@ public class GodPlayer : MonoBehaviour
         List<GodData> fusins = new List<GodData>();
         foreach (var god in ownedGods)
         {
-            if (god.fusionGroupid == newgod.fusionGroupid)
+            foreach(int fusionid in god.fusionGroupid)
             {
-                fusins.Add(god);
+                foreach(int newgodfusionid in newgod.fusionGroupid)
+                {
+                    if (fusionid == newgodfusionid)
+                    {
+                        fusins.Add(god);
+                    }
+                }
             }
+
         }
         return fusins;
     }

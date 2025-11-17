@@ -15,7 +15,9 @@ public class FusionUI : MonoBehaviour
 
     private int PushID = -1;//押されたボタンが持ってたID
 
-    private System.Action<bool, int> onDecision; // true=YES, false=NO
+    private GodData newGodData;
+
+    private System.Action<bool, int, GodData> onDecision; // true=YES, false=NO
 
     void Awake()
     {
@@ -35,18 +37,25 @@ public class FusionUI : MonoBehaviour
 
     }
 
-    public void Show(List<GodData> GodFusions, GodData newGod, System.Action<bool, int> callback)
+    public void Show(List<GodData> GodFusions, GodData newGod, System.Action<bool, int, GodData> callback)
     {
         foreach (var god in GodFusions)
         {
             Button goduibutton = Instantiate(GodUIButton, GodUIButtonPanel);
+
+            Image image = goduibutton.GetComponent<Image>();//////////////////////////////////////////////////画像を入れて、見た目等を良くしようと思う
+            image.sprite = god.icon;
             //UIの見た目を変える処理等をする。
-            goduibutton.onClick.AddListener(() => OnclickGodButton(god.id));//誰をクリックしたかの情報取れる
+            goduibutton.onClick.AddListener(() => OnclickGodButton(god.id, god));//誰をクリックしたかの情報取れる
 
         }
         //NewGodButton.GetComponent<Text>().text = newGod.godName;
         //あたらしい方の神の力のUIもここで変える。
+        Image image1 = NewGodButton.GetComponent<Image>();
+        image1.sprite = newGod.icon;
+
         PushID = -1;
+        newGodData = null;
         onDecision = null;
         onDecision = callback;
         AllShow();
@@ -60,7 +69,7 @@ public class FusionUI : MonoBehaviour
             Destroy(child.gameObject);
         
         AllHide();
-        onDecision?.Invoke(isYes,PushID);
+        onDecision?.Invoke(isYes, PushID, newGodData);
     }
 
     public void AllShow()
@@ -79,9 +88,10 @@ public class FusionUI : MonoBehaviour
         GodFusionNOButton.gameObject.SetActive(false);
     }
     
-    private void OnclickGodButton(int godid)
+    private void OnclickGodButton(int godid, GodData god)
     {   //とりあえず、融合候補たちのボタンのイベントを設置
         //押されたときにスキルの表示をやる
+        newGodData = god;
         PushID = godid;
         Debug.Log(PushID);
         

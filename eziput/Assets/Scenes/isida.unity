@@ -330,6 +330,8 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  equidpAttackBonus: 0
+  equipDefenseBonus: 0
   godPlayer: {fileID: 0}
 --- !u!136 &42471233
 CapsuleCollider:
@@ -1227,6 +1229,8 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 122653492}
+  equidpAttackBonus: 0
+  equipDefenseBonus: 0
   godPlayer: {fileID: 0}
 --- !u!136 &122653495
 CapsuleCollider:
@@ -2666,6 +2670,8 @@ MonoBehaviour:
   height: 11
   blockPrefab: {fileID: 2526385416093624262, guid: 85da42f4a5417004685c380bb892211b,
     type: 3}
+  chestPrefab: {fileID: 0}
+  cehstCount: 3
 --- !u!4 &331530558
 Transform:
   m_ObjectHideFlags: 0
@@ -2820,6 +2826,8 @@ MonoBehaviour:
     animationID: 1
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  equidpAttackBonus: 0
+  equipDefenseBonus: 0
   godPlayer: {fileID: 0}
   selectedSkill:
     skillName: 
@@ -8035,7 +8043,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &859814529
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8191,7 +8199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allgods: []
-  isActiveGod: 0
+  isGodDescrip: 0
 --- !u!1 &985892168
 GameObject:
   m_ObjectHideFlags: 0
@@ -8266,6 +8274,8 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  equidpAttackBonus: 0
+  equipDefenseBonus: 0
   godPlayer: {fileID: 0}
 --- !u!135 &985892171
 SphereCollider:
@@ -14442,6 +14452,8 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  equidpAttackBonus: 0
+  equipDefenseBonus: 0
   godPlayer: {fileID: 0}
 --- !u!114 &1111598862
 MonoBehaviour:
@@ -14599,6 +14611,8 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 1136321401}
+  equidpAttackBonus: 0
+  equipDefenseBonus: 0
   godPlayer: {fileID: 0}
 --- !u!114 &1136321397
 MonoBehaviour:
@@ -19985,12 +19999,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1318604210}
   m_CullTransparentMesh: 1
---- !u!95 &1355263312 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 4ef678eaafe5de2409b47bb133233f49,
-    type: 3}
-  m_PrefabInstance: {fileID: 988728333}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1368947275
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21138,6 +21146,8 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  equidpAttackBonus: 0
+  equipDefenseBonus: 0
   godPlayer: {fileID: 0}
 --- !u!136 &1541189277
 CapsuleCollider:
@@ -21239,6 +21249,8 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  equidpAttackBonus: 0
+  equipDefenseBonus: 0
   godPlayer: {fileID: 0}
 --- !u!135 &1551123891
 SphereCollider:
@@ -21398,19 +21410,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1582695774
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1582695771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba475311191e2ad4c845ba52610bf36b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animator: {fileID: 1355263312}
 --- !u!1 &1690747878
 GameObject:
   m_ObjectHideFlags: 0
@@ -21429,7 +21428,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1690747879
 RectTransform:
   m_ObjectHideFlags: 0
@@ -21725,6 +21724,8 @@ MonoBehaviour:
     animationID: 2
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  equidpAttackBonus: 0
+  equipDefenseBonus: 0
   godPlayer: {fileID: 0}
   selectedSkill:
     skillName: 
@@ -21779,6 +21780,8 @@ MonoBehaviour:
   attackSkills: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
+  equidpAttackBonus: 0
+  equipDefenseBonus: 0
   godPlayer: {fileID: 0}
 --- !u!136 &1950682427
 CapsuleCollider:
@@ -22007,6 +22010,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d337c41ce3b2a9e42b7624b07d971a13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allUnits: []
 --- !u!4 &2050716341
 Transform:
   m_ObjectHideFlags: 0

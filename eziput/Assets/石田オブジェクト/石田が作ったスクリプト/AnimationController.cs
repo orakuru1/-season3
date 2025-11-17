@@ -175,7 +175,7 @@ public class AnimationController : MonoBehaviour
         if (!animationState.isAttackAnimation || !animationState.isHitAnimation)
             return;
 
-        animationState.Reset();//変数を全部falseに
+        animationState.Reset();//変数を全部falseにisAttackingをfalseに
 
         anim.SetInteger("Attack", 0);
 
