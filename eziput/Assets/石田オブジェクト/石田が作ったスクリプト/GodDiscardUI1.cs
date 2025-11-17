@@ -29,6 +29,8 @@ public class GodDiscardUI1 : MonoBehaviour
             Button button = Instantiate(GodSkillButtonPrefab, GodSkillDisPanel);
             button.onClick.AddListener(() => OnclickGodButton(god.id));
             //見た目の処理↓
+            Image image = button.GetComponent<Image>();
+            image.sprite = god.icon;
         }
         onNumberAction = action;
         AllShow();

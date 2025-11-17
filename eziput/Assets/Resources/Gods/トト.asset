@@ -19,7 +19,7 @@ MonoBehaviour:
   title: "\u77E5\u6075\u306E\u795E"
   mythOrigin: "\u30A8\u30B8\u30D7\u30C8\u795E\u8A71"
   description: "\u5909\u66F4\u3055\u308C\u305F\u8AAC\u660E\u6587\u3067\u3059\u3002"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 9d138de124b826f438eedac7834ba48c, type: 3}
   abilities:
     abilityName: "\u795E\u57DF\u691C\u7D22"
     description: "\u77E5\u6075\u306E\u5411\u4E0A"

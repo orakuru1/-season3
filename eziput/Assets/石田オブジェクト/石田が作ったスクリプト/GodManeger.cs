@@ -12,9 +12,11 @@ public class GodManeger : MonoBehaviour
     //クールダウンに入った時に送り込む辞書
     private Dictionary<GodAbility, float> cooldownTimers = new Dictionary<GodAbility, float>();
 
-    public bool isActiveGod;
-
     private int ForCount = 0;
+
+    public bool isGodDescrip = false;
+
+    public List<FusionRecipe> fusionRecipes = new List<FusionRecipe>();
 
     void Awake()
     {
@@ -43,12 +45,31 @@ public class GodManeger : MonoBehaviour
         return allgods[Random.Range(0, allgods.Count)];
     }
 */
-    public IEnumerator GrantGodToPlayer(GodData god, GodPlayer player)
+    private List<GodData> addgods = new List<GodData>();
+    private GodPlayer GetPlayer;
+    private bool isDed = false;
+    public void addinggods(List<GodData> god, GodPlayer getplayer, bool isded)
     {
-        if (god == null || player == null) yield break;
+        if (god == null || getplayer == null)  return;
 
-        yield return StartCoroutine(player.AddGod(god));
-        Debug.Log($"{player.name} は {god.godName} の加護を授かった！");
+        addgods.AddRange(god);
+        GetPlayer = getplayer;
+        isDed = isded;
+    }
+    public IEnumerator GrantGodToPlayer()
+    {
+        if(addgods.Count == 0 || GetPlayer == null) yield break;
+
+        isGodDescrip = true;
+        foreach(var god in addgods)
+        {
+            yield return StartCoroutine(GetPlayer.AddGod(god));
+            Debug.Log($"{GetPlayer.name} は {god.godName} の加護を授かった！");  
+        }
+        addgods.Clear();
+        GetPlayer = null;
+        isDed = false;
+        isGodDescrip = false;
     }
 
     /// 神の詳細を表示するデバッグ用メソッド
@@ -70,7 +91,6 @@ public class GodManeger : MonoBehaviour
     {
         yield return null;
         ForCount = 0;//初期化
-        isActiveGod = true;
         var godPlayer = unit.GetComponent<GodPlayer>();
         Unit u = unit.GetComponent<Unit>();
         AnimationController animationController = unit.GetComponent<AnimationController>();
@@ -78,11 +98,10 @@ public class GodManeger : MonoBehaviour
         {
             if (u.team == Unit.Team.Player)
             {
-                animationController.animationState.isAttacking = false;
-                TurnManager.Instance.NextTurn();
+                //animationController.animationState.isAttacking = false;
+                //if(isDed == false)TurnManager.Instance.NextTurn();
             }
             Debug.Log("神の力をもっていないよ");
-            isActiveGod = false;
             yield break;
         }
 
@@ -101,7 +120,6 @@ public class GodManeger : MonoBehaviour
             switch (ability.type)
             {
                 case AbilityType.Attack:///////////////全ての攻撃やヒール等の専用関数を作って、UseGodAbilityは消す。ActivateGodAttackが必要なのは、その先で、攻撃とデバフのどっちに行くかを判断する。
-                    Debug.Log("範囲攻撃タイプの神の力発動");
                     yield return StartCoroutine(ActivateGodAttack(unit.GetComponent<Unit>(), god));
                     break;
                 case AbilityType.Heal://ターゲットいらない
@@ -111,7 +129,6 @@ public class GodManeger : MonoBehaviour
                     yield return StartCoroutine(BuffAbility(ability, unit));
                     break;
                 case AbilityType.Debuff:
-                    Debug.Log("範囲攻撃タイプの神の力発動");
                     yield return StartCoroutine(ActivateGodAttack(unit.GetComponent<Unit>(), god));
                     break;
                     // 他のタイプもここで処理可能
@@ -124,11 +141,10 @@ public class GodManeger : MonoBehaviour
         }
         if (u.team == Unit.Team.Player)
         {
-            animationController.animationState.isAttacking = false;
-            TurnManager.Instance.NextTurn();//ここに置いていると、敵を神の力で倒したときに、もう一回行動できる。
+            //animationController.animationState.isAttacking = false;
+            //if(isDed == false)TurnManager.Instance.NextTurn();//ここに置いていると、敵を神の力で倒したときに、もう一回行動できる。
             //外に置くと、もう一回行動は無くなるが、敵が無限に行動する。
         }
-        isActiveGod = false;
         //TurnManager.Instance.NextTurn();
 
     }
@@ -301,17 +317,26 @@ public class GodManeger : MonoBehaviour
     {
         bool fusionFinished  = false;
 
-        FusionUI.Instance.Show(fusionCandidates, newGod, (isYES, RemoveID) =>
+        FusionUI.Instance.Show(fusionCandidates, newGod, (isYES, RemoveID, sentakuGod) =>
         {
             if (isYES)
             {
-                onFinish?.Invoke(newGod.fusionGod, RemoveID);
+                GodData fusiongod = CheckFusionGod(sentakuGod, newGod);
+                if(fusiongod == null)
+                {
+                    Debug.Log("融合できるはずなのにできませんでした。");
+                    onFinish?.Invoke(newGod, RemoveID);
+                    fusionFinished = true;
+                    return;
+                }
+                onFinish?.Invoke(fusiongod, RemoveID);
                 fusionFinished = true;
                 //どうやって融合された神の力を出そうか？幅を持たせたいからなんかの計算式になりそう。それか、力技でデータに全部入れ込む
                 //全部の神をこのスクリプトが持ってるから、ここを呼ぶのがいいのかな？融合後の力が欲しいなら。
             }
             else
-            {//NOが選ばれた場合神の力の上限を超えるかもしれない
+            {
+                //NOが選ばれたらnewGodをそのまま追加
                 onFinish?.Invoke(newGod, RemoveID);
                 fusionFinished  = true;
             }
@@ -320,6 +345,35 @@ public class GodManeger : MonoBehaviour
         // UI操作が終わるまで待つ
         yield return new WaitUntil(() => fusionFinished);
         yield break;
+    }
+
+//融合後の神の力を渡す
+    public GodData CheckFusionGod(GodData gods, GodData newGod)
+    {
+        foreach(var recipe in fusionRecipes)
+        {
+            if((recipe.god1 == gods && recipe.god2 == newGod) || (recipe.god1 == newGod && recipe.god2 == gods))
+            {
+                return recipe.resultGod;
+            }
+        }
+        return null;
+    }
+//融合できる神のリストを渡す
+    public List<GodData> CheckFusion(List<GodData> ownegods, GodData newGod)
+    {
+        List<GodData> fusionTargets = new List<GodData>();
+        foreach(var ownedGod in ownegods)
+        {
+            foreach(var recipe in fusionRecipes)
+            {
+                if((recipe.god1 == ownedGod && recipe.god2 == newGod) || (recipe.god1 == newGod && recipe.god2 == ownedGod))
+                {
+                    fusionTargets.Add(ownedGod);
+                }
+            }
+        }
+        return fusionTargets;
     }
     
 

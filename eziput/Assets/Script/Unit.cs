@@ -141,7 +141,7 @@ public class Unit : MonoBehaviour
     // 1マス移動（ターン中の直接移動）
     public bool TryMove(Vector2Int dir)
     {
-        if (isMoving || animationController.animationState.isAttacking) return false; Vector2Int next = gridPos + dir;
+        if (isMoving || animationController.animationState.isAttacking || GodManeger.Instance.isGodDescrip) return false; Vector2Int next = gridPos + dir;
         var nextBlock = gridManager.GetBlock(next);
         if (nextBlock == null) return false;
 
@@ -275,7 +275,7 @@ public class Unit : MonoBehaviour
     }
     public IEnumerator Attack(Unit target)
     {
-        if (target == null || isMoving || animationController.animationState.isAttacking)
+        if (target == null || isMoving || animationController.animationState.isAttacking || GodManeger.Instance.isGodDescrip)
             yield break;
 
         animationController.Initialize(target);
@@ -411,12 +411,13 @@ public class Unit : MonoBehaviour
 
         if (godPlayer != null && godPlayer.ownedGods.Count > 0)
         {
-            foreach (var god in godPlayer.ownedGods)
+            var killerPlayer = killer?.GetComponent<GodPlayer>();
+                
+            if (killerPlayer != null)
             {
-                var killerPlayer = killer?.GetComponent<GodPlayer>();
-                if (killerPlayer != null)
-                    GodManeger.Instance.GrantGodToPlayer(god, killerPlayer);
+                GodManeger.Instance.addinggods(godPlayer.ownedGods, killerPlayer, true);
             }
+            
         }
 
         // このユニットを削除
