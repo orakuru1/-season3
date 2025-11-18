@@ -86,26 +86,6 @@ public class GodPlayer : MonoBehaviour
             Debug.Log($"{godToRemove.godName}は所有していません。");
         }
     }
-
-    public List<GodData> CheckFusion(GodData newgod)
-    {
-        List<GodData> fusins = new List<GodData>();
-        foreach (var god in ownedGods)
-        {
-            foreach(int fusionid in god.fusionGroupid)
-            {
-                foreach(int newgodfusionid in newgod.fusionGroupid)
-                {
-                    if (fusionid == newgodfusionid)
-                    {
-                        fusins.Add(god);
-                    }
-                }
-            }
-
-        }
-        return fusins;
-    }
     
     //ランダムな神を追加する（デバッグ用）
 

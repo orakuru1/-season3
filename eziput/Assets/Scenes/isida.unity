@@ -8200,6 +8200,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allgods: []
   isGodDescrip: 0
+  fusionRecipes:
+  - {fileID: 11400000, guid: 56a189775d64f084b8d924738a028046, type: 2}
 --- !u!1 &985892168
 GameObject:
   m_ObjectHideFlags: 0
@@ -14673,7 +14675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ownedGods:
-  - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
+  - {fileID: 11400000, guid: 519cdc27d1bc86c489f629a0b9ddb16f, type: 2}
 --- !u!1 &1140886060
 GameObject:
   m_ObjectHideFlags: 0
@@ -19918,7 +19920,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 55, y: -150}
+  m_AnchoredPosition: {x: 605, y: -150}
   m_SizeDelta: {x: 10, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1318604212
@@ -21670,10 +21672,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ownedGods:
-  - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
-  - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
-  - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
-  - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
+  - {fileID: 11400000, guid: befeb862df9bc7f41b4ac3be606d23a0, type: 2}
+  - {fileID: 11400000, guid: 4b9157fa1c6922348bb53f53fb3c341e, type: 2}
+  - {fileID: 11400000, guid: 20f86d9fa3618c843a92e0df3eecda1f, type: 2}
 --- !u!114 &1870630958
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,21 +13,18 @@ MonoBehaviour:
   m_Name: osirisu
   m_EditorClassIdentifier: 
   id: 3
-  fusionGroupid: 2
-  fusionGod: {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
   godName: "\u30AA\u30B7\u30EA\u30B9"
   title: "\u51A5\u754C\u306E\u738B\u3001\u8C4A\u7A63\u306E\u795E"
-  mythOrigin: "\u30A8\u30B8\u30D7\u30C8\u795E\u8A71"
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 69086cd91b703eb47b3b3b0538aa5b43, type: 3}
   abilities:
     abilityName: 
     description: 
     power: 0
     trigger: 3
     type: 0
-    attackPattern: 0
+    attackPattern: 1
     cooldown: 30
     floatcurrentCooldown: 0
     isActive: 0
-    GodAnimationID: 0
+    GodAnimationID: 1000

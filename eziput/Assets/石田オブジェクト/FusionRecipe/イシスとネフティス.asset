@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58b649a2279c3204cba243bfe1132389, type: 3}
   m_Name: "\u30A4\u30B7\u30B9\u3068\u30CD\u30D5\u30C6\u30A3\u30B9"
   m_EditorClassIdentifier: 
-  god1: {fileID: 0}
-  god2: {fileID: 0}
-  resultGod: {fileID: 0}
+  god1: {fileID: 11400000, guid: 20f86d9fa3618c843a92e0df3eecda1f, type: 2}
+  god2: {fileID: 11400000, guid: 519cdc27d1bc86c489f629a0b9ddb16f, type: 2}
+  resultGod: {fileID: 11400000, guid: a0e0b4169e21bd7418aa22226e6ef1fd, type: 2}
