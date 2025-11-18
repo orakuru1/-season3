@@ -18,6 +18,13 @@ public class craftmode : MonoBehaviour
     [Header("ボタン")]
     public Button craftToggleButton;  //合成モード切替ボタン
 
+    [Header("Inventory ScrollView")]
+    public RectTransform inventoryConten;  //content
+    public RectTransform inventoryViewport;  //viewportのrecttransform
+    public RectTransform bukiViewport;
+    public RectTransform bouguViewport;
+    public float contentHeight = 1000;  //一番長いときに合わせたたかさ　
+
     public bool isCraftMode = false;
 
     private void Awake()
@@ -43,6 +50,15 @@ public class craftmode : MonoBehaviour
         {
             SetCraftModeUI();
         }
+    }
+
+    void ResizeViewportHeight(float scale)
+    {
+        if(inventoryViewport == null || bukiViewport == null || bouguViewport == null) return;
+
+        inventoryViewport.localScale = new Vector3(1f, scale, 1f);
+        bukiViewport.localScale = new Vector3(1f, scale, 1f);
+        bouguViewport.localScale = new Vector3(1f, scale, 1f);
     }
 
     void SetRectFull(RectTransform rt)
@@ -102,6 +118,12 @@ public class craftmode : MonoBehaviour
         craftArea.sizeDelta = Vector2.zero;
         craftbukiArea.sizeDelta = Vector2.zero;
         craftbougArea.sizeDelta = Vector2.zero;
+
+        //contentは常に一定サイズ
+        inventoryConten.sizeDelta = new Vector2(inventoryConten.sizeDelta.x, contentHeight);
+
+        //viewportの高さを親に合わせる
+        ResizeViewportHeight(1f);
     }
 
     void SetCraftModeUI()
@@ -133,6 +155,12 @@ public class craftmode : MonoBehaviour
         inventoryArea.sizeDelta = new Vector2(0, 30);
         bukiArea.sizeDelta = new Vector2(0, 30);
         bougArea.sizeDelta = new Vector2(0, 30);
+
+        //contentの高さは固定
+        inventoryConten.sizeDelta = new Vector2(inventoryConten.sizeDelta.x, contentHeight);
+
+        //viewportの高さを親に合わせる
+        ResizeViewportHeight(2.0f);
 
        
     }
