@@ -9,8 +9,6 @@ using UnityEngine;
 public class GodData : ScriptableObject
 {
     public int id;                 //識別番号
-    public List<int> fusionGroupid;      //合成できるグループ番号(複数持てるようにしたほうがよいかも)
-    public GodData fusionGod;      //合成後の進化先
     public string godName;         // 神の名前
     public string title;           // 神の肩書き（例：雷神・知恵の神）
     public string description;     // 説明文

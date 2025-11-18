@@ -13,21 +13,18 @@ MonoBehaviour:
   m_Name: isisu
   m_EditorClassIdentifier: 
   id: 5
-  fusionGroupid: 2
-  fusionGod: {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
   godName: "\u30A4\u30B7\u30B9"
   title: "\u8C4A\u7A63\u306E\u5973\u795E\u3001\u9B54\u6CD5"
-  mythOrigin: "\u30A8\u30B8\u30D7\u30C8\u795E\u8A71"
   description: "\u5909\u66F4\u3055\u308C\u305F\u8AAC\u660E\u6587\u3067\u3059\u3002"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: ad0c421db762d4049ba3ce803c17cd0d, type: 3}
   abilities:
     abilityName: 
     description: 
     power: 0
     trigger: 3
     type: 0
-    attackPattern: 0
+    attackPattern: 1
     cooldown: 30
     floatcurrentCooldown: 0
     isActive: 0
-    GodAnimationID: 0
+    GodAnimationID: 1000

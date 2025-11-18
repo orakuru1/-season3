@@ -12,9 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c0917b37f750974c8b4509aa43d13fe, type: 3}
   m_Name: "\u6700\u53E4\u306E\u59C9\u59B9"
   m_EditorClassIdentifier: 
-  id: 0
-  fusionGroupid: 
-  fusionGod: {fileID: 0}
+  id: 7
   godName: 
   title: 
   description: 
@@ -22,11 +20,11 @@ MonoBehaviour:
   abilities:
     abilityName: 
     description: 
-    power: 0
-    trigger: 0
+    power: 99
+    trigger: 3
     type: 0
-    attackPattern: 0
+    attackPattern: 1
     cooldown: 0
     floatcurrentCooldown: 0
     isActive: 0
-    GodAnimationID: 0
+    GodAnimationID: 1000
