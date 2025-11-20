@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 1523797058646313887}
   - component: {fileID: 1523797058646313885}
   m_Layer: 0
-  m_Name: takarabako
+  m_Name: takarabako 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -183,6 +183,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 1523797058646313887}
   player: {fileID: 0}
+  itemObject: {fileID: 0}
+  itemName: Sphere
+  itemGetDelay: 1.5
+  itemType: 0
 --- !u!1 &4352328953882149918
 GameObject:
   m_ObjectHideFlags: 0
