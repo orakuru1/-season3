@@ -7,7 +7,7 @@ public class PlayerUnit : Unit
 {
     public AttackSkill selectedSkill = null; // InputHandlerから指定
     public bool isUsingSkill = false; // スキル実行中フラグ        
-
+    
     // スキル使用
     public IEnumerator UseSkill(AttackSkill skill)
     {
@@ -58,37 +58,15 @@ public class PlayerUnit : Unit
             }
             else
             {
-
                 animationController.Initialize(targets, skill.power);
                 animationController.AttackAnimation(skill.animationID);
             }
 
         }
-/*
-            // 各ターゲットのヒットアニメーションを同時に開始
-            foreach (var target in targets)
-            {
-                // 攻撃アニメーションのTarget（targets[0]）には重複してHitアニメをかけない
-                if (target != targets[0])
-                {
-                    StartCoroutine(HitTarget(target, skill.power));
-                }
-            }
-*/
+
 
         // ヒットアニメーションが見える時間だけ待機
         yield return new WaitForSeconds(0.3f);
-/*
-        // ダメージ適用＆アニメーションリセット
-        foreach (var target in targets)
-        {
-            if (target.anim != null)
-                target.anim.SetInteger("Hit", 0);
-
-            target.TakeDamage(skill.power);
-            Debug.Log($"{target.status.unitName} に {skill.power} ダメージ！");
-        }
-*/
 
         // プレイヤーの攻撃アニメーション終了を待つ
         if (anim != null)
@@ -96,13 +74,42 @@ public class PlayerUnit : Unit
         else
             yield return null;
 
+        //攻撃の後に神の力をゲットできるか毎回しよう
+        yield return StartCoroutine(GodManeger.Instance.GrantGodToPlayer());
+
+        yield return StartCoroutine(GodManeger.Instance.TriggerAbilities(this.gameObject, AbilityTrigger.Passive_OnAttack));//攻撃する時共通,攻撃時
+        yield return null;
+
+        yield return StartCoroutine(GodManeger.Instance.GrantGodToPlayer());
+
+
         // 終了処理
+        TurnManager.Instance.NextTurn();
         animationController.animationState.isAttacking = false;
         selectedSkill = null;
         isUsingSkill = false; // 終了時に解除
         ClearAttackRange();
 
         // ターン進行は自然に敵が動くように管理
+
+
+    }
+
+    public void Heal(int amount)
+    {
+        //Hpが満タンかチェック
+        if(status.currentHP >= status.maxHP)
+        {
+            Debug.Log($"{status.unitName}のHpはすでに満タンです。回復アイテムを使う必要はない！！");
+            return;
+        }
+
+        int oldHP = status.currentHP;
+        status.currentHP = Mathf.Min(status.currentHP + amount, status.maxHP); //maxを超えない
+
+        int healedAmount = status.currentHP - oldHP;  //実際に回復した量
+        Debug.Log($"{status.unitName}のHPが{amount}回復！");
+
     }
 
     // 敵ヒット用コルーチン

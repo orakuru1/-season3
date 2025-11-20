@@ -53,6 +53,8 @@ public class GridManager : MonoBehaviour
             unit.transform.position = block.transform.position + Vector3.up * 1f;
         }
     }
+
+    SpawnRandomChesets();  //マップ生成後に宝箱を配置
     }
 
     public Vector2Int WorldToGrid(Vector3 worldPos)
@@ -316,6 +318,56 @@ public class GridManager : MonoBehaviour
             var it = elements[best].item;
             elements.RemoveAt(best);
             return it;
+        }
+    }
+
+    //宝箱ランダム配置機能
+    [Header("Tresure Settings")]
+    public GameObject chestPrefab;  //宝箱プレハブをInspectorで指定
+    public int cehstCount = 3;      //宝箱の数
+
+    public void SpawnRandomChesets()
+    {
+        if(chestPrefab == null)
+        {
+            Debug.Log("宝箱Prefabが指定されていません");
+            return;
+        }
+
+        //配置できる歩行可能ブロックのリストを取得
+        List<GridBlock> availableBlocks = gridMap.Values
+            .Where(b => b.isWalkable && b.occupantUnit == null)
+            .ToList();
+        
+        if(availableBlocks.Count == 0)
+        {
+            Debug.Log("配置可能なブロックがありません！");
+            return;
+        }
+
+        int spawnCount = Mathf.Min(cehstCount, availableBlocks.Count);
+
+        for(int i = 0; i < spawnCount; i++)
+        {
+            //ランダムに配置ブロックを選ぶ
+            int index = Random.Range(0, availableBlocks.Count);
+            GridBlock block = availableBlocks[index];
+
+            //宝箱を生成
+            Vector3 spawnPos = block.transform.position + Vector3.up * 0.5f;
+            Quaternion rotation = Quaternion.Euler(180, 0, 0);
+            GameObject chest = Instantiate(chestPrefab, spawnPos, rotation);
+
+            var anim = chest.GetComponent<animation>();
+            if(anim != null)
+            {
+                anim.player = FindObjectOfType<PlayerUnit>()?.transform;
+            }
+
+            //再配置を防ぐためのリストから削除
+            availableBlocks.RemoveAt(index);
+
+            Debug.Log($"宝箱を配置:{block.gridPos}");
         }
     }
 }

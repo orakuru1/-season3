@@ -13,8 +13,14 @@ public class GetStatus : MonoBehaviour
     [SerializeField] private Text AttackText;
     [SerializeField] private Text DefenceText;
     [SerializeField] private Text SpeedText;
+    [SerializeField] private Text soubiText;
+    [SerializeField] private Text bukisoubiText;
+    [SerializeField] private Text bougusoubiText;
 
     [SerializeField] private Image statusPanel; //ステータス全体
+
+    public string equippedWeaponName = "なし";
+    public string equippedArmorName = "なし";
 
     // Start is called before the first frame update
     void Start()
@@ -44,9 +50,12 @@ public class GetStatus : MonoBehaviour
         nameText.text = playerUnit.status.unitName;
         levelText.text = $"Lv. {playerUnit.status.level}";
         HPText.text = $"HP: {playerUnit.status.currentHP}/{playerUnit.status.maxHP}";
-        AttackText.text = $"ATK: {playerUnit.status.attack}";
-        DefenceText.text = $"DEF: {playerUnit.status.defense}";
+        AttackText.text = $"ATK: {playerUnit.status.attack}+{playerUnit.equidpAttackBonus} = {playerUnit.TotalAttack}";
+        DefenceText.text = $"DEF: {playerUnit.status.defense}+{playerUnit.equipDefenseBonus} = {playerUnit.Totaldefense}";
         SpeedText.text = $"Speed: {playerUnit.status.speed}";
+        soubiText.text = "装備中";
+        bukisoubiText.text = $"武器: {equippedWeaponName}";
+        bougusoubiText.text = $"防具: {equippedArmorName}";
 
     }
 }

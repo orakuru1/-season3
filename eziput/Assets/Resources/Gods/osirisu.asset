@@ -12,17 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c0917b37f750974c8b4509aa43d13fe, type: 3}
   m_Name: osirisu
   m_EditorClassIdentifier: 
+  id: 3
   godName: "\u30AA\u30B7\u30EA\u30B9"
   title: "\u51A5\u754C\u306E\u738B\u3001\u8C4A\u7A63\u306E\u795E"
-  mythOrigin: "\u30A8\u30B8\u30D7\u30C8\u795E\u8A71"
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 69086cd91b703eb47b3b3b0538aa5b43, type: 3}
   abilities:
     abilityName: 
     description: 
     power: 0
-    trigger: 0
+    trigger: 3
     type: 0
+    attackPattern: 1
     cooldown: 30
     floatcurrentCooldown: 0
     isActive: 0
+    GodAnimationID: 1000

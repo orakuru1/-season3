@@ -58,7 +58,16 @@ public class Unit : MonoBehaviour
     public AnimationController animationController;
     private List<GridBlock> highlightedBlocks = new List<GridBlock>();
 
+    //装備による補正値
+    public int equidpAttackBonus = 0;
+    public int equipDefenseBonus = 0;
 
+    //現在の総合ステータス計算
+    public int TotalAttack => status.attack + equidpAttackBonus;
+    public int Totaldefense => status.defense + equipDefenseBonus;
+
+
+    public GodPlayer godPlayer;//神の力を持つプレイヤー
 
     private void Awake()
     {
@@ -92,7 +101,7 @@ public class Unit : MonoBehaviour
         anim = GetComponent<Animator>();
         animationController = GetComponent<AnimationController>();
 
-        if(animationController != null)
+        if (animationController != null)
         {
             animationController.onAnimationEnd = () =>
             {
@@ -103,6 +112,8 @@ public class Unit : MonoBehaviour
                 }
             };
         }
+        
+        godPlayer = GetComponent<GodPlayer>();
 
         
 
@@ -130,7 +141,7 @@ public class Unit : MonoBehaviour
     // 1マス移動（ターン中の直接移動）
     public bool TryMove(Vector2Int dir)
     {
-        if (isMoving || animationController.animationState.isAttacking) return false; Vector2Int next = gridPos + dir;
+        if (isMoving || animationController.animationState.isAttacking || GodManeger.Instance.isGodDescrip) return false; Vector2Int next = gridPos + dir;
         var nextBlock = gridManager.GetBlock(next);
         if (nextBlock == null) return false;
 
@@ -264,7 +275,7 @@ public class Unit : MonoBehaviour
     }
     public IEnumerator Attack(Unit target)
     {
-        if (target == null || isMoving || animationController.animationState.isAttacking)
+        if (target == null || isMoving || animationController.animationState.isAttacking || GodManeger.Instance.isGodDescrip)
             yield break;
 
         animationController.Initialize(target);
@@ -278,6 +289,7 @@ public class Unit : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(dir3D);
         }
 
+
         // ===== アニメーションあり =====
         if (anim != null)
         {
@@ -288,7 +300,7 @@ public class Unit : MonoBehaviour
             // 攻撃アニメーション → 相手のヒットアニメーションの流れは
             // Animator のイベント経由で OnAttackAnimationEnd() / OnHitAnimationEnd() へ
             yield return new WaitUntil(() => !animationController.animationState.isAttacking);
-            target.TakeDamage(status.attack);
+            target.TakeDamage(TotalAttack, this);
 
         }
         // ===== アニメーションなし =====
@@ -297,7 +309,7 @@ public class Unit : MonoBehaviour
             Debug.Log($"{name} attacks {target.name} (no animator)");
             yield return null;
 
-            target.TakeDamage(1);
+            target.TakeDamage(1, this); // 仮のダメージ値
             Debug.Log($"{name} attacked {target.name}!");
 
             animationController.animationState.isAttacking = false;
@@ -305,9 +317,10 @@ public class Unit : MonoBehaviour
             // 攻撃終了後ターン進行
             if (team == Team.Player)
             {
-                TurnManager.Instance.NextTurn();
+                //TurnManager.Instance.NextTurn();
             }
         }
+        yield return StartCoroutine(GodManeger.Instance.TriggerAbilities(this.gameObject, AbilityTrigger.Passive_OnAttack));
     }
 
     /*
@@ -357,14 +370,19 @@ public class Unit : MonoBehaviour
 
     public void zangekiEffect()
     {
-        EffectManager.Instance.PlayEffect(EffectManager.EffectType.Zangeki, transform.position + Vector3.up * 1f, transform, transform.rotation);
+        EffectManager.Instance.PlayEffect(EffectManager.PlayerEffectType.Zangeki, transform.position + Vector3.up * 1f, transform, 1.4f, transform.rotation);
+    }
+
+    public void GodSicleEffect()
+    {
+        EffectManager.Instance.PlayEffect(EffectManager.PlayerEffectType.GodHaniScicle, transform.position + Vector3.up * 1f, transform, 1.5f, transform.rotation);
     }
 
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, Unit attacker = null)
     {
         status.currentHP -= damage;
-        if (status.currentHP <= 0) Die();
+        if (status.currentHP <= 0) Die(attacker);
     }
 
     public void LevelUp()
@@ -375,7 +393,7 @@ public class Unit : MonoBehaviour
         status.attack = Mathf.RoundToInt(status.attack * mul);
     }
 
-    public void Die()
+    public void Die(Unit killer = null)
     {
         var block = gridManager.GetBlock(gridPos);
         if (block != null && block.occupantUnit == this) block.occupantUnit = null;
@@ -389,6 +407,17 @@ public class Unit : MonoBehaviour
         {
             animationController.attacker.animationState.isHitAnimation = true;
             animationController.attacker.AnimationEnd();
+        }
+
+        if (godPlayer != null && godPlayer.ownedGods.Count > 0)
+        {
+            var killerPlayer = killer?.GetComponent<GodPlayer>();
+                
+            if (killerPlayer != null)
+            {
+                GodManeger.Instance.addinggods(godPlayer.ownedGods, killerPlayer, true);
+            }
+            
         }
 
         // このユニットを削除

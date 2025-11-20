@@ -12,17 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c0917b37f750974c8b4509aa43d13fe, type: 3}
   m_Name: seto
   m_EditorClassIdentifier: 
+  id: 2
   godName: "\u30BB\u30C8"
   title: "\u6B32\u306E\u795E\u3001\u6027\u306E\u795E"
-  mythOrigin: "\u30A8\u30B8\u30D7\u30C8\u795E\u8A71"
   description: "\u5909\u66F4\u3055\u308C\u305F\u8AAC\u660E\u6587\u3067\u3059\u3002"
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: f2b47c9da7ffd8e4d9afcaea886098e1, type: 3}
   abilities:
     abilityName: 
     description: 
     power: 0
-    trigger: 0
+    trigger: 3
     type: 0
+    attackPattern: 1
     cooldown: 30
     floatcurrentCooldown: 0
     isActive: 0
+    GodAnimationID: 1000

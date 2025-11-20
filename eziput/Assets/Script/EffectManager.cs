@@ -6,15 +6,18 @@ public class EffectManager : MonoBehaviour
 {
     public static EffectManager Instance { get; private set; }
 
-    public enum EffectType
+    public enum PlayerEffectType
     {
         Zangeki, // 斬撃エフェクト
         Fireball,
         Hit,
         Heal,
+        GodHaniScicle
     }
+
     public GameObject zangekiEffectPrefab; // 斬撃エフェクトのプレハブ
     public GameObject MagicSicleEffectPrefab; // 魔法のサイクルエフェクトのプレハブ
+    public GameObject HaniSicleEffectPrefab; 
 
     private void Awake()
     {
@@ -24,7 +27,7 @@ public class EffectManager : MonoBehaviour
     /// <summary>
     /// 指定した種類のエフェクトを生成
     /// </summary>
-    public void PlayEffect(EffectType type, Vector3 position, Transform transform, Quaternion? rotation = null)
+    public void PlayEffect(PlayerEffectType type, Vector3 position, Transform transform, float time, Quaternion? rotation = null)
     {
         GameObject prefab = GetEffectPrefab(type);
         if (prefab == null)
@@ -36,32 +39,39 @@ public class EffectManager : MonoBehaviour
         Quaternion yRotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);//y軸の回転を取得
         Quaternion rot = rotation ?? Quaternion.identity;//指定がなければ回転なし
         GameObject effect = Instantiate(prefab, position, rot);
-        GameObject sicle = Instantiate(MagicSicleEffectPrefab, position + transform.forward * 0.2f, yRotation);
+        if(type == PlayerEffectType.Zangeki)
+        {
+            GameObject sicle = Instantiate(MagicSicleEffectPrefab, position + transform.forward * 0.2f, yRotation);       
+            Destroy(sicle, 2);     
+        }
+
 
         // エフェクトの再生後に自動で削除
-        Destroy(effect, 1f); // 1秒後に削除
-        Destroy(sicle, 1.4f);
+        Destroy(effect, time); // 1秒後に削除
+        
 
     }
 
     /// <summary>
     /// EnumからPrefabを取得
     /// </summary>
-    private GameObject GetEffectPrefab(EffectType type)
+    private GameObject GetEffectPrefab(PlayerEffectType type)
     {
         switch (type)
         {
-            case EffectType.Zangeki:
+            case PlayerEffectType.Zangeki:
                 return zangekiEffectPrefab;
-            case EffectType.Fireball:
+            case PlayerEffectType.Fireball:
                 // return fireballEffectPrefab;
                 return null;
-            case EffectType.Hit:
+            case PlayerEffectType.Hit:
                 // return hitEffectPrefab;
                 return null;
-            case EffectType.Heal:
+            case PlayerEffectType.Heal:
                 // return healEffectPrefab;
                 return null;
+            case PlayerEffectType.GodHaniScicle:
+                return HaniSicleEffectPrefab;
             default:
                 return null;
         }
