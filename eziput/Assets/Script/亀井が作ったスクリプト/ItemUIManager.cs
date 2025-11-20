@@ -96,12 +96,10 @@ public class ItemUIManager : MonoBehaviour
         craftExecuteButton.onClick.AddListener(OnCraftExecute);
     }
 #region 合成レシピ
-    
-
     //合成レシピ
     private void RegisterRecipes()
     {
-        resipeDict["盾"] = new List<(string, int)>()
+        resipeDict["神の腰布"] = new List<(string, int)>()
         {
             ("木の枝", 1),
             ("神の腰布", 1)
@@ -266,9 +264,12 @@ public class ItemUIManager : MonoBehaviour
             return;
         }
 
+        string cat1 = GetItemCategory(craftItem1);
+        string cat2 = GetItemCategory(craftItem2);
+
         //素材を減らす
-        UseSelectedItem(craftItem1, "item");
-        UseSelectedItem(craftItem2, "item");
+        UseSelectedItem(craftItem1, cat1);
+        UseSelectedItem(craftItem2, cat2);
 
         //アイテム追加
         AddItem(result);
