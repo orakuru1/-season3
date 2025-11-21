@@ -16,6 +16,7 @@ public class GetCanvas : MonoBehaviour
     public GameObject inventoryImage;  //持ち物image
     public GameObject setteiImage;  //設定image
     public GameObject itempanel;  //アイテム使いますか？panel
+    public GameObject craftArea; 
 
     [Header("プレイヤー操作スクリプト（PlayerMoveなど）")]
     public MonoBehaviour[] playerControllers; // ← 複数登録できるように変更！
@@ -54,6 +55,8 @@ public class GetCanvas : MonoBehaviour
         else
         {
             SetPlayerControl(true); // ← 再開！
+
+           if(craftmode.instance != null) craftmode.instance.craftArea.gameObject.SetActive(false);
         }
     }
 
@@ -66,6 +69,7 @@ public class GetCanvas : MonoBehaviour
         if (bouguImage) bouguImage.SetActive(false);
         if(setteiImage) setteiImage.SetActive(false);
         if(itempanel) itempanel.SetActive(false);
+        if(craftArea) craftArea.SetActive(false);
     }
 
     public void ShowStatusOnly()  //ステータスimageだけ表示
@@ -86,7 +90,9 @@ public class GetCanvas : MonoBehaviour
     {
         HideAllImages();
         if(statusImage) statusImage.SetActive(true);
-        if (inventoryImage) inventoryImage.SetActive(true);
+        if(inventoryImage) inventoryImage.SetActive(true);
+        if(craftmode.instance.isCraftMode) 
+           craftArea.SetActive(true);
     }
 
     public void showbuki()  //ステータスimageと武器image表示
@@ -94,6 +100,7 @@ public class GetCanvas : MonoBehaviour
         HideAllImages();
         if(statusImage) statusImage.SetActive(true);
         if (bukiImage) bukiImage.SetActive(true);
+        if(craftmode.instance.isCraftMode) craftmode.instance.craftArea.gameObject.SetActive(true);
     }
 
     public void showbougu()  //ステータスimageと防具image表示
@@ -101,6 +108,7 @@ public class GetCanvas : MonoBehaviour
         HideAllImages();
         if(statusImage) statusImage.SetActive(true);
         if (bouguImage) bouguImage.SetActive(true);
+        if(craftmode.instance.isCraftMode) craftmode.instance.craftArea.gameObject.SetActive(true);
     }
 
     public void settei()  //設定image表示
