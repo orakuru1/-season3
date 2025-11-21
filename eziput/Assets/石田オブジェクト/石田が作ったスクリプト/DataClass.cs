@@ -11,6 +11,9 @@ public class AnimationState
     public bool isAttackAnimation;
     public bool isHitAnimation;
     public bool ismultipleTaget;
+    public bool isBuffing;
+    public bool isDebuffing;
+    public bool isHiling;
 
     public void Reset()
     {

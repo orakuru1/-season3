@@ -58,6 +58,7 @@ public enum GodAttackPattern
     Surround8,  // 自分の周囲8マス
     Forward3,   // 前方3マス
     Cross5,     // 上下左右＋中央
+    Forward1,   // 前方1マス
     Global      // 敵全体
 }
 

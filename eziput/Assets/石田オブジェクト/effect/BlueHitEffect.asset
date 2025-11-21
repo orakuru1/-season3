@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a4ae2006a6b73e4dae808d051962223, type: 3}
+  m_Name: BlueHitEffect
+  m_EditorClassIdentifier: 
+  id: 1
+  effectPrefab: {fileID: 4540189715668047425, guid: d693c9d9fd97aa941a2a813b30f6821a,
+    type: 3}
+  duration: 1
+  offset: {x: 0, y: 1, z: 0}

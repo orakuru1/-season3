@@ -141,7 +141,7 @@ public class Unit : MonoBehaviour
     // 1マス移動（ターン中の直接移動）
     public bool TryMove(Vector2Int dir)
     {
-        if (isMoving || animationController.animationState.isAttacking || GodManeger.Instance.isGodDescrip) return false; Vector2Int next = gridPos + dir;
+        if (isMoving || animationController.animationState.isAttacking || animationController.animationState.isBuffing || animationController.animationState.isDebuffing || animationController.animationState.isHiling || GodManeger.Instance.isGodDescrip) return false; Vector2Int next = gridPos + dir;
         var nextBlock = gridManager.GetBlock(next);
         if (nextBlock == null) return false;
 
@@ -275,7 +275,7 @@ public class Unit : MonoBehaviour
     }
     public IEnumerator Attack(Unit target)
     {
-        if (target == null || isMoving || animationController.animationState.isAttacking || GodManeger.Instance.isGodDescrip)
+        if (target == null || isMoving || animationController.animationState.isAttacking || animationController.animationState.isBuffing || animationController.animationState.isDebuffing || animationController.animationState.isHiling || GodManeger.Instance.isGodDescrip)
             yield break;
 
         animationController.Initialize(target);
@@ -368,16 +368,32 @@ public class Unit : MonoBehaviour
     }
     */
 
-    public void zangekiEffect()
+    public void Heal(int amount)
     {
-        EffectManager.Instance.PlayEffect(EffectManager.PlayerEffectType.Zangeki, transform.position + Vector3.up * 1f, transform, 1.4f, transform.rotation);
+        status.currentHP += amount;
+        if (status.currentHP > status.maxHP)
+            status.currentHP = status.maxHP;
+
+        Debug.Log($"{gameObject.name}は{amount}回復した！");
+    }
+    
+    public void Buff(int power)//バフタイプ、効果値。（複数だったらそれぞれいるかも）
+    {
+        Debug.Log($"{gameObject.name}は{power}のバフを受けた！");
+        //なんのバフを掛けるかの条件
+        //バフの効果値を貰う
+        status.attack += power;
+        status.defense += power;
     }
 
-    public void GodSicleEffect()
+    public void Debuff(int power)//デバフタイプ、効果値。（複数だったらそれぞれいるかも）
     {
-        EffectManager.Instance.PlayEffect(EffectManager.PlayerEffectType.GodHaniScicle, transform.position + Vector3.up * 1f, transform, 1.5f, transform.rotation);
+        Debug.Log($"{gameObject.name}は{power}のデバフを受けた！");
+        //なんのデバフを掛けるかの条件
+        //デバフの効果値を貰う
+        status.attack = Mathf.Max(0, status.attack - power);
+        status.defense = Mathf.Max(0, status.defense - power);
     }
-
 
     public void TakeDamage(int damage, Unit attacker = null)
     {
