@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+
 /// <summary>
 /// Phase2 完全版: BSPで部屋を作り、必ず接続（掘削）するダンジョン生成器
 /// - 生成した rooms, startRoom, endRoom, mapData を公開
@@ -9,6 +10,10 @@ using System.Collections.Generic;
 /// </summary>
 public class DungeonGenerator : MonoBehaviour
 {
+    public bool showMarkers = false;
+    private List<Vector2Int> floorList = new List<Vector2Int>();
+    public IReadOnlyList<Vector2Int> FloorList => floorList;
+
     [Header("マップ基本設定")]
     public int width = 80;
     public int height = 60;
@@ -87,9 +92,21 @@ public class DungeonGenerator : MonoBehaviour
 
         // Visualize if prefabs assigned
         if (floorPrefab != null && wallPrefab != null)
-            VisualizeMap();
+        VisualizeMap();
 
-        // Notify ElementGenerator
+        // ---- create floorList BEFORE notifying ElementGenerator ----
+        floorList.Clear();
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (mapData[y, x] == 0)
+                floorList.Add(new Vector2Int(x, y));
+            }
+        }
+        Debug.Log("[DungeonGenerator] floorList count = " + floorList.Count);
+
+        // Notify ElementGenerator (now floorList is ready)
         NotifyElementGenerator();
     }
 
@@ -317,7 +334,7 @@ public class DungeonGenerator : MonoBehaviour
         }
 
         // optional: mark start/end visually
-        if (startRoom != null)
+        if (showMarkers && startRoom != null)
         {
             Vector3 s = new Vector3(startRoom.Center.x * cellSize, 0.1f, startRoom.Center.y * cellSize);
             GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
@@ -327,7 +344,8 @@ public class DungeonGenerator : MonoBehaviour
             marker.name = "StartMarker";
             marker.transform.SetParent(stageParent, true);
         }
-        if (endRoom != null)
+
+        if (showMarkers && endRoom != null)
         {
             Vector3 e = new Vector3(endRoom.Center.x * cellSize, 0.1f, endRoom.Center.y * cellSize);
             GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
@@ -362,7 +380,7 @@ public class DungeonGenerator : MonoBehaviour
         }
 
         // call with rooms list and start/end
-        elementGenerator.GenerateFromMap(mapData, s, rooms, startRoom, endRoom);
+        elementGenerator.GenerateFromMap(mapData, s, rooms, startRoom, endRoom,floorList);
 
     }
 }

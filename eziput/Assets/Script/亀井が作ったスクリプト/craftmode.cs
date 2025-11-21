@@ -20,6 +20,8 @@ public class craftmode : MonoBehaviour
 
     [Header("Inventory ScrollView")]
     public RectTransform inventoryConten;  //content
+    public RectTransform bukiConten;
+    public RectTransform bouguConten;
     public RectTransform inventoryViewport;  //viewportのrecttransform
     public RectTransform bukiViewport;
     public RectTransform bouguViewport;
@@ -121,6 +123,9 @@ public class craftmode : MonoBehaviour
 
         //contentは常に一定サイズ
         inventoryConten.sizeDelta = new Vector2(inventoryConten.sizeDelta.x, contentHeight);
+        bukiConten.sizeDelta = new Vector2(bukiConten.sizeDelta.x, contentHeight);
+        bouguConten.sizeDelta = new Vector2(bouguConten.sizeDelta.x, contentHeight);
+        
 
         //viewportの高さを親に合わせる
         ResizeViewportHeight(1f);
@@ -158,6 +163,9 @@ public class craftmode : MonoBehaviour
 
         //contentの高さは固定
         inventoryConten.sizeDelta = new Vector2(inventoryConten.sizeDelta.x, contentHeight);
+        bukiConten.sizeDelta = new Vector2(bukiConten.sizeDelta.x, contentHeight);
+        bouguConten.sizeDelta = new Vector2(bouguConten.sizeDelta.x, contentHeight);
+
 
         //viewportの高さを親に合わせる
         ResizeViewportHeight(2.0f);

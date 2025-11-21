@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class ItemUIManager : MonoBehaviour
 {
     public static ItemUIManager instance;
+#region 変数
+    
 
     [Header("各カテゴリのScrollView Content")]
     [SerializeField] private Transform itemContentParent;     // 持ち物
@@ -33,6 +35,13 @@ public class ItemUIManager : MonoBehaviour
     public Sprite panSprite;
     public Sprite bouSprite;
     public Sprite kinobouSprite;
+    public Sprite tetuSprite;
+
+    [Header("合成スロットUI")]
+    [SerializeField] private Image craftSlot1;
+    [SerializeField] private Image craftSlot2;
+
+    [SerializeField] private Button craftExecuteButton;
 
     // 各カテゴリの辞書
     private Dictionary<string, (int count, GameObject button)> itemDict = new();
@@ -41,6 +50,9 @@ public class ItemUIManager : MonoBehaviour
 
     // アイテム名と画像の対応
     public Dictionary<string, Sprite> itemSpriteDict = new();
+
+    //合成レシピ
+    private Dictionary<string, List<(string itemName, int count)>> resipeDict = new Dictionary<string, List<(string itemName, int count)>>();
 
     // 選択・装備管理
     private GameObject selectedButton;
@@ -52,8 +64,12 @@ public class ItemUIManager : MonoBehaviour
     private GameObject equippedWeaponButton;
     private GameObject equippedArmorButton;
 
-    private bool isUnEquipping = false;
+    //合成スロットに入っているアイテム名
+    private string craftItem1 = null;
+    private string craftItem2 = null;
 
+    private bool isUnEquipping = false;
+#endregion
 
     //=============================
     // 初期化
@@ -67,9 +83,36 @@ public class ItemUIManager : MonoBehaviour
         itemSpriteDict["bou"] = bouSprite;
         itemSpriteDict["木の枝"] = kinobouSprite;
         itemSpriteDict["神の腰布"] = kosinunoSprite;
-        itemSpriteDict["盾"] = tateSprite;
+        itemSpriteDict["鋼鉄"] = tateSprite;
         itemSpriteDict["パン"] = panSprite;
+        itemSpriteDict["鉄"] = tetuSprite;
+
+        RegisterRecipes();
     }
+
+    private void Start()
+    {
+        //合成ボタンが押されたときに合成処理
+        craftExecuteButton.onClick.AddListener(OnCraftExecute);
+    }
+#region 合成レシピ
+    //合成レシピ
+    private void RegisterRecipes()
+    {
+        resipeDict["神の腰布"] = new List<(string, int)>()
+        {
+            ("木の枝", 1),
+            ("神の腰布", 1)
+        };
+
+        resipeDict["鋼鉄"] = new List<(string, int)>()
+        {
+            ("鉄", 1),
+            ("パン", 1)
+        };
+    }
+#endregion
+#region アイテム種類とカテゴリ
 
     //=============================
     // アイテム追加処理
@@ -133,6 +176,9 @@ public class ItemUIManager : MonoBehaviour
         }
     }
 
+#endregion
+#region ボタン生成と押下処理
+    
 
     //=============================
     // ボタン生成処理
@@ -168,6 +214,13 @@ public class ItemUIManager : MonoBehaviour
     public void OnItemButtonClicked(GameObject button)
     {
         string itemName = button.name;
+
+        //合成モードなら合成処理に分岐
+        if(craftmode.instance.isCraftMode)
+        {
+            AddToCraftSlot(itemName);
+            return;
+        }
         selectedButton = button;
         selectedItemName = itemName;
         selectedCategory = GetItemCategory(itemName);
@@ -191,8 +244,75 @@ public class ItemUIManager : MonoBehaviour
 
         confirmPanel.SetActive(true);
     }
+#endregion
+#region 合成関連
+    //合成ボタンの処理
+    public void OnCraftExecute()
+    {
+        if(craftItem1 == null || craftItem2 == null)
+        {
+            Debug.Log("素材が2つ揃っていません");
+            return;
+        }
 
+        //レシピ検索
+        string result = GetCraftResult(craftItem1, craftItem2);
+        if(result == null)
+        {
+            ClearCraftSlots();
+            Debug.Log("この組み合わせでは合成できません");
+            return;
+        }
 
+        string cat1 = GetItemCategory(craftItem1);
+        string cat2 = GetItemCategory(craftItem2);
+
+        //素材を減らす
+        UseSelectedItem(craftItem1, cat1);
+        UseSelectedItem(craftItem2, cat2);
+
+        //アイテム追加
+        AddItem(result);
+        Debug.Log($"合成成功!{result}");
+
+        ClearCraftSlots();
+    }
+
+    private string GetCraftResult(string itemA, string itemB)
+    {
+        //順番を無視して判定
+        foreach(var recipe in resipeDict)
+        {
+            var req = recipe.Value;
+
+            //レシピが2素材の前提
+            if(req.Count != 2) continue;
+
+            bool match1 = (req[0].itemName == itemA && req[1].itemName == itemB);
+            bool match2 = (req[0].itemName == itemB && req[1].itemName == itemA);
+
+            if(match1 || match2)
+            {
+                return recipe.Key;  //合成成果アイテム名
+            }
+            
+        }
+        return null;
+    }
+
+    private void ClearCraftSlots()
+    {
+        craftItem1 = null;
+        craftItem2 = null;
+
+        craftSlot1.sprite = null;
+        craftSlot2.sprite = null;
+
+        craftSlot1.color = new Color(1,1,1,0);
+        craftSlot2.color = new Color(1,1,1,0);
+    }
+
+#endregion
     //=============================
     // 確認パネル（はい）
     //=============================
@@ -226,6 +346,29 @@ public class ItemUIManager : MonoBehaviour
     //=============================
     public void OnConfirmNo() => confirmPanel.SetActive(false);
 
+    //合成スロットにアイテム挿入
+    private void AddToCraftSlot(string itemName)
+    {
+        //1つ目
+        if(craftItem1 == null)
+        {
+            craftItem1 = itemName;
+            craftSlot1.sprite = itemSpriteDict[itemName];
+            craftSlot1.color = Color.white;
+            return;
+        }
+
+        //2つ目
+        if(craftItem2 == null)
+        {
+            craftItem2 = itemName;
+            craftSlot2.sprite = itemSpriteDict[itemName];
+            craftSlot2.color = Color.white;
+            return;
+        }
+
+        Debug.Log("すでに2つ選ばれています");
+    }
 
     //=============================
     // アイテム使用処理
@@ -250,9 +393,9 @@ public class ItemUIManager : MonoBehaviour
                 if (player.status.currentHP >= player.status.maxHP) return false;
                 player.Heal(50);
                 return true;
-
+            
             default:
-                Debug.Log($"{itemName}には効果が未設定です。");
+                Debug.Log($"{itemName}は合成素材のため使えません!");
                 return false;
         }
     }
