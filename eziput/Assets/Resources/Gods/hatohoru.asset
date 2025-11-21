@@ -18,13 +18,14 @@ MonoBehaviour:
   description: "\u30DB\u30EB\u30B9\u306E\u6BCD\u89AA"
   icon: {fileID: 21300000, guid: da2c28e311dbf944c9266ecc14e8be19, type: 3}
   abilities:
-    abilityName: 
+    abilityName: "\u30D0\u30D5"
     description: 
-    power: 0
+    power: 10
     trigger: 3
-    type: 0
-    attackPattern: 1
+    type: 2
+    attackPattern: 0
+    animationPositonType: 0
     cooldown: 0
     floatcurrentCooldown: 0
     isActive: 0
-    GodAnimationID: 1000
+    GodAnimationID: 1002

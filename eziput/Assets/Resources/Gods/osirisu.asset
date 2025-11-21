@@ -20,11 +20,11 @@ MonoBehaviour:
   abilities:
     abilityName: 
     description: 
-    power: 0
+    power: 5
     trigger: 3
-    type: 0
-    attackPattern: 1
-    cooldown: 30
+    type: 3
+    attackPattern: 4
+    cooldown: 0
     floatcurrentCooldown: 0
     isActive: 0
-    GodAnimationID: 1000
+    GodAnimationID: 1003

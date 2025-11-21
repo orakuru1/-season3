@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c0917b37f750974c8b4509aa43d13fe, type: 3}
+  m_Name: "\u30A4\u30B7\u30B9&"
+  m_EditorClassIdentifier: 
+  id: 7
+  godName: "\u30A4\u30B7\u30B9"
+  title: "\u8C4A\u7A63\u3068\u611B\u306E\u795E"
+  description: "\u30A4\u30B7\u30B9\u3068\u30CF\u30C8\u30DB\u30EB\u304C\u7FD2\u5408\u3057\u305F\u59FF"
+  icon: {fileID: 0}
+  abilities:
+    abilityName: 
+    description: 
+    power: 99
+    trigger: 3
+    type: 0
+    attackPattern: 1
+    animationPositonType: 0
+    cooldown: 0
+    floatcurrentCooldown: 0
+    isActive: 0
+    GodAnimationID: 1000
