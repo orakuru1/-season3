@@ -81,7 +81,7 @@ public class ItemUIManager : MonoBehaviour
         // 名前と画像を辞書に登録
         itemSpriteDict["薬草"] = potionSprite;
         itemSpriteDict["bou"] = bouSprite;
-        itemSpriteDict["木の枝"] = kinobouSprite;
+        itemSpriteDict["木棒"] = kinobouSprite;
         itemSpriteDict["神の腰布"] = kosinunoSprite;
         itemSpriteDict["鋼鉄"] = tateSprite;
         itemSpriteDict["パン"] = panSprite;
@@ -402,7 +402,7 @@ public class ItemUIManager : MonoBehaviour
 
         Debug.Log("すでに2つ選ばれています");
     }
-
+#region アイテムの使用・装備効果
     //=============================
     // アイテム使用処理
     //=============================
@@ -433,7 +433,6 @@ public class ItemUIManager : MonoBehaviour
         }
     }
 
-
     //=============================
     // 使用したアイテムの減少処理
     //=============================
@@ -456,7 +455,6 @@ public class ItemUIManager : MonoBehaviour
             UpdateItemCountText(data.button, data.count);
         }
     }
-
 
     //=============================
     // 装備処理
@@ -484,7 +482,7 @@ public class ItemUIManager : MonoBehaviour
 
             int atkBonus = selectedItemName switch
             {
-                "木の枝" => 5,
+                "木棒" => 5,
                 _ => 0
             };
 
@@ -519,7 +517,7 @@ public class ItemUIManager : MonoBehaviour
             int defBonus = selectedItemName switch
             {
                 "神の腰布" => 5,
-                "盾" => 10,
+                "鋼鉄" => 10,
                 _ => 0
             };
 
@@ -605,7 +603,7 @@ public class ItemUIManager : MonoBehaviour
             Debug.Log("防具を解除しました");
         }
     }
-
+#endregion
 
     //=============================
     // 見た目変更
