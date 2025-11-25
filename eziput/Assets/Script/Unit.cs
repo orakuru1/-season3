@@ -313,14 +313,14 @@ public class Unit : MonoBehaviour
             Debug.Log($"{name} attacked {target.name}!");
 
             animationController.animationState.isAttacking = false;
-
-            // 攻撃終了後ターン進行
-            if (team == Team.Player)
-            {
-                //TurnManager.Instance.NextTurn();
-            }
         }
+
         yield return StartCoroutine(GodManeger.Instance.TriggerAbilities(this.gameObject, AbilityTrigger.Passive_OnAttack));
+        // 攻撃終了後ターン進行
+        if (team == Team.Player)
+        {
+            TurnManager.Instance.NextTurn();
+        }
     }
 
     /*

@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8615bea04339ea14ba31fbd9fbf8ff67, type: 3}
   m_Name: HealEffect
   m_EditorClassIdentifier: 
-  id: 0
-  effectPrefab: {fileID: 0}
+  id: 1004
+  effectPrefab: {fileID: 8555647076263828267, guid: 246d11093567c6a44abd67a82878bbd7,
+    type: 3}
   duration: 1
   offset: {x: 0, y: 0, z: 0}

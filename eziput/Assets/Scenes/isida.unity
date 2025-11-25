@@ -1179,6 +1179,7 @@ MonoBehaviour:
     ismultipleTaget: 0
     isBuffing: 0
     isDebuffing: 0
+    isHiling: 0
 --- !u!114 &122653493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8394,6 +8395,7 @@ MonoBehaviour:
     ismultipleTaget: 0
     isBuffing: 0
     isDebuffing: 0
+    isHiling: 0
 --- !u!1001 &988728333
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14573,6 +14575,7 @@ MonoBehaviour:
     ismultipleTaget: 0
     isBuffing: 0
     isDebuffing: 0
+    isHiling: 0
 --- !u!1 &1136321394 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: efe97d1000ec4414f888f64f26a3e675,
@@ -14670,6 +14673,7 @@ MonoBehaviour:
     ismultipleTaget: 0
     isBuffing: 0
     isDebuffing: 0
+    isHiling: 0
 --- !u!114 &1136321404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21373,6 +21377,7 @@ MonoBehaviour:
     ismultipleTaget: 0
     isBuffing: 0
     isDebuffing: 0
+    isHiling: 0
 --- !u!1 &1555037101
 GameObject:
   m_ObjectHideFlags: 0
@@ -21682,6 +21687,7 @@ MonoBehaviour:
     ismultipleTaget: 0
     isBuffing: 0
     isDebuffing: 0
+    isHiling: 0
 --- !u!114 &1870630955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21695,10 +21701,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ownedGods:
-  - {fileID: 11400000, guid: 4b9157fa1c6922348bb53f53fb3c341e, type: 2}
+  - {fileID: 11400000, guid: 519cdc27d1bc86c489f629a0b9ddb16f, type: 2}
   - {fileID: 11400000, guid: d254365884542a6468d5db65d75524ce, type: 2}
   - {fileID: 11400000, guid: befeb862df9bc7f41b4ac3be606d23a0, type: 2}
-  - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
+  - {fileID: 11400000, guid: 4b9157fa1c6922348bb53f53fb3c341e, type: 2}
 --- !u!114 &1870630958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21875,14 +21881,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77a4de46c1c50c748a90199a5c8c561e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitEffects:
-  - {fileID: 11400000, guid: 8edbdd7b608a14c4f83cd7c1abb0cbb7, type: 2}
   attackEffects:
   - {fileID: 11400000, guid: c30864b3ac6d9914a9b175798489ae59, type: 2}
   - {fileID: 11400000, guid: 6401fbede8109404d8daed8815c67ba8, type: 2}
   - {fileID: 11400000, guid: b51592a1a4159b847ada55857cf4ff7e, type: 2}
-  - {fileID: 11400000, guid: 57b97e902f8c1474dabd22d0b34174be, type: 2}
-  - {fileID: 11400000, guid: 26366a2de2a5e304ab9c50430a585026, type: 2}
+  hitEffects:
+  - {fileID: 11400000, guid: 8edbdd7b608a14c4f83cd7c1abb0cbb7, type: 2}
+  healEffects:
+  - {fileID: 11400000, guid: 9db781c5ab12f934ea39c9924c0f3774, type: 2}
+  debuffEffects:
+  - {fileID: 11400000, guid: d8cc7bd0ab90fad4d827ebe823141731, type: 2}
+  buffEffects:
+  - {fileID: 11400000, guid: 05c58b70a68b55d4681aa5d823b661d4, type: 2}
 --- !u!4 &2005886360
 Transform:
   m_ObjectHideFlags: 0

@@ -24,7 +24,7 @@ MonoBehaviour:
     trigger: 3
     type: 0
     attackPattern: 1
-    cooldown: 30
+    cooldown: 5
     floatcurrentCooldown: 0
     isActive: 0
     GodAnimationID: 1000
