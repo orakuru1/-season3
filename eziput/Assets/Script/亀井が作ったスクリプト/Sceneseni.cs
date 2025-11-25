@@ -24,7 +24,7 @@ public class Sceneseni : MonoBehaviour
     {
         if(!returnPush)
         {
-            SceneManager.LoadScene("title");
+            SceneManager.LoadScene("Scene_Select");
             returnPush = true;
         }
     }
