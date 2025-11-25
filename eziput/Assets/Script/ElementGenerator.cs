@@ -73,6 +73,19 @@ public class ElementGenerator : MonoBehaviour
                     go.name = (mapData[y, x] == 0) ? $"Floor_{x}_{y}" : $"Wall_{x}_{y}";
                     spawned.Add(go);
 
+                    GridBlock block = go.GetComponent<GridBlock>();
+                    if (block != null)
+                    {
+                        block.gridPos = new Vector2Int(x, y);
+                        block.isWalkable = (mapData[y, x] == 0); // 0=床、1=壁
+
+                        // GridManager に登録
+                        if (GridManager.Instance != null)
+                        {
+                            GridManager.Instance.RegisterBlock(block);
+                        }
+                    }
+
                     Renderer rend = go.GetComponent<Renderer>();
                     if (rend != null)
                     {
