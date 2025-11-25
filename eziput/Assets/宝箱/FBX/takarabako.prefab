@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5737823462127311493}
   - component: {fileID: 6929203934776727227}
   - component: {fileID: 4646158152832378457}
+  - component: {fileID: 9147570545425342081}
   m_Layer: 0
   m_Name: treasure_chest_closed
   m_TagString: Untagged
@@ -83,6 +84,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &9147570545425342081
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1743999782125829291}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3600121127236733537, guid: f0267507dbcdea8459fc79159ac7460a, type: 3}
 --- !u!1 &3639784934842469624
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,6 +109,7 @@ GameObject:
   - component: {fileID: 874740215401980889}
   - component: {fileID: 6321109222328181330}
   - component: {fileID: 8062581206957815067}
+  - component: {fileID: 9086245688226066153}
   m_Layer: 0
   m_Name: "\u5B9D\u7BB1\u958B\u9589"
   m_TagString: Untagged
@@ -166,6 +182,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &9086245688226066153
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3639784934842469624}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5552854212150444457, guid: f0267507dbcdea8459fc79159ac7460a, type: 3}
 --- !u!1 &4816608971228111705
 GameObject:
   m_ObjectHideFlags: 0
@@ -177,6 +207,7 @@ GameObject:
   - component: {fileID: 3093462489855694634}
   - component: {fileID: 922621540217083785}
   - component: {fileID: 3536921910652194198}
+  - component: {fileID: 8059542755076138945}
   m_Layer: 0
   m_Name: treasure_chest_closed.001
   m_TagString: Untagged
@@ -249,6 +280,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8059542755076138945
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4816608971228111705}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5457957393748108817, guid: f0267507dbcdea8459fc79159ac7460a, type: 3}
 --- !u!1 &7447380110618312217
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,9 +303,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7787208005401371811}
-  - component: {fileID: 7753792357311442133}
   - component: {fileID: 7753792357311442136}
   - component: {fileID: 7753792357311442138}
+  - component: {fileID: 3580519394590746678}
   m_Layer: 0
   m_Name: takarabako
   m_TagString: Untagged
@@ -276,7 +321,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7447380110618312217}
   m_LocalRotation: {x: 0.078311644, y: 0.0011529771, z: -0.9968203, w: -0.014676118}
-  m_LocalPosition: {x: 2.328, y: 0.017522544, z: 2.526}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -286,19 +331,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 351.016, z: 178.313}
---- !u!65 &7753792357311442133
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7447380110618312217}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 0.64, z: 0.55}
-  m_Center: {x: 0, y: -0.33, z: 1.83}
 --- !u!95 &7753792357311442136
 Animator:
   serializedVersion: 5
@@ -333,3 +365,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 7753792357311442136}
+  player: {fileID: 0}
+  itemObject: {fileID: 0}
+  itemGetDelay: 1.5
+  itemList:
+  - "\u85AC\u8349"
+  - "\u30D1\u30F3"
+  - "\u6728\u306E\u679D"
+  - "\u795E\u306E\u8170\u5E03"
+  itemTypeList: 00000000000000000100000002000000
+--- !u!64 &3580519394590746678
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7447380110618312217}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
