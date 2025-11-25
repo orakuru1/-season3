@@ -89,7 +89,7 @@ public class Unit : MonoBehaviour
         gridManager = FindObjectOfType<GridManager>();
 
         // ワールド位置からグリッド座標を自動算出
-        gridPos = gridManager.WorldToGrid(transform.position);
+        //gridPos = gridManager.WorldToGrid(transform.position);
 
         var block = gridManager.GetBlock(gridPos);
         if (block != null)
