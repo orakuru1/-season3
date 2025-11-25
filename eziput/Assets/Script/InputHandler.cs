@@ -24,7 +24,7 @@ public class InputHandler : MonoBehaviour
 
         // === 移動・攻撃中は方向転換禁止 ===
         // === 攻撃・移動中は方向転換だけ禁止 ===
-        bool canRotate = !(player.isMoving || player.animationController.animationState.isAttacking || GodManeger.Instance.isGodDescrip);
+        bool canRotate = !(player.isMoving || player.animationController.animationState.isAttacking || player.animationController.animationState.isBuffing || player.animationController.animationState.isDebuffing || player.animationController.animationState.isHiling || GodManeger.Instance.isGodDescrip);
 
         // 攻撃範囲表示中などで方向転換を許可したい場合
         if (canRotate && player.isShowingAttackRange)

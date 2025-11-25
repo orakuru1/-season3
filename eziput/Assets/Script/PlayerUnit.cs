@@ -77,7 +77,8 @@ public class PlayerUnit : Unit
         //攻撃の後に神の力をゲットできるか毎回しよう
         yield return StartCoroutine(GodManeger.Instance.GrantGodToPlayer());
 
-        yield return StartCoroutine(GodManeger.Instance.TriggerAbilities(this.gameObject, AbilityTrigger.Passive_OnAttack));//攻撃する時共通,攻撃時
+        //攻撃する時共通,攻撃時の神の力発動
+        yield return StartCoroutine(GodManeger.Instance.TriggerAbilities(this.gameObject, AbilityTrigger.Passive_OnAttack));
         yield return null;
 
         yield return StartCoroutine(GodManeger.Instance.GrantGodToPlayer());

@@ -96,12 +96,10 @@ public class ItemUIManager : MonoBehaviour
         craftExecuteButton.onClick.AddListener(OnCraftExecute);
     }
 #region 合成レシピ
-    
-
     //合成レシピ
     private void RegisterRecipes()
     {
-        resipeDict["盾"] = new List<(string, int)>()
+        resipeDict["神の腰布"] = new List<(string, int)>()
         {
             ("木の枝", 1),
             ("神の腰布", 1)
@@ -266,12 +264,26 @@ public class ItemUIManager : MonoBehaviour
             return;
         }
 
-        //素材を減らす
-        UseSelectedItem(craftItem1, "item");
-        UseSelectedItem(craftItem2, "item");
+        string cat1 = GetItemCategory(craftItem1);
+        string cat2 = GetItemCategory(craftItem2);
 
+        //素材を減らす
+        UseSelectedItem(craftItem1, cat1);
+        UseSelectedItem(craftItem2, cat2);
+
+        
         //アイテム追加
-        AddItem(result);
+        string resultCategory = GetItemCategory(result);
+
+        //正しいカテゴリへ追加
+        if(resultCategory != null)
+        {
+            AddItem(result, resultCategory);
+        }
+        else
+        {
+            AddItem(result, "item");
+        }
         Debug.Log($"合成成功!{result}");
 
         ClearCraftSlots();
@@ -307,9 +319,10 @@ public class ItemUIManager : MonoBehaviour
         craftSlot1.sprite = null;
         craftSlot2.sprite = null;
 
-        craftSlot1.color = new Color(1,1,1,0);
-        craftSlot2.color = new Color(1,1,1,0);
+        craftSlot1.color = new Color(255,255,255,255);
+        craftSlot2.color = new Color(255,255,255,255);
     }
+
 
 #endregion
     //=============================
@@ -348,6 +361,27 @@ public class ItemUIManager : MonoBehaviour
     //合成スロットにアイテム挿入
     private void AddToCraftSlot(string itemName)
     {
+        string category = GetItemCategory(itemName);
+        var dict = GetDictionaryByCategory(category);
+
+        if(dict == null || !dict.ContainsKey(itemName))
+        {
+            Debug.Log($"{itemName}が辞書にありません");
+            return;
+        }
+
+        int currentCount = dict[itemName].count;
+
+        //所持数チェック
+        int alreadyUsed = 0;
+        if(craftItem1 == itemName) alreadyUsed++;
+        if(craftItem2 == itemName) alreadyUsed++;
+
+        if(currentCount - alreadyUsed <= 0)
+        {
+            Debug.Log($"{itemName}の所持数が不足しています");
+            return;
+        }
         //1つ目
         if(craftItem1 == null)
         {

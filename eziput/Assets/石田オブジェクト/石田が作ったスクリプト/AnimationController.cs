@@ -23,7 +23,7 @@ public class AnimationController : MonoBehaviour
         anim = GetComponent<Animator>();
     }
 
-    public void Initialize(Unit target, int dmg = 1)
+    public void Initialize(Unit target, int dmg = 0)
     {
         Target.Clear();
         Target.Add(target);
@@ -31,12 +31,40 @@ public class AnimationController : MonoBehaviour
         animationState.isAttacking = true;
         animationState.ismultipleTaget = false;
     }
-    public void Initialize(List<Unit> targets, int dmg = 1)
+    public void Initialize(List<Unit> targets, int dmg = 0)
     {
+        Target.Clear();
         Target = targets;
         damage = dmg;
         animationState.isAttacking = true;
         animationState.ismultipleTaget = true;
+    }
+
+    public void InitializeBuff(Unit user, int power = 0)
+    {
+        Target.Clear();
+        Target.Add(user);
+        damage = power;
+
+        animationState.isBuffing = true;
+    }
+
+    public void InitializeDebuff(Unit target, int power = 0)
+    {
+        Target.Clear();
+        Target.Add(target);
+        damage = power;
+
+        animationState.isDebuffing = true;
+    }
+
+    public void InitializeHill(Unit user, int power = 0)
+    {
+        Target.Clear();
+        Target.Add(user);
+        damage = power;
+
+        animationState.isHiling = true;
     }
 
     public void StartRunAnimation()
@@ -60,6 +88,30 @@ public class AnimationController : MonoBehaviour
         if (anim != null)
         {
             anim.SetInteger("Attack", animationID);
+        }
+    }
+
+    public void BuffAnimation(int animationID)
+    {
+        if (anim != null)
+        {
+            anim.SetInteger("Buff", animationID);
+        }
+    }
+
+    public void DebuffAnimation(int animationID)
+    {
+        if (anim != null)
+        {
+            anim.SetInteger("Debuff", animationID);
+        }
+    }
+
+    public void HillAnimation(int animationID)
+    {
+        if (anim != null)
+        {
+            anim.SetInteger("Hill", animationID);
         }
     }
 
@@ -190,6 +242,51 @@ public class AnimationController : MonoBehaviour
         //プレイヤーとスキルのアニメーション
         //敵の攻撃アニメーション（現在は敵の攻撃アニメーションがないので使わないようになっている）
         //敵の両方のアニメーション
+    }
+
+    public void OnBuffAnimation()
+    {
+        Target[0].Buff(damage);
+        //バフアニメーションを入れる。アタックで入れてる。
+        //ヒットが終わった時と同じ処理をする。感じの
+    }
+
+    public void OnBuffAnimationEnd()
+    {
+        Debug.Log("バフアニメーション終わり―");
+        anim.SetInteger("Buff", 0);
+        animationState.isBuffing = false;
+        
+    }
+
+    public void OnDebuffAnimation()
+    {
+        Target[0].Debuff(damage);
+        //デバフアニメーションを入れる。アタックで入れてる。
+        //ヒットが終わった時と同じ処理をする。感じの
+    }
+
+    public void OnDebuffAnimationEnd()
+    {
+        Debug.Log("デバフアニメーション終わり―");
+        anim.SetInteger("Debuff", 0);
+        animationState.isDebuffing = false;
+        
+    }
+
+    public void OnHillAnimation()
+    {
+        Target[0].Heal(damage);
+        //ヒールアニメーションを入れる。アタックで入れてる。
+        //ヒットが終わった時と同じ処理をする。感じの
+    }
+
+    public void OnHillAnimationEnd()
+    {
+        Debug.Log("ヒールアニメーション終わり―");
+        anim.SetInteger("Hill", 0);
+        animationState.isHiling = false;
+        
     }
 
 

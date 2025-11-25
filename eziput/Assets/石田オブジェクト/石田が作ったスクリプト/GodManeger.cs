@@ -8,6 +8,7 @@ public class GodManeger : MonoBehaviour
 {
     public static GodManeger Instance { get; private set; }
     public List<GodData> allgods = new List<GodData>();
+    private List<GodData> addgods = new List<GodData>();
 
     //クールダウンに入った時に送り込む辞書
     private Dictionary<GodAbility, float> cooldownTimers = new Dictionary<GodAbility, float>();
@@ -15,8 +16,13 @@ public class GodManeger : MonoBehaviour
     private int ForCount = 0;
 
     public bool isGodDescrip = false;
+    private bool isDed = false;
+
+    public List<Vector3> enemyPosition = new List<Vector3>();
 
     public List<FusionRecipe> fusionRecipes = new List<FusionRecipe>();
+    
+    private GodPlayer GetPlayer;
 
     void Awake()
     {
@@ -37,17 +43,7 @@ public class GodManeger : MonoBehaviour
             if (god.abilities != null) god.abilities.isActive = false;
         }
     }
-/*
-    //ランダムで神を取得    
-    public GodData GetRandomGod()
-    {
-        if (allgods.Count == 0) return null;
-        return allgods[Random.Range(0, allgods.Count)];
-    }
-*/
-    private List<GodData> addgods = new List<GodData>();
-    private GodPlayer GetPlayer;
-    private bool isDed = false;
+#region 神の力を追加する関係
     public void addinggods(List<GodData> god, GodPlayer getplayer, bool isded)
     {
         if (god == null || getplayer == null)  return;
@@ -71,12 +67,7 @@ public class GodManeger : MonoBehaviour
         isDed = false;
         isGodDescrip = false;
     }
-
-    /// 神の詳細を表示するデバッグ用メソッド
-    public void descriptionGod(GodData god)
-    {
-        Debug.Log($"神の名前: {god.godName}\n肩書き: {god.title}\n能力: {god.abilities.abilityName}\n説明: {god.description}");
-    }
+#endregion
 
     //// <summary>
     /// 呼び出し例
@@ -87,6 +78,7 @@ public class GodManeger : MonoBehaviour
     /// </summary>
 
     //ここで、ターン開始時、ターン終了時、攻撃時、被弾時などのタイミングで呼び出す。パッシブ系を呼ぶところ
+#region 神の力のチェック
     public IEnumerator TriggerAbilities(GameObject unit, AbilityTrigger trigger)
     {
         yield return null;
@@ -96,11 +88,6 @@ public class GodManeger : MonoBehaviour
         AnimationController animationController = unit.GetComponent<AnimationController>();
         if (godPlayer == null)
         {
-            if (u.team == Unit.Team.Player)
-            {
-                //animationController.animationState.isAttacking = false;
-                //if(isDed == false)TurnManager.Instance.NextTurn();
-            }
             Debug.Log("神の力をもっていないよ");
             yield break;
         }
@@ -135,30 +122,29 @@ public class GodManeger : MonoBehaviour
             }
         }
 
-        if (ForCount == 0)//一回でもあったら、アニメーションを通すはずなので、何もないなら次に進む。
-        {
-            
-        }
-        if (u.team == Unit.Team.Player)
-        {
-            //animationController.animationState.isAttacking = false;
-            //if(isDed == false)TurnManager.Instance.NextTurn();//ここに置いていると、敵を神の力で倒したときに、もう一回行動できる。
-            //外に置くと、もう一回行動は無くなるが、敵が無限に行動する。
-        }
-        //TurnManager.Instance.NextTurn();
+        Debug.Log("神の力の発動処理終了");
 
     }
+#endregion
 
+#region 効果発動
     public void AttackAbility(GodAbility ability, GameObject user, Unit target)
     {
         Debug.Log($"{target}に{ability.abilityName} を発動！（攻撃力 {ability.power}）");
         //target.TakeDamage(ability.power, user.GetComponent<Unit>());//animatorの結びつけが大変そう、攻撃アニメーションだから。
         ability.isActive = true;
+    }
 
+    public void DebuffAbility(GodAbility ability, GameObject user, Unit target)
+    {
+        Debug.Log($"{target}に{ability.abilityName} を発動！（攻撃力 {ability.power}）");
+        //target.TakeDebuff(ability.power, user.GetComponent<Unit>());
+        ability.isActive = true;
     }
 
     public IEnumerator HealAbility(GodAbility ability, GameObject user)
     {
+        yield return null;
         if (cooldownTimers.ContainsKey(ability))
         {
             Debug.Log($"{ability.abilityName} はクールダウン中です。残り時間: {cooldownTimers[ability]:F2} 秒");
@@ -170,11 +156,20 @@ public class GodManeger : MonoBehaviour
         cooldownTimers[ability] = ability.cooldown;///////////////////////クールダウンがない場合は、入れないにしよう。
         ability.isActive = true;
 
-        /////////////////////////ヒールのアニメーションを入れる//////////////////////////////////////////////
+        //ヒールのアニメーション
+        yield return null;
+        AnimationController animationController = user.GetComponent<AnimationController>();
+        animationController.InitializeHill(user.GetComponent<Unit>(), ability.power);
+        animationController.HillAnimation(ability.GodAnimationID);
+
+        cooldownTimers[ability] = ability.cooldown;
+        yield return new WaitUntil(() => !animationController.animationState.isHiling);
+        Debug.Log("ヒールアニメーション終了");
     }
 
     public IEnumerator BuffAbility(GodAbility ability, GameObject user)
     {
+        yield return null;
         if (cooldownTimers.ContainsKey(ability))
         {
             Debug.Log($"{ability.abilityName} はクールダウン中です。残り時間: {cooldownTimers[ability]:F2} 秒");
@@ -185,17 +180,19 @@ public class GodManeger : MonoBehaviour
         Debug.Log($"{ability.abilityName} の加護で強化！({ability.description})");
         cooldownTimers[ability] = ability.cooldown;///////////////////////クールダウンがない場合は、入れないにしよう。
         ability.isActive = true;
-        /////////////////////////バフのアニメーションを入れる//////////////////////////////////////////////
+
+        //バフのアニメーション
+        yield return null;
+        AnimationController animationController = user.GetComponent<AnimationController>();
+        animationController.InitializeBuff(user.GetComponent<Unit>(), ability.power);
+        animationController.BuffAnimation(ability.GodAnimationID);
+
+        cooldownTimers[ability] = ability.cooldown;
+        yield return new WaitUntil(() => !animationController.animationState.isBuffing);
+        Debug.Log("バフアニメーション終了");
+
     }
     
-    public void DebuffAbility(GodAbility ability, GameObject user, Unit target)
-    {
-
-        Debug.Log($"{target}に{ability.abilityName} を発動！（攻撃力 {ability.power}）");
-        //target.TakeDebuff(ability.power, user.GetComponent<Unit>());
-        ability.isActive = true;
-    }
-
     /// <summary>
     /// 神の力を発動（範囲攻撃タイプ）
     /// </summary>
@@ -236,23 +233,48 @@ public class GodManeger : MonoBehaviour
 
         if(targets.Count != 0)
         {
+            enemyPosition.Clear();
+            foreach(var target in targets)
+            {
+                enemyPosition.Add(target.transform.position);
+            }
             ForCount++;
-            /////////////////////////実際の攻撃処理はこんな感じ
-            Debug.Log("範囲内に敵がいるのでゴッドアニメーション発動！");
-            AnimationController animationController = user.GetComponent<AnimationController>();//ここら辺の処理は、attack等にそれぞれでまとめる。
-            animationController.Initialize(targets, ability.power);
-            animationController.AttackAnimation(ability.GodAnimationID);//いずれ、神のアニメーションとアニメーション番号を作る（最初１，１個習合２，みたいな感じ）
-            ///////////////////////////////////////////////////
-            cooldownTimers[ability] = ability.cooldown;///////////////////////クールダウンがない場合は、入れないにしよう。（関数で共通化）SetCooldown(ability);
-            yield return new WaitUntil(() => !animationController.animationState.isAttacking);
+            yield return null;//相手がアニメーターを持っていないと早すぎるので、待つ
+            switch (ability.type)
+            {
+                case AbilityType.Attack:
+                        /////////////////////////実際の攻撃処理はこんな感じ
+                        Debug.Log("範囲内に敵がいるのでゴッドアニメーション発動！");
+                        AnimationController animationController = user.GetComponent<AnimationController>();//ここら辺の処理は、attack等にそれぞれでまとめる。
+                        animationController.Initialize(targets, ability.power);
+                        animationController.AttackAnimation(ability.GodAnimationID);//いずれ、神のアニメーションとアニメーション番号を作る（最初１，１個習合２，みたいな感じ）
+                        ///////////////////////////////////////////////////
+                        cooldownTimers[ability] = ability.cooldown;///////////////////////クールダウンがない場合は、入れないにしよう。（関数で共通化）SetCooldown(ability);
+                        yield return new WaitUntil(() => !animationController.animationState.isAttacking);
+                    break;
+                case AbilityType.Debuff:
+                        //デバフのアニメーション
+                        AnimationController animationController2 = user.GetComponent<AnimationController>();
+                        animationController2.InitializeDebuff(user.GetComponent<Unit>(), ability.power);
+                        animationController2.DebuffAnimation(ability.GodAnimationID);
+
+                        cooldownTimers[ability] = ability.cooldown;
+                        yield return new WaitUntil(() => !animationController2.animationState.isDebuffing);
+                        Debug.Log("デバフアニメーション終了");
+                    break;
+            }
+
         }
-
-
     }
+#endregion
+
+
+
 
     /// <summary>
     /// 範囲パターンに基づいて対象ユニットを取得
     /// </summary>
+#region 力の範囲に敵がいるか
     private List<Unit> GetTargetsInRange(Unit user, GodAttackPattern pattern)
     {
         List<Unit> targets = new List<Unit>();
@@ -295,6 +317,18 @@ public class GodManeger : MonoBehaviour
                         targets.Add(unit);
                     break;
 
+                case GodAttackPattern.Forward1:
+                    // 前方1マス（向いている方向）
+                    if (dir == Vector2Int.up && dy == 1 && dx == 0)
+                        targets.Add(unit);
+                    if (dir == Vector2Int.down && dy == -1 && dx == 0)
+                        targets.Add(unit);
+                    if (dir == Vector2Int.left && dx == -1 && dy == 0)
+                        targets.Add(unit);
+                    if (dir == Vector2Int.right && dx == 1 && dy == 0)
+                        targets.Add(unit);
+                    break;
+
                 case GodAttackPattern.Global:
                     // 全ての敵
                     targets.Add(unit);
@@ -304,15 +338,10 @@ public class GodManeger : MonoBehaviour
 
         return targets;
     }
+#endregion
 
 
-        //新しい力と融合できる神の力UIを表示
-        //「習合するボタン」と「しない」ボタンを表示
-        //習合したい力を選択した状態で「習合する」ボタンを押すと習合開始
-        //１つの力になる
-        //神の力リストに入る
-
-
+#region 力の融合処理
     public IEnumerator FuseGodsCoroutine(List<GodData> fusionCandidates, GodData newGod, System.Action<GodData, int> onFinish)
     {
         bool fusionFinished  = false;
@@ -375,13 +404,8 @@ public class GodManeger : MonoBehaviour
         }
         return fusionTargets;
     }
-    
+#endregion
 
-
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()

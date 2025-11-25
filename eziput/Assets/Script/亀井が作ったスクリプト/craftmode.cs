@@ -9,8 +9,6 @@ public class craftmode : MonoBehaviour
 
     [Header("パネル")]
     public RectTransform craftArea;  //合成スロット用パネル
-    public RectTransform craftbukiArea;
-    public RectTransform craftbougArea;
     public RectTransform inventoryArea;  //持ち物一覧パネル
     public RectTransform bukiArea;  //武器一覧パネル
     public RectTransform bougArea;  //防具一覧パネル
@@ -97,8 +95,7 @@ public class craftmode : MonoBehaviour
 
         //CraftAreaを非表示
         craftArea.gameObject.SetActive(false);
-        craftbukiArea.gameObject.SetActive(false);
-        craftbougArea.gameObject.SetActive(false);
+       
 
         //全画面
         SetRectFull(inventoryArea);
@@ -110,16 +107,14 @@ public class craftmode : MonoBehaviour
         bukiArea.localScale = Vector3.one;
         bougArea.localScale = Vector3.one;
         craftArea.localScale = Vector3.one;
-        craftbukiArea.localScale = Vector3.one;
-        craftbougArea.localScale = Vector3.one;
+       
 
         //高さリセット
         inventoryArea.sizeDelta = Vector2.zero;
         bukiArea.sizeDelta = Vector2.zero;
         bougArea.sizeDelta = Vector2.zero;
         craftArea.sizeDelta = Vector2.zero;
-        craftbukiArea.sizeDelta = Vector2.zero;
-        craftbougArea.sizeDelta = Vector2.zero;
+      
 
         //contentは常に一定サイズ
         inventoryConten.sizeDelta = new Vector2(inventoryConten.sizeDelta.x, contentHeight);
@@ -137,13 +132,9 @@ public class craftmode : MonoBehaviour
 
         //CraftAreaを表示
         craftArea.gameObject.SetActive(true);
-        craftbukiArea.gameObject.SetActive(true);
-        craftbougArea.gameObject.SetActive(true);
 
         //上半分
         SetRectTopHalf(craftArea);
-        SetRectTopHalf(craftbukiArea);
-        SetRectTopHalf(craftbougArea);
         
 
         //下半分
