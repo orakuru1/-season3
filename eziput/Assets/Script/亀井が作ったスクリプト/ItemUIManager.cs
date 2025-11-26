@@ -38,6 +38,13 @@ public class ItemUIManager : MonoBehaviour
     public Sprite tetuSprite;
     public Sprite isihen;
     public Sprite isiduti;
+    public Sprite nuno;
+    public Sprite suna;
+    public Sprite sunanuno;
+    public Sprite taimatu;
+    public Sprite tosuto;
+    public Sprite doromizu;
+    public Sprite mizu;
 
     [Header("合成スロットUI")]
     [SerializeField] private Image craftSlot1;
@@ -90,6 +97,13 @@ public class ItemUIManager : MonoBehaviour
         itemSpriteDict["鉄"] = tetuSprite;
         itemSpriteDict["石片"] = isihen;
         itemSpriteDict["石槌"] = isiduti;
+        itemSpriteDict["布"] = nuno;
+        itemSpriteDict["砂"] = suna;
+        itemSpriteDict["砂包帯"] = sunanuno;
+        itemSpriteDict["松明"] = taimatu;
+        itemSpriteDict["トースト"] = tosuto;
+        itemSpriteDict["濁った水"] = doromizu;
+        itemSpriteDict["水"] = mizu;
 
         RegisterRecipes();
     }
@@ -99,19 +113,52 @@ public class ItemUIManager : MonoBehaviour
         //合成ボタンが押されたときに合成処理
         craftExecuteButton.onClick.AddListener(OnCraftExecute);
     }
-#region 合成レシピ
+#region 合成レシピとカテゴリ
+    //アイテムのカテゴリ固定辞書
+    private Dictionary<string, string> baseCategoryDict = new()
+    {
+        {"薬草", "item"},
+        {"パン", "item"},
+        {"布", "item"},
+        {"砂", "item"},
+        {"砂包帯", "item"},
+        {"濁った水", "item"},
+        {"水", "item"},
+        {"木棒", "weapon"},
+        {"石槌", "weapon"},
+        {"神の腰布", "armor"},
+        {"石片", "item"},
+        {"鉄", "item"},
+        {"bou", "item"},
+        {"鋼鉄", "armor"},
+        {"トースト", "item"},
+        {"松明", "item"}
+    };
+
     //合成レシピ
     private void RegisterRecipes()
     {
+        resipeDict["砂包帯"] = new List<(string, int)>()
+        {
+            ("布", 1),
+            ("砂", 1)
+        };
+        
+        resipeDict["水"] = new List<(string, int)>()
+        {
+            ("布", 1),
+            ("濁った水", 1)
+        };
+
         resipeDict["石槌"] = new List<(string, int)>()
         {
             ("木棒", 1),
             ("石片", 1)
         };
 
-        resipeDict["鋼鉄"] = new List<(string, int)>()
+        resipeDict["トースト"] = new List<(string, int)>()
         {
-            ("鉄", 1),
+            ("松明", 1),
             ("パン", 1)
         };
     }
@@ -421,6 +468,11 @@ public class ItemUIManager : MonoBehaviour
 
         switch (itemName)
         {
+            case "水":
+                if (player.status.currentHP >= player.status.maxHP) return false;
+                player.Heal(5);
+                return true;
+            
             case "薬草":
                 if (player.status.currentHP >= player.status.maxHP) return false;
                 player.Heal(20);
@@ -428,7 +480,18 @@ public class ItemUIManager : MonoBehaviour
 
             case "パン":
                 if (player.status.currentHP >= player.status.maxHP) return false;
-                player.Heal(50);
+                player.Heal(10);
+                return true;
+            
+            case "トースト":
+                if(player.status.currentHP >= player.status.maxHP) return false;
+                player.Heal(30);
+                return true;
+            
+            case "砂包帯":
+                if(player.status.currentHP >= player.status.maxHP) return false;
+                player.Heal(5);
+                player.equipDefenseBonus += 3;
                 return true;
             
             default:
@@ -526,7 +589,7 @@ public class ItemUIManager : MonoBehaviour
                 _ => 0
             };
 
-            player.equipDefenseBonus = defBonus;
+            player.equipDefenseBonus += defBonus;
 
             GetStatus statusUI = FindObjectOfType<GetStatus>();
             if (statusUI != null)
@@ -654,6 +717,11 @@ public class ItemUIManager : MonoBehaviour
         if (itemDict.ContainsKey(itemName)) return "item";
         if (weaponDict.ContainsKey(itemName)) return "weapon";
         if (armorDict.ContainsKey(itemName)) return "armor";
+
+        //未所持でもカテゴリを返せるように
+        if(baseCategoryDict.ContainsKey(itemName))
+           return baseCategoryDict[itemName];
+        
         return null;
     }
 

@@ -4927,16 +4927,26 @@ PrefabInstance:
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
       propertyPath: itemList.Array.data[5]
-      value: "\u92FC\u9244"
-      objectReference: {fileID: 0}
-    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
-        type: 3}
-      propertyPath: itemList.Array.data[6]
       value: "\u77F3\u7247"
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
+      propertyPath: itemList.Array.data[6]
+      value: "\u7802"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
+        type: 3}
       propertyPath: itemList.Array.data[7]
+      value: "\u5E03"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
+        type: 3}
+      propertyPath: itemList.Array.data[8]
+      value: "\u92FC\u9244"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
+        type: 3}
+      propertyPath: itemList.Array.data[9]
       value: "\u77F3\u69CC"
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
@@ -4952,7 +4962,7 @@ PrefabInstance:
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
       propertyPath: itemTypeList.Array.data[5]
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
@@ -4962,6 +4972,16 @@ PrefabInstance:
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
       propertyPath: itemTypeList.Array.data[7]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
+        type: 3}
+      propertyPath: itemTypeList.Array.data[8]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
+        type: 3}
+      propertyPath: itemTypeList.Array.data[9]
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7787208005401371811, guid: 036a70210fa8adb41ae74cbae0809ce9,
@@ -10145,6 +10165,9 @@ MonoBehaviour:
   tetuSprite: {fileID: 21300000, guid: b1d08de60d5545e4083389175c5ac63e, type: 3}
   isihen: {fileID: 21300000, guid: b54f46cffc7bdbb42b9e31db13753c86, type: 3}
   isiduti: {fileID: 21300000, guid: f6b42d02f13c235438695f90b5e76d6a, type: 3}
+  nuno: {fileID: 21300000, guid: 8d16c499816726e4591643479afd8078, type: 3}
+  suna: {fileID: 21300000, guid: c45cb9f7f82a6fc4eb7cbd1501a14f79, type: 3}
+  sunanuno: {fileID: 21300000, guid: 24911690daa280246b4cfe61d4307a61, type: 3}
   craftSlot1: {fileID: 1800570248}
   craftSlot2: {fileID: 33934187}
   craftExecuteButton: {fileID: 984708922}
