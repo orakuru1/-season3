@@ -11,7 +11,7 @@ public class GridBlock : MonoBehaviour
     private Renderer blockRenderer;
     private Color originalColor;
 
-    private void Awake()
+    private void Start()
     {
         blockRenderer = GetComponent<Renderer>();
         if (blockRenderer != null) originalColor = blockRenderer.material.color;
