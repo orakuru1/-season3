@@ -36,6 +36,8 @@ public class ItemUIManager : MonoBehaviour
     public Sprite bouSprite;
     public Sprite kinobouSprite;
     public Sprite tetuSprite;
+    public Sprite isihen;
+    public Sprite isiduti;
 
     [Header("合成スロットUI")]
     [SerializeField] private Image craftSlot1;
@@ -86,6 +88,8 @@ public class ItemUIManager : MonoBehaviour
         itemSpriteDict["鋼鉄"] = tateSprite;
         itemSpriteDict["パン"] = panSprite;
         itemSpriteDict["鉄"] = tetuSprite;
+        itemSpriteDict["石片"] = isihen;
+        itemSpriteDict["石槌"] = isiduti;
 
         RegisterRecipes();
     }
@@ -99,10 +103,10 @@ public class ItemUIManager : MonoBehaviour
     //合成レシピ
     private void RegisterRecipes()
     {
-        resipeDict["神の腰布"] = new List<(string, int)>()
+        resipeDict["石槌"] = new List<(string, int)>()
         {
-            ("木の枝", 1),
-            ("神の腰布", 1)
+            ("木棒", 1),
+            ("石片", 1)
         };
 
         resipeDict["鋼鉄"] = new List<(string, int)>()
@@ -482,7 +486,8 @@ public class ItemUIManager : MonoBehaviour
 
             int atkBonus = selectedItemName switch
             {
-                "木棒" => 5,
+                "木棒" => 3,
+                "石槌" => 5,
                 _ => 0
             };
 

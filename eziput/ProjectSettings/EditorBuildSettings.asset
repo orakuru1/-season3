@@ -11,13 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tougou.unity
     guid: 1d95c1f99f0a9de4f9bcfe8a22d456a7
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Hamada.unity
     guid: 2d1c7bbf1487b1c41b03b55434551987
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/DungeonScene.unity
     guid: 43434a73f3fb24d48baa02f35f84cad7
-  - enabled: 1
-    path: Assets/Scenes/kamei.unity
-    guid: 115880746d8e3084db48def8840b3c2d
   m_configObjects: {}
