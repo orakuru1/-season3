@@ -118,6 +118,8 @@ public class TurnManager : MonoBehaviour
     {
         currentIndex = 0; // プレイヤーに戻す
         StartNextTurn();
+        //神の力のクールダウンを減らす
+        GodManeger.Instance.CooldownCount();
     }
     // SRPG互換: 次のユニットへ
     public void NextTurn()

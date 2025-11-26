@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a716df330ab77845878b78ae57fb812, type: 3}
   m_Name: DebuffEffect 1
   m_EditorClassIdentifier: 
-  id: 0
-  effectPrefab: {fileID: 0}
+  id: 1003
+  effectPrefab: {fileID: 387052216279435133, guid: 507daef8e7ac9fb4085599f0d515d374,
+    type: 3}
   duration: 1
   offset: {x: 0, y: 0, z: 0}

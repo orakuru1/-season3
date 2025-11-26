@@ -23,8 +23,8 @@ MonoBehaviour:
     power: 5
     trigger: 3
     type: 3
-    attackPattern: 4
-    cooldown: 0
+    attackPattern: 1
+    cooldown: 5
     floatcurrentCooldown: 0
-    isActive: 0
+    isActive: 1
     GodAnimationID: 1003

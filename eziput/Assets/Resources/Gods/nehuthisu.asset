@@ -22,10 +22,9 @@ MonoBehaviour:
     description: 
     power: 0
     trigger: 3
-    type: 0
-    attackPattern: 1
-    animationPositonType: 0
-    cooldown: 0
+    type: 1
+    attackPattern: 0
+    cooldown: 6
     floatcurrentCooldown: 0
-    isActive: 0
-    GodAnimationID: 1000
+    isActive: 1
+    GodAnimationID: 1004

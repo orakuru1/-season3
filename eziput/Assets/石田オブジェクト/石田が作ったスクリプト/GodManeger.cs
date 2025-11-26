@@ -11,9 +11,7 @@ public class GodManeger : MonoBehaviour
     private List<GodData> addgods = new List<GodData>();
 
     //クールダウンに入った時に送り込む辞書
-    private Dictionary<GodAbility, float> cooldownTimers = new Dictionary<GodAbility, float>();
-
-    private int ForCount = 0;
+    private Dictionary<GodAbility, int> cooldownTimers = new Dictionary<GodAbility, int>();
 
     public bool isGodDescrip = false;
     private bool isDed = false;
@@ -82,7 +80,6 @@ public class GodManeger : MonoBehaviour
     public IEnumerator TriggerAbilities(GameObject unit, AbilityTrigger trigger)
     {
         yield return null;
-        ForCount = 0;//初期化
         var godPlayer = unit.GetComponent<GodPlayer>();
         Unit u = unit.GetComponent<Unit>();
         AnimationController animationController = unit.GetComponent<AnimationController>();
@@ -102,6 +99,12 @@ public class GodManeger : MonoBehaviour
 
             // 対応するトリガーか判定
             if (ability.trigger != trigger) continue;
+
+            if (cooldownTimers.ContainsKey(ability))
+            {
+                Debug.Log($"{ability.abilityName} はクールダウン中です。残り時間: {cooldownTimers[ability]:F2} 秒");
+                continue;
+            }
 
             Debug.Log($"{unit.name} の {god.godName} の {ability.abilityName} が {trigger} で発動！");
             switch (ability.type)
@@ -128,30 +131,34 @@ public class GodManeger : MonoBehaviour
 #endregion
 
 #region 効果発動
-    public void AttackAbility(GodAbility ability, GameObject user, Unit target)
+//攻撃系のアビリティ
+    public IEnumerator AttackAbility(GodAbility ability, GameObject user, List<Unit> target)
     {
-        Debug.Log($"{target}に{ability.abilityName} を発動！（攻撃力 {ability.power}）");
-        //target.TakeDamage(ability.power, user.GetComponent<Unit>());//animatorの結びつけが大変そう、攻撃アニメーションだから。
         ability.isActive = true;
+        AnimationController animationController = user.GetComponent<AnimationController>();//ここら辺の処理は、attack等にそれぞれでまとめる。
+        animationController.Initialize(target, ability.power);
+        animationController.AttackAnimation(ability.GodAnimationID);//いずれ、神のアニメーションとアニメーション番号を作る（最初１，１個習合２，みたいな感じ）
+        ///////////////////////////////////////////////////
+        cooldownTimers[ability] = ability.cooldown;///////////////////////クールダウンがない場合は、入れないにしよう。（関数で共通化）SetCooldown(ability);
+        yield return new WaitUntil(() => !animationController.animationState.isAttacking);
     }
-
-    public void DebuffAbility(GodAbility ability, GameObject user, Unit target)
+//デバフ系のアビリティ
+    public IEnumerator DebuffAbility(GodAbility ability, GameObject user, List<Unit> target)
     {
-        Debug.Log($"{target}に{ability.abilityName} を発動！（攻撃力 {ability.power}）");
-        //target.TakeDebuff(ability.power, user.GetComponent<Unit>());
         ability.isActive = true;
-    }
+        AnimationController animationController2 = user.GetComponent<AnimationController>();
+        animationController2.InitializeDebuff(target, ability.power);
+        animationController2.DebuffAnimation(ability.GodAnimationID);
 
+        cooldownTimers[ability] = ability.cooldown;
+        yield return new WaitUntil(() => !animationController2.animationState.isDebuffing);
+        Debug.Log("デバフアニメーション終了");
+    }
+//ヒール系のアビリティ
     public IEnumerator HealAbility(GodAbility ability, GameObject user)
     {
         yield return null;
-        if (cooldownTimers.ContainsKey(ability))
-        {
-            Debug.Log($"{ability.abilityName} はクールダウン中です。残り時間: {cooldownTimers[ability]:F2} 秒");
-            yield break;
-        }
 
-        ForCount++;
         Debug.Log($"{ability.abilityName} を発動！（回復量 {ability.power}）");
         cooldownTimers[ability] = ability.cooldown;///////////////////////クールダウンがない場合は、入れないにしよう。
         ability.isActive = true;
@@ -166,17 +173,11 @@ public class GodManeger : MonoBehaviour
         yield return new WaitUntil(() => !animationController.animationState.isHiling);
         Debug.Log("ヒールアニメーション終了");
     }
-
+//バフ系のアビリティ
     public IEnumerator BuffAbility(GodAbility ability, GameObject user)
     {
         yield return null;
-        if (cooldownTimers.ContainsKey(ability))
-        {
-            Debug.Log($"{ability.abilityName} はクールダウン中です。残り時間: {cooldownTimers[ability]:F2} 秒");
-            yield break;
-        }
         
-        ForCount++;
         Debug.Log($"{ability.abilityName} の加護で強化！({ability.description})");
         cooldownTimers[ability] = ability.cooldown;///////////////////////クールダウンがない場合は、入れないにしよう。
         ability.isActive = true;
@@ -200,36 +201,10 @@ public class GodManeger : MonoBehaviour
     {
         var ability = god.abilities;
 
-        if (cooldownTimers.ContainsKey(ability))
-        {
-            Debug.Log($"{ability.abilityName} はクールダウン中です。残り時間: {cooldownTimers[ability]:F2} 秒");
-            yield break;
-        }
-
         if (god.abilities.attackPattern == GodAttackPattern.None) yield break;
         List<Unit> targets = GetTargetsInRange(user, god.abilities.attackPattern).ToList();
 
         Debug.Log($"{user.name} の神『{god.godName}』が発動！ 対象数:{targets.Count}");
-
-        foreach (var target in targets)
-        {
-
-            switch (ability.type)
-            {
-                case AbilityType.Attack:
-                    Debug.Log($"{target.name} に {god.abilities.abilityName} の効果を適用！");
-                    AttackAbility(god.abilities, user.gameObject, target);
-                    break;
-                case AbilityType.Debuff:
-                    Debug.Log($"{target.name} に {god.abilities.abilityName} の効果を適用！");
-                    DebuffAbility(god.abilities, user.gameObject, target);
-                    break;
-                    // 他のタイプもここで処理可能
-            }
-
-            //int damage = god.power;
-            //target.TakeDamage(damage, user);
-        }
 
         if(targets.Count != 0)
         {
@@ -238,29 +213,17 @@ public class GodManeger : MonoBehaviour
             {
                 enemyPosition.Add(target.transform.position);
             }
-            ForCount++;
+
             yield return null;//相手がアニメーターを持っていないと早すぎるので、待つ
             switch (ability.type)
             {
                 case AbilityType.Attack:
-                        /////////////////////////実際の攻撃処理はこんな感じ
-                        Debug.Log("範囲内に敵がいるのでゴッドアニメーション発動！");
-                        AnimationController animationController = user.GetComponent<AnimationController>();//ここら辺の処理は、attack等にそれぞれでまとめる。
-                        animationController.Initialize(targets, ability.power);
-                        animationController.AttackAnimation(ability.GodAnimationID);//いずれ、神のアニメーションとアニメーション番号を作る（最初１，１個習合２，みたいな感じ）
-                        ///////////////////////////////////////////////////
-                        cooldownTimers[ability] = ability.cooldown;///////////////////////クールダウンがない場合は、入れないにしよう。（関数で共通化）SetCooldown(ability);
-                        yield return new WaitUntil(() => !animationController.animationState.isAttacking);
+                //攻撃関数を呼んで、全部まとめたほうが良い↓・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+                        yield return StartCoroutine(AttackAbility(ability, user.gameObject, targets));
                     break;
                 case AbilityType.Debuff:
-                        //デバフのアニメーション
-                        AnimationController animationController2 = user.GetComponent<AnimationController>();
-                        animationController2.InitializeDebuff(user.GetComponent<Unit>(), ability.power);
-                        animationController2.DebuffAnimation(ability.GodAnimationID);
-
-                        cooldownTimers[ability] = ability.cooldown;
-                        yield return new WaitUntil(() => !animationController2.animationState.isDebuffing);
-                        Debug.Log("デバフアニメーション終了");
+                //デバフ関数を呼んで、全部まとめたほうが良い↓・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+                        yield return StartCoroutine(DebuffAbility(ability, user.gameObject, targets));
                     break;
             }
 
@@ -410,11 +373,16 @@ public class GodManeger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+    }
+
+    public void CooldownCount()
+    {
         //クールダウンを減らす処理を今は時間でやってるから、ターンが経過ごとに減らすようにする
         List<GodAbility> keys = new List<GodAbility>(cooldownTimers.Keys);
         foreach (var ability in keys)
         {
-            cooldownTimers[ability] -= Time.deltaTime;
+            cooldownTimers[ability]--;
             if (cooldownTimers[ability] <= 0)
             {
                 cooldownTimers.Remove(ability);

@@ -49,10 +49,10 @@ public class AnimationController : MonoBehaviour
         animationState.isBuffing = true;
     }
 
-    public void InitializeDebuff(Unit target, int power = 0)
+    public void InitializeDebuff(List<Unit> target, int power = 0)
     {
         Target.Clear();
-        Target.Add(target);
+        Target = target;
         damage = power;
 
         animationState.isDebuffing = true;
@@ -261,7 +261,10 @@ public class AnimationController : MonoBehaviour
 
     public void OnDebuffAnimation()
     {
-        Target[0].Debuff(damage);
+        foreach (var tgt in Target)
+        {
+            tgt.Debuff(damage);
+        }
         //デバフアニメーションを入れる。アタックで入れてる。
         //ヒットが終わった時と同じ処理をする。感じの
     }

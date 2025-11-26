@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7d479896e0c0f143bb3b188cfd01f84, type: 3}
   m_Name: BuffEffect 1
   m_EditorClassIdentifier: 
-  id: 0
-  effectPrefab: {fileID: 0}
+  id: 1002
+  effectPrefab: {fileID: 5299999597876807160, guid: 5a392ed911979ef47830626ae97d1346,
+    type: 3}
   duration: 1
   offset: {x: 0, y: 0, z: 0}

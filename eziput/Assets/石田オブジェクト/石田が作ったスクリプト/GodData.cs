@@ -27,7 +27,7 @@ public class GodAbility
     public GodAttackPattern attackPattern; // 攻撃パターン（攻撃タイプの場合）
 
     [Header("発動管理")]
-    public float cooldown;         // クールダウン時間
+    public int cooldown;         // クールダウン時間
     [HideInInspector] public float floatcurrentCooldown; // 現在のクールダウン時間
     [HideInInspector] public bool isActive;        // 発動中かどうか
     public int GodAnimationID;//普通の数字はプレイヤーの攻撃で使ってるけど、神の攻撃は1000番台を使おう

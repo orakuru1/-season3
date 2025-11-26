@@ -89,7 +89,7 @@ public class Unit : MonoBehaviour
         gridManager = FindObjectOfType<GridManager>();
 
         // ワールド位置からグリッド座標を自動算出
-        gridPos = gridManager.WorldToGrid(transform.position);
+        //gridPos = gridManager.WorldToGrid(transform.position);
 
         var block = gridManager.GetBlock(gridPos);
         if (block != null)
@@ -313,14 +313,14 @@ public class Unit : MonoBehaviour
             Debug.Log($"{name} attacked {target.name}!");
 
             animationController.animationState.isAttacking = false;
-
-            // 攻撃終了後ターン進行
-            if (team == Team.Player)
-            {
-                //TurnManager.Instance.NextTurn();
-            }
         }
+
         yield return StartCoroutine(GodManeger.Instance.TriggerAbilities(this.gameObject, AbilityTrigger.Passive_OnAttack));
+        // 攻撃終了後ターン進行
+        if (team == Team.Player)
+        {
+            TurnManager.Instance.NextTurn();
+        }
     }
 
     /*
