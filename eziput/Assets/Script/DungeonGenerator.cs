@@ -90,9 +90,29 @@ public class DungeonGenerator : MonoBehaviour
 
         Debug.Log($"[DungeonGenerator] 生成完了: rooms={rooms.Count} map={width}x{height}");
 
-        // Visualize if prefabs assigned
-        if (floorPrefab != null && wallPrefab != null)
-        VisualizeMap();
+        // =====================================================
+        // 【修正 A】 VisualizeMap の自動実行を ElementGenerator に応じて抑制
+        // =====================================================
+        bool shouldVisualizeHere =
+            elementGenerator == null ||
+            (elementGenerator.floorPrefab == null && elementGenerator.wallPrefab == null);
+
+        if (shouldVisualizeHere)
+        {
+            if (floorPrefab != null && wallPrefab != null)
+            {
+                Debug.Log("[DungeonGenerator] Visualizing map here (ElementGenerator inactive).");
+                VisualizeMap();
+            }
+            else
+            {
+                Debug.LogWarning("[DungeonGenerator] floorPrefab or wallPrefab not assigned.");
+            }
+        }
+        else
+        {
+            Debug.Log("[DungeonGenerator] Skipping VisualizeMap because ElementGenerator will place tiles.");
+        }
 
         // ---- create floorList BEFORE notifying ElementGenerator ----
         floorList.Clear();
@@ -101,7 +121,7 @@ public class DungeonGenerator : MonoBehaviour
             for (int x = 0; x < width; x++)
             {
                 if (mapData[y, x] == 0)
-                floorList.Add(new Vector2Int(x, y));
+                    floorList.Add(new Vector2Int(x, y));
             }
         }
         Debug.Log("[DungeonGenerator] floorList count = " + floorList.Count);
@@ -176,18 +196,15 @@ public class DungeonGenerator : MonoBehaviour
 
     // -----------------------
     // 接続ロジック（全部屋を確実に接続）
-    // - アプローチ：rooms を MST 的に接続しつつ追加接続をいくつか作る
     // -----------------------
     private void ConnectRoomsByTree()
     {
         if (rooms.Count < 2) return;
 
-        // Build simple MST-like connection using Prim's algorithm variant (to ensure full connectivity and reasonable corridors)
         var connected = new HashSet<int>();
         var remaining = new HashSet<int>();
         for (int i = 0; i < rooms.Count; i++) remaining.Add(i);
 
-        // start from first
         connected.Add(0);
         remaining.Remove(0);
 
@@ -213,14 +230,12 @@ public class DungeonGenerator : MonoBehaviour
 
             if (bestFrom >= 0 && bestTo >= 0)
             {
-                // create corridor between bestFrom and bestTo
                 CreateCorridorBetweenPoints(rooms[bestFrom].Center, rooms[bestTo].Center);
                 connected.Add(bestTo);
                 remaining.Remove(bestTo);
             }
             else
             {
-                // fallback: connect arbitrary
                 var en = new System.Collections.Generic.List<int>(remaining);
                 int r = en[0];
                 CreateCorridorBetweenPoints(rooms[0].Center, rooms[r].Center);
@@ -229,7 +244,6 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
 
-        // Add some random extra corridors for loops
         int extras = Mathf.Max(1, rooms.Count / 6);
         for (int i = 0; i < extras; i++)
         {
@@ -239,38 +253,39 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    // carve L-shaped corridor (ensures mapData[y,x] = 0)
     private void CreateCorridorBetweenPoints(Vector2Int a, Vector2Int b)
     {
-        // choose random order
         if (Random.value < 0.5f)
         {
-            // horizontal then vertical
             int y = a.y;
-            for (int x = Mathf.Min(a.x, b.x); x <= Mathf.Max(a.x, b.x); x++) if (IsInBounds(x, y)) mapData[y, x] = 0;
+            for (int x = Mathf.Min(a.x, b.x); x <= Mathf.Max(a.x, b.x); x++)
+                if (IsInBounds(x, y)) mapData[y, x] = 0;
+
             int xEnd = b.x;
-            for (int y2 = Mathf.Min(a.y, b.y); y2 <= Mathf.Max(a.y, b.y); y2++) if (IsInBounds(xEnd, y2)) mapData[y2, xEnd] = 0;
+            for (int y2 = Mathf.Min(a.y, b.y); y2 <= Mathf.Max(a.y, b.y); y2++)
+                if (IsInBounds(xEnd, y2)) mapData[y2, xEnd] = 0;
         }
         else
         {
-            // vertical then horizontal
             int x = a.x;
-            for (int y = Mathf.Min(a.y, b.y); y <= Mathf.Max(a.y, b.y); y++) if (IsInBounds(x, y)) mapData[y, x] = 0;
+            for (int y = Mathf.Min(a.y, b.y); y <= Mathf.Max(a.y, b.y); y++)
+                if (IsInBounds(x, y)) mapData[y, x] = 0;
+
             int yEnd = b.y;
-            for (int x2 = Mathf.Min(a.x, b.x); x2 <= Mathf.Max(a.x, b.x); x2++) if (IsInBounds(x2, yEnd)) mapData[yEnd, x2] = 0;
+            for (int x2 = Mathf.Min(a.x, b.x); x2 <= Mathf.Max(a.x, b.x); x2++)
+                if (IsInBounds(x2, yEnd)) mapData[yEnd, x2] = 0;
         }
     }
 
     private bool IsInBounds(int x, int y) => x >= 0 && x < width && y >= 0 && y < height;
 
     // -----------------------
-    // start/end room assignment (pick distant pair)
+    // start/end room assignment
     // -----------------------
     private void AssignStartAndEnd()
     {
         if (rooms.Count == 0) return;
 
-        // find pair with max distance (approx)
         int bestA = 0;
         int bestB = 0;
         float bestDist = -1f;
@@ -304,7 +319,6 @@ public class DungeonGenerator : MonoBehaviour
             return;
         }
 
-        // prepare parent
         if (stageParent == null)
         {
             GameObject go = GameObject.Find("StageParent");
@@ -312,7 +326,6 @@ public class DungeonGenerator : MonoBehaviour
             stageParent = go.transform;
         }
 
-        // clear previous children (Editor safe)
 #if UNITY_EDITOR
         for (int i = stageParent.childCount - 1; i >= 0; i--)
             DestroyImmediate(stageParent.GetChild(i).gameObject);
@@ -321,7 +334,6 @@ public class DungeonGenerator : MonoBehaviour
             Destroy(stageParent.GetChild(i).gameObject);
 #endif
 
-        // instantiate tiles
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
@@ -333,7 +345,6 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
 
-        // optional: mark start/end visually
         if (showMarkers && startRoom != null)
         {
             Vector3 s = new Vector3(startRoom.Center.x * cellSize, 0.1f, startRoom.Center.y * cellSize);
@@ -371,23 +382,17 @@ public class DungeonGenerator : MonoBehaviour
             return;
         }
 
-        // if settings is null, construct a default minimal settings (expects fields enemyCount/treasureCount/trapCount)
         DungeonSettings s = settings;
         if (s == null)
         {
-            s = new DungeonSettings(); // ← ScriptableObjectではなく普通のクラスとして生成
+            s = new DungeonSettings();
             s.ApplyRouteSettings(GameManager.Instance.CurrentRoute);
         }
 
-        // call with rooms list and start/end
-        elementGenerator.GenerateFromMap(mapData, s, rooms, startRoom, endRoom,floorList);
-
+        elementGenerator.GenerateFromMap(mapData, s, rooms, startRoom, endRoom, floorList);
     }
 }
 
-/// <summary>
-/// 部屋データ
-/// </summary>
 [System.Serializable]
 public class Room
 {
