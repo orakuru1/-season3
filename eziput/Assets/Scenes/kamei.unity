@@ -2043,6 +2043,7 @@ MonoBehaviour:
   - {fileID: 489621012}
   - {fileID: 796995443}
   - {fileID: 1446186743}
+  a: 0
 --- !u!114 &255822679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4912,7 +4913,7 @@ PrefabInstance:
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
       propertyPath: itemList.Array.size
-      value: 10
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
@@ -4951,8 +4952,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
+      propertyPath: itemList.Array.data[10]
+      value: "\u9AA8"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
+        type: 3}
+      propertyPath: itemList.Array.data[11]
+      value: "\u7D10"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
+        type: 3}
       propertyPath: itemTypeList.Array.size
-      value: 10
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
@@ -4982,6 +4993,16 @@ PrefabInstance:
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
       propertyPath: itemTypeList.Array.data[9]
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
+        type: 3}
+      propertyPath: itemTypeList.Array.data[10]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
+        type: 3}
+      propertyPath: itemTypeList.Array.data[11]
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7787208005401371811, guid: 036a70210fa8adb41ae74cbae0809ce9,
@@ -7581,6 +7602,7 @@ MonoBehaviour:
   bukiViewport: {fileID: 2056444698}
   bouguViewport: {fileID: 1785433154}
   contentHeight: 1000
+  kyarastatusImage: {fileID: 1192253696}
   isCraftMode: 0
 --- !u!1 &1591295434
 GameObject:
@@ -10172,6 +10194,9 @@ MonoBehaviour:
   tosuto: {fileID: 21300000, guid: 90db8962849d56243ba53a2a667f2c11, type: 3}
   doromizu: {fileID: 21300000, guid: e5804cdbca7df9e4bb8763156ea44635, type: 3}
   mizu: {fileID: 21300000, guid: 2eb57954a7edd104da6b8111cd45d6cc, type: 3}
+  hone: {fileID: 21300000, guid: de7aebe864f1cc04c8d34cd03fe5f5c6, type: 3}
+  himo: {fileID: 21300000, guid: e689cf38ef2857546a2cc127e5804baa, type: 3}
+  honenaihu: {fileID: 21300000, guid: 1ee927392604386469056d35285f0f83, type: 3}
   craftSlot1: {fileID: 1800570248}
   craftSlot2: {fileID: 33934187}
   craftExecuteButton: {fileID: 984708922}

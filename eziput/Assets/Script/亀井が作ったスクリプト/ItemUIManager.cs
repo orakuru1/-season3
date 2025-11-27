@@ -45,6 +45,9 @@ public class ItemUIManager : MonoBehaviour
     public Sprite tosuto;
     public Sprite doromizu;
     public Sprite mizu;
+    public Sprite hone;
+    public Sprite himo;
+    public Sprite honenaihu;
 
     [Header("合成スロットUI")]
     [SerializeField] private Image craftSlot1;
@@ -104,6 +107,9 @@ public class ItemUIManager : MonoBehaviour
         itemSpriteDict["トースト"] = tosuto;
         itemSpriteDict["濁った水"] = doromizu;
         itemSpriteDict["水"] = mizu;
+        itemSpriteDict["骨"] = hone;
+        itemSpriteDict["紐"] = himo;
+        itemSpriteDict["骨ナイフ"] = honenaihu;
 
         RegisterRecipes();
     }
@@ -124,8 +130,11 @@ public class ItemUIManager : MonoBehaviour
         {"砂包帯", "item"},
         {"濁った水", "item"},
         {"水", "item"},
+        {"紐", "item"},
         {"木棒", "weapon"},
         {"石槌", "weapon"},
+        {"骨", "weapon"},
+        {"骨ナイフ", "weapon"},
         {"神の腰布", "armor"},
         {"石片", "item"},
         {"鉄", "item"},
@@ -160,6 +169,12 @@ public class ItemUIManager : MonoBehaviour
         {
             ("松明", 1),
             ("パン", 1)
+        };
+
+        resipeDict["骨ナイフ"] = new List<(string, int)>()
+        {
+            ("紐", 1),
+            ("骨", 1)
         };
     }
 #endregion
@@ -551,6 +566,8 @@ public class ItemUIManager : MonoBehaviour
             {
                 "木棒" => 3,
                 "石槌" => 5,
+                "骨"   => 2,
+                "骨ナイフ" => 7,
                 _ => 0
             };
 

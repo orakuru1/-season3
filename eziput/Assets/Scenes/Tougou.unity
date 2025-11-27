@@ -515,6 +515,7 @@ MonoBehaviour:
   bukiViewport: {fileID: 1300953944}
   bouguViewport: {fileID: 559210840}
   contentHeight: 1000
+  kyarastatusImage: {fileID: 11078318}
   isCraftMode: 0
 --- !u!114 &56442720
 MonoBehaviour:
@@ -769,6 +770,9 @@ MonoBehaviour:
   tosuto: {fileID: 21300000, guid: 90db8962849d56243ba53a2a667f2c11, type: 3}
   doromizu: {fileID: 21300000, guid: e5804cdbca7df9e4bb8763156ea44635, type: 3}
   mizu: {fileID: 21300000, guid: 2eb57954a7edd104da6b8111cd45d6cc, type: 3}
+  hone: {fileID: 0}
+  himo: {fileID: 0}
+  honenaihu: {fileID: 0}
   craftSlot1: {fileID: 1479693466}
   craftSlot2: {fileID: 555705641}
   craftExecuteButton: {fileID: 1542026699}
@@ -14276,6 +14280,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  a: 0
 --- !u!114 &2131294419
 MonoBehaviour:
   m_ObjectHideFlags: 0

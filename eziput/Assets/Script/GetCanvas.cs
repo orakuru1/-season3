@@ -21,6 +21,8 @@ public class GetCanvas : MonoBehaviour
     [Header("プレイヤー操作スクリプト（PlayerMoveなど）")]
     public MonoBehaviour[] playerControllers; // ← 複数登録できるように変更！
 
+    public bool a;
+
     void Start()
     {
         panel.SetActive(false);  //最初はすべて非表示
@@ -84,6 +86,7 @@ public class GetCanvas : MonoBehaviour
         HideAllImages();
         if(statusImage) statusImage.SetActive(true);
         if(kyarastatusImage) kyarastatusImage.SetActive(true);
+        a = kyarastatusImage.activeSelf;
     }
 
     public void showInventory()  //ステータスimageと持ち物image表示
