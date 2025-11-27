@@ -4912,7 +4912,7 @@ PrefabInstance:
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
       propertyPath: itemList.Array.size
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
@@ -4942,17 +4942,17 @@ PrefabInstance:
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
       propertyPath: itemList.Array.data[8]
-      value: "\u92FC\u9244"
+      value: "\u677E\u660E"
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
       propertyPath: itemList.Array.data[9]
-      value: "\u77F3\u69CC"
+      value: "\u6FC1\u3063\u305F\u6C34"
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
       propertyPath: itemTypeList.Array.size
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
@@ -4977,12 +4977,12 @@ PrefabInstance:
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
       propertyPath: itemTypeList.Array.data[8]
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
       propertyPath: itemTypeList.Array.data[9]
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7787208005401371811, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
@@ -10168,6 +10168,10 @@ MonoBehaviour:
   nuno: {fileID: 21300000, guid: 8d16c499816726e4591643479afd8078, type: 3}
   suna: {fileID: 21300000, guid: c45cb9f7f82a6fc4eb7cbd1501a14f79, type: 3}
   sunanuno: {fileID: 21300000, guid: 24911690daa280246b4cfe61d4307a61, type: 3}
+  taimatu: {fileID: 21300000, guid: 9fd5617d2fff6ec42ab2d1407553ec1a, type: 3}
+  tosuto: {fileID: 21300000, guid: 90db8962849d56243ba53a2a667f2c11, type: 3}
+  doromizu: {fileID: 21300000, guid: e5804cdbca7df9e4bb8763156ea44635, type: 3}
+  mizu: {fileID: 21300000, guid: 2eb57954a7edd104da6b8111cd45d6cc, type: 3}
   craftSlot1: {fileID: 1800570248}
   craftSlot2: {fileID: 33934187}
   craftExecuteButton: {fileID: 984708922}
