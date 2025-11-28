@@ -50,8 +50,10 @@ public class ItemUIManager : MonoBehaviour
     public Sprite honenaihu;
 
     [Header("合成スロットUI")]
-    [SerializeField] private Image craftSlot1;
-    [SerializeField] private Image craftSlot2;
+    [SerializeField] private List<Image> craftSlots = new List<Image>();
+
+    //選択された素材名リスト
+    private List<string> craftItems = new List<string>();
 
     [SerializeField] private Button craftExecuteButton;
 
@@ -162,7 +164,8 @@ public class ItemUIManager : MonoBehaviour
         resipeDict["石槌"] = new List<(string, int)>()
         {
             ("木棒", 1),
-            ("石片", 1)
+            ("石片", 1),
+            ("紐", 1)
         };
 
         resipeDict["トースト"] = new List<(string, int)>()
@@ -315,14 +318,14 @@ public class ItemUIManager : MonoBehaviour
     //合成ボタンの処理
     public void OnCraftExecute()
     {
-        if(craftItem1 == null || craftItem2 == null)
+        if(craftItems.Count == 0)
         {
-            Debug.Log("素材が2つ揃っていません");
+            Debug.Log("素材が選ばれていません!");
             return;
         }
 
         //レシピ検索
-        string result = GetCraftResult(craftItem1, craftItem2);
+        string result = GetCraftResult(craftItems);
         if(result == null)
         {
             ClearCraftSlots();
@@ -330,12 +333,9 @@ public class ItemUIManager : MonoBehaviour
             return;
         }
 
-        string cat1 = GetItemCategory(craftItem1);
-        string cat2 = GetItemCategory(craftItem2);
-
-        //素材を減らす
-        UseSelectedItem(craftItem1, cat1);
-        UseSelectedItem(craftItem2, cat2);
+        //素材消費
+        foreach(string item in craftItems)
+            UseSelectedItem(item, GetItemCategory(item));
 
         
         //アイテム追加
@@ -355,7 +355,7 @@ public class ItemUIManager : MonoBehaviour
         ClearCraftSlots();
     }
 
-    private string GetCraftResult(string itemA, string itemB)
+    private string GetCraftResult(List<string> materials)
     {
         //順番を無視して判定
         foreach(var recipe in resipeDict)
@@ -363,30 +363,36 @@ public class ItemUIManager : MonoBehaviour
             var req = recipe.Value;
 
             //レシピが2素材の前提
-            if(req.Count != 2) continue;
+            if(req.Count != materials.Count) continue;
 
-            bool match1 = (req[0].itemName == itemA && req[1].itemName == itemB);
-            bool match2 = (req[0].itemName == itemB && req[1].itemName == itemA);
+            bool match = true;
 
-            if(match1 || match2)
+            foreach(var reqItem in req)
             {
-                return recipe.Key;  //合成成果アイテム名
+                //必要数を満たしているかチェック
+                int required = reqItem.count;
+                int owned = materials.FindAll(x => x == reqItem.itemName).Count;
+
+                if(owned < required)
+                {
+                    match = false;
+                    break;
+                }
             }
-            
+
+            if(match) return recipe.Key;
         }
         return null;
     }
 
     private void ClearCraftSlots()
     {
-        craftItem1 = null;
-        craftItem2 = null;
-
-        craftSlot1.sprite = null;
-        craftSlot2.sprite = null;
-
-        craftSlot1.color = new Color(255,255,255,255);
-        craftSlot2.color = new Color(255,255,255,255);
+        craftItems.Clear();
+        foreach (var slot in craftSlots)
+        {
+            slot.sprite = null;
+            slot.color = new Color(255,255,255,255);
+        }
     }
 
 
@@ -439,34 +445,26 @@ public class ItemUIManager : MonoBehaviour
         int currentCount = dict[itemName].count;
 
         //所持数チェック
-        int alreadyUsed = 0;
-        if(craftItem1 == itemName) alreadyUsed++;
-        if(craftItem2 == itemName) alreadyUsed++;
+        int alreadyUsed = craftItems.FindAll(x => x == itemName).Count;
 
         if(currentCount - alreadyUsed <= 0)
         {
             Debug.Log($"{itemName}の所持数が不足しています");
             return;
         }
-        //1つ目
-        if(craftItem1 == null)
+
+        //スロットが満杯か確認
+        if(craftItems.Count >= craftSlots.Count)
         {
-            craftItem1 = itemName;
-            craftSlot1.sprite = itemSpriteDict[itemName];
-            craftSlot1.color = Color.white;
+            Debug.Log("スロットがすべて埋まっています");
             return;
         }
 
-        //2つ目
-        if(craftItem2 == null)
-        {
-            craftItem2 = itemName;
-            craftSlot2.sprite = itemSpriteDict[itemName];
-            craftSlot2.color = Color.white;
-            return;
-        }
+        craftItems.Add(itemName);
 
-        Debug.Log("すでに2つ選ばれています");
+        //UI反映
+        craftSlots[craftItems.Count - 1].sprite = itemSpriteDict[itemName];
+        craftSlots[craftItems.Count - 1].color = Color.white;
     }
 #region アイテムの使用・装備効果
     //=============================
