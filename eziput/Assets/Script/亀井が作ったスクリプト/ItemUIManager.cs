@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,6 +53,10 @@ public class ItemUIManager : MonoBehaviour
     [Header("合成スロットUI")]
     [SerializeField] private List<Image> craftSlots = new List<Image>();
 
+    [Header("合成結果表示UI")]
+    [SerializeField] private Text craftResultText;  //UI Text
+    [SerializeField] private float messageDuration = 2f; //表示時間
+
     //選択された素材名リスト
     private List<string> craftItems = new List<string>();
 
@@ -78,9 +83,6 @@ public class ItemUIManager : MonoBehaviour
     private GameObject equippedWeaponButton;
     private GameObject equippedArmorButton;
 
-    //合成スロットに入っているアイテム名
-    private string craftItem1 = null;
-    private string craftItem2 = null;
 
     private bool isUnEquipping = false;
 #endregion
@@ -120,6 +122,7 @@ public class ItemUIManager : MonoBehaviour
     {
         //合成ボタンが押されたときに合成処理
         craftExecuteButton.onClick.AddListener(OnCraftExecute);
+        craftResultText.gameObject.SetActive(false);
     }
 #region 合成レシピとカテゴリ
     //アイテムのカテゴリ固定辞書
@@ -320,7 +323,7 @@ public class ItemUIManager : MonoBehaviour
     {
         if(craftItems.Count == 0)
         {
-            Debug.Log("素材が選ばれていません!");
+            StartCoroutine(ShowCraftMessage("素材が選ばれていません!", false));
             return;
         }
 
@@ -329,7 +332,7 @@ public class ItemUIManager : MonoBehaviour
         if(result == null)
         {
             ClearCraftSlots();
-            Debug.Log("この組み合わせでは合成できません");
+            StartCoroutine(ShowCraftMessage("合成失敗！組合せ違うよ", false));
             return;
         }
 
@@ -350,7 +353,7 @@ public class ItemUIManager : MonoBehaviour
         {
             AddItem(result, "item");
         }
-        Debug.Log($"合成成功!{result}");
+        StartCoroutine(ShowCraftMessage($"合成成功！{result}を作成した！", true));
 
         ClearCraftSlots();
     }
@@ -696,6 +699,30 @@ public class ItemUIManager : MonoBehaviour
         Image bg = button.GetComponent<Image>();
         if (bg != null)
             bg.color = equipped ? new Color(0.8f, 0.8f, 1f) : Color.white;
+    }
+
+    //合成ボタンを押したときに呼ばれるテキスト
+    private IEnumerator ShowCraftMessage(string message, bool isSuccess)
+    {
+        craftResultText.gameObject.SetActive(true);
+        craftResultText.text = message;
+        craftResultText.color = isSuccess ? Color.white : Color.white;
+
+        //フェードイン
+        for(float a = 0; a <= 1; a += Time.deltaTime * 2)
+        {
+            craftResultText.color = new Color(craftResultText.color.r, craftResultText.color.g, craftResultText.color.b, a);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(messageDuration);
+
+        //フェードアウト
+        for(float a = 1; a >= 0; a -= Time.deltaTime * 2)
+        {
+            craftResultText.color = new Color(craftResultText.color.r, craftResultText.color.g, craftResultText.color.b, a);
+            yield return null;
+        }
     }
 
 
