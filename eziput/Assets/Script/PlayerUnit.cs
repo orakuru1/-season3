@@ -64,6 +64,7 @@ public class PlayerUnit : Unit
 
         }
 
+        ClearAttackRange();
 
         // ヒットアニメーションが見える時間だけ待機
         yield return new WaitForSeconds(0.3f);
@@ -89,7 +90,6 @@ public class PlayerUnit : Unit
         animationController.animationState.isAttacking = false;
         selectedSkill = null;
         isUsingSkill = false; // 終了時に解除
-        ClearAttackRange();
 
         // ターン進行は自然に敵が動くように管理
 
