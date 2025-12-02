@@ -353,7 +353,7 @@ public class ItemUIManager : MonoBehaviour
         {
             AddItem(result, "item");
         }
-        StartCoroutine(ShowCraftMessage($"合成成功！{result}を作成した！", true));
+        StartCoroutine(ShowCraftMessage($"成功！{result}を作成！", true));
 
         ClearCraftSlots();
     }
@@ -459,7 +459,7 @@ public class ItemUIManager : MonoBehaviour
         //スロットが満杯か確認
         if(craftItems.Count >= craftSlots.Count)
         {
-            Debug.Log("スロットがすべて埋まっています");
+            StartCoroutine(ShowCraftMessage("枠が埋まっています", false));
             return;
         }
 
