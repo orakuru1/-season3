@@ -7,11 +7,13 @@ public class GridBlock : MonoBehaviour
     public bool isWalkable = true;
     public Unit occupantUnit = null; // 占有ユニット
     public bool isRamp = false;
+    public bool hasEvent = false;
+    public string eventID = "";
 
     private Renderer blockRenderer;
     private Color originalColor;
 
-    private void Awake()
+    private void Start()
     {
         blockRenderer = GetComponent<Renderer>();
         if (blockRenderer != null) originalColor = blockRenderer.material.color;

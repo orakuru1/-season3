@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,15 +34,30 @@ public class ItemUIManager : MonoBehaviour
     public Sprite kosinunoSprite;
     public Sprite tateSprite;
     public Sprite panSprite;
-    public Sprite bouSprite;
     public Sprite kinobouSprite;
     public Sprite tetuSprite;
     public Sprite isihen;
     public Sprite isiduti;
+    public Sprite nuno;
+    public Sprite suna;
+    public Sprite sunanuno;
+    public Sprite taimatu;
+    public Sprite tosuto;
+    public Sprite doromizu;
+    public Sprite mizu;
+    public Sprite hone;
+    public Sprite himo;
+    public Sprite honenaihu;
 
     [Header("合成スロットUI")]
-    [SerializeField] private Image craftSlot1;
-    [SerializeField] private Image craftSlot2;
+    [SerializeField] private List<Image> craftSlots = new List<Image>();
+
+    [Header("合成結果表示UI")]
+    [SerializeField] private Text craftResultText;  //UI Text
+    [SerializeField] private float messageDuration = 2f; //表示時間
+
+    //選択された素材名リスト
+    private List<string> craftItems = new List<string>();
 
     [SerializeField] private Button craftExecuteButton;
 
@@ -66,9 +82,6 @@ public class ItemUIManager : MonoBehaviour
     private GameObject equippedWeaponButton;
     private GameObject equippedArmorButton;
 
-    //合成スロットに入っているアイテム名
-    private string craftItem1 = null;
-    private string craftItem2 = null;
 
     private bool isUnEquipping = false;
 #endregion
@@ -82,7 +95,6 @@ public class ItemUIManager : MonoBehaviour
 
         // 名前と画像を辞書に登録
         itemSpriteDict["薬草"] = potionSprite;
-        itemSpriteDict["bou"] = bouSprite;
         itemSpriteDict["木棒"] = kinobouSprite;
         itemSpriteDict["神の腰布"] = kosinunoSprite;
         itemSpriteDict["鋼鉄"] = tateSprite;
@@ -90,6 +102,16 @@ public class ItemUIManager : MonoBehaviour
         itemSpriteDict["鉄"] = tetuSprite;
         itemSpriteDict["石片"] = isihen;
         itemSpriteDict["石槌"] = isiduti;
+        itemSpriteDict["布"] = nuno;
+        itemSpriteDict["砂"] = suna;
+        itemSpriteDict["砂包帯"] = sunanuno;
+        itemSpriteDict["松明"] = taimatu;
+        itemSpriteDict["トースト"] = tosuto;
+        itemSpriteDict["濁った水"] = doromizu;
+        itemSpriteDict["水"] = mizu;
+        itemSpriteDict["骨"] = hone;
+        itemSpriteDict["紐"] = himo;
+        itemSpriteDict["骨ナイフ"] = honenaihu;
 
         RegisterRecipes();
     }
@@ -98,21 +120,71 @@ public class ItemUIManager : MonoBehaviour
     {
         //合成ボタンが押されたときに合成処理
         craftExecuteButton.onClick.AddListener(OnCraftExecute);
+        craftResultText.gameObject.SetActive(false);
     }
-#region 合成レシピ
+#region 合成レシピとカテゴリ
+    //アイテムのカテゴリ固定辞書
+    private Dictionary<string, string> baseCategoryDict = new()
+    {
+        {"薬草", "item"},
+        {"パン", "item"},
+        {"布", "item"},
+        {"砂", "item"},
+        {"砂包帯", "item"},
+        {"濁った水", "item"},
+        {"水", "item"},
+        {"紐", "item"},
+        {"木棒", "weapon"},
+        {"石槌", "weapon"},
+        {"骨", "weapon"},
+        {"骨ナイフ", "weapon"},
+        {"神の腰布", "armor"},
+        {"石片", "item"},
+        {"鉄", "item"},
+        {"bou", "item"},
+        {"鋼鉄", "armor"},
+        {"トースト", "item"},
+        {"松明", "item"}
+    };
+
     //合成レシピ
     private void RegisterRecipes()
     {
+        resipeDict["砂包帯"] = new List<(string, int)>()
+        {
+            ("布", 1),
+            ("砂", 1)
+        };
+
+        resipeDict["石片"] = new List<(string, int)>()
+        {
+            ("松明", 1),
+            ("鉄", 1)
+        };
+        
+        resipeDict["水"] = new List<(string, int)>()
+        {
+            ("布", 1),
+            ("濁った水", 1)
+        };
+
         resipeDict["石槌"] = new List<(string, int)>()
         {
             ("木棒", 1),
-            ("石片", 1)
+            ("石片", 1),
+            ("紐", 1)
         };
 
-        resipeDict["鋼鉄"] = new List<(string, int)>()
+        resipeDict["トースト"] = new List<(string, int)>()
         {
-            ("鉄", 1),
+            ("松明", 1),
             ("パン", 1)
+        };
+
+        resipeDict["骨ナイフ"] = new List<(string, int)>()
+        {
+            ("紐", 1),
+            ("骨", 1)
         };
     }
 #endregion
@@ -253,27 +325,24 @@ public class ItemUIManager : MonoBehaviour
     //合成ボタンの処理
     public void OnCraftExecute()
     {
-        if(craftItem1 == null || craftItem2 == null)
+        if(craftItems.Count == 0)
         {
-            Debug.Log("素材が2つ揃っていません");
+            StartCoroutine(ShowCraftMessage("素材が選ばれていません!", false));
             return;
         }
 
         //レシピ検索
-        string result = GetCraftResult(craftItem1, craftItem2);
+        string result = GetCraftResult(craftItems);
         if(result == null)
         {
             ClearCraftSlots();
-            Debug.Log("この組み合わせでは合成できません");
+            StartCoroutine(ShowCraftMessage("合成失敗！組合せ違うよ", false));
             return;
         }
 
-        string cat1 = GetItemCategory(craftItem1);
-        string cat2 = GetItemCategory(craftItem2);
-
-        //素材を減らす
-        UseSelectedItem(craftItem1, cat1);
-        UseSelectedItem(craftItem2, cat2);
+        //素材消費
+        foreach(string item in craftItems)
+            UseSelectedItem(item, GetItemCategory(item));
 
         
         //アイテム追加
@@ -288,12 +357,12 @@ public class ItemUIManager : MonoBehaviour
         {
             AddItem(result, "item");
         }
-        Debug.Log($"合成成功!{result}");
+        StartCoroutine(ShowCraftMessage($"成功！{result}を作成！", true));
 
         ClearCraftSlots();
     }
 
-    private string GetCraftResult(string itemA, string itemB)
+    private string GetCraftResult(List<string> materials)
     {
         //順番を無視して判定
         foreach(var recipe in resipeDict)
@@ -301,30 +370,36 @@ public class ItemUIManager : MonoBehaviour
             var req = recipe.Value;
 
             //レシピが2素材の前提
-            if(req.Count != 2) continue;
+            if(req.Count != materials.Count) continue;
 
-            bool match1 = (req[0].itemName == itemA && req[1].itemName == itemB);
-            bool match2 = (req[0].itemName == itemB && req[1].itemName == itemA);
+            bool match = true;
 
-            if(match1 || match2)
+            foreach(var reqItem in req)
             {
-                return recipe.Key;  //合成成果アイテム名
+                //必要数を満たしているかチェック
+                int required = reqItem.count;
+                int owned = materials.FindAll(x => x == reqItem.itemName).Count;
+
+                if(owned < required)
+                {
+                    match = false;
+                    break;
+                }
             }
-            
+
+            if(match) return recipe.Key;
         }
         return null;
     }
 
     private void ClearCraftSlots()
     {
-        craftItem1 = null;
-        craftItem2 = null;
-
-        craftSlot1.sprite = null;
-        craftSlot2.sprite = null;
-
-        craftSlot1.color = new Color(255,255,255,255);
-        craftSlot2.color = new Color(255,255,255,255);
+        craftItems.Clear();
+        foreach (var slot in craftSlots)
+        {
+            slot.sprite = null;
+            slot.color = new Color(255,255,255,255);
+        }
     }
 
 
@@ -377,34 +452,26 @@ public class ItemUIManager : MonoBehaviour
         int currentCount = dict[itemName].count;
 
         //所持数チェック
-        int alreadyUsed = 0;
-        if(craftItem1 == itemName) alreadyUsed++;
-        if(craftItem2 == itemName) alreadyUsed++;
+        int alreadyUsed = craftItems.FindAll(x => x == itemName).Count;
 
         if(currentCount - alreadyUsed <= 0)
         {
-            Debug.Log($"{itemName}の所持数が不足しています");
-            return;
-        }
-        //1つ目
-        if(craftItem1 == null)
-        {
-            craftItem1 = itemName;
-            craftSlot1.sprite = itemSpriteDict[itemName];
-            craftSlot1.color = Color.white;
+            StartCoroutine(ShowCraftMessage($"{itemName}の所持数が不足です!", false));
             return;
         }
 
-        //2つ目
-        if(craftItem2 == null)
+        //スロットが満杯か確認
+        if(craftItems.Count >= craftSlots.Count)
         {
-            craftItem2 = itemName;
-            craftSlot2.sprite = itemSpriteDict[itemName];
-            craftSlot2.color = Color.white;
+            StartCoroutine(ShowCraftMessage("枠が埋まっています", false));
             return;
         }
 
-        Debug.Log("すでに2つ選ばれています");
+        craftItems.Add(itemName);
+
+        //UI反映
+        craftSlots[craftItems.Count - 1].sprite = itemSpriteDict[itemName];
+        craftSlots[craftItems.Count - 1].color = Color.white;
     }
 #region アイテムの使用・装備効果
     //=============================
@@ -421,6 +488,11 @@ public class ItemUIManager : MonoBehaviour
 
         switch (itemName)
         {
+            case "水":
+                if (player.status.currentHP >= player.status.maxHP) return false;
+                player.Heal(5);
+                return true;
+            
             case "薬草":
                 if (player.status.currentHP >= player.status.maxHP) return false;
                 player.Heal(20);
@@ -428,7 +500,18 @@ public class ItemUIManager : MonoBehaviour
 
             case "パン":
                 if (player.status.currentHP >= player.status.maxHP) return false;
-                player.Heal(50);
+                player.Heal(10);
+                return true;
+            
+            case "トースト":
+                if(player.status.currentHP >= player.status.maxHP) return false;
+                player.Heal(30);
+                return true;
+            
+            case "砂包帯":
+                if(player.status.currentHP >= player.status.maxHP) return false;
+                player.Heal(5);
+                player.equipDefenseBonus += 3;
                 return true;
             
             default:
@@ -488,6 +571,8 @@ public class ItemUIManager : MonoBehaviour
             {
                 "木棒" => 3,
                 "石槌" => 5,
+                "骨"   => 2,
+                "骨ナイフ" => 7,
                 _ => 0
             };
 
@@ -526,7 +611,7 @@ public class ItemUIManager : MonoBehaviour
                 _ => 0
             };
 
-            player.equipDefenseBonus = defBonus;
+            player.equipDefenseBonus += defBonus;
 
             GetStatus statusUI = FindObjectOfType<GetStatus>();
             if (statusUI != null)
@@ -620,6 +705,30 @@ public class ItemUIManager : MonoBehaviour
             bg.color = equipped ? new Color(0.8f, 0.8f, 1f) : Color.white;
     }
 
+    //今までDebugで呼んでいたテキストをゲーム上で呼ぶように
+    private IEnumerator ShowCraftMessage(string message, bool isSuccess)
+    {
+        craftResultText.gameObject.SetActive(true);
+        craftResultText.text = message;
+        craftResultText.color = isSuccess ? Color.white : Color.white;
+
+        //フェードイン
+        for(float a = 0; a <= 1; a += Time.deltaTime * 2)
+        {
+            craftResultText.color = new Color(craftResultText.color.r, craftResultText.color.g, craftResultText.color.b, a);
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(messageDuration);
+
+        //フェードアウト
+        for(float a = 1; a >= 0; a -= Time.deltaTime * 2)
+        {
+            craftResultText.color = new Color(craftResultText.color.r, craftResultText.color.g, craftResultText.color.b, a);
+            yield return null;
+        }
+    }
+
 
     //=============================
     // カウント更新
@@ -654,6 +763,11 @@ public class ItemUIManager : MonoBehaviour
         if (itemDict.ContainsKey(itemName)) return "item";
         if (weaponDict.ContainsKey(itemName)) return "weapon";
         if (armorDict.ContainsKey(itemName)) return "armor";
+
+        //未所持でもカテゴリを返せるように
+        if(baseCategoryDict.ContainsKey(itemName))
+           return baseCategoryDict[itemName];
+        
         return null;
     }
 

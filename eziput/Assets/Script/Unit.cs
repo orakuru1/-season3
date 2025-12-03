@@ -49,6 +49,7 @@ public class Unit : MonoBehaviour
     public float moveSpeed = 4f; // interpolation speed
     public bool isMoving = false;
     public bool isShowingAttackRange;
+    public bool isEvent;
 
     public Vector2Int facingDir;
     public List<AttackSkill> attackSkills;
@@ -243,6 +244,8 @@ public class Unit : MonoBehaviour
         block.occupantUnit = this;
 
         isMoving = false;
+        // --- 移動完了後イベントチェック ---
+        yield return StartCoroutine(CheckTileEvent(gridPos));
 
         // プレイヤーならターン終了通知
         if (team == Team.Player)
@@ -591,4 +594,20 @@ public class Unit : MonoBehaviour
     {
         TurnManager.Instance.NextTurn();
     }
+
+    public IEnumerator CheckTileEvent(Vector2Int pos)
+    {
+        if (team != Team.Player) yield break;
+        var block = GridManager.Instance.GetBlock(pos);
+        if (block == null) yield break;
+
+        if (block.hasEvent)
+        {
+            Debug.Log($"{name} がイベントマス {block.eventID} に入りました！");
+            isEvent = true;
+            // 任意のイベント呼び出し
+            yield return StartCoroutine(EventManager.Instance.TriggerEvent(block.eventID, this));
+        }
+    }
+
 }

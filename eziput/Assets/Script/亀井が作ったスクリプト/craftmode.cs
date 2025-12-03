@@ -25,6 +25,8 @@ public class craftmode : MonoBehaviour
     public RectTransform bouguViewport;
     public float contentHeight = 1000;  //一番長いときに合わせたたかさ　
 
+    public GameObject kyarastatusImage; //キャラのステータスimage
+
     public bool isCraftMode = false;
 
     private void Awake()
@@ -42,7 +44,9 @@ public class craftmode : MonoBehaviour
 
     void ToggleCraftMode()
     {
-        if(isCraftMode)
+        if(!kyarastatusImage.activeSelf)
+        {
+           if(isCraftMode)
         {
             SetNormalModeUI();
         }
@@ -50,6 +54,8 @@ public class craftmode : MonoBehaviour
         {
             SetCraftModeUI();
         }
+        }
+        
     }
 
     void ResizeViewportHeight(float scale)
