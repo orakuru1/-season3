@@ -24,14 +24,14 @@ public class GameManager : MonoBehaviour
     {
         CurrentRoute = RouteType.Safe;
         Debug.Log("Safeルートを選択しました。");
-        SceneManager.LoadScene("Tougou");
+        SceneManager.LoadScene("Tougou2");
     }
 
     public void SelectDangerRoute()
     {
         CurrentRoute = RouteType.Danger;
         Debug.Log("Dangerルートを選択しました。");
-        SceneManager.LoadScene("Tougou");
+        SceneManager.LoadScene("Tougou2");
     }
 
     public void LoadSelectScene()
