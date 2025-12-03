@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Hamada/Scene_Select.unity
     guid: ce02d29e3df3bef459e9629b81e4aad5
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Tougou.unity
     guid: 1d95c1f99f0a9de4f9bcfe8a22d456a7
   - enabled: 0
