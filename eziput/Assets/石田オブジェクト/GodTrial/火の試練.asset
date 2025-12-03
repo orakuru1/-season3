@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7311d682663224a4ebd1f5bab677fa62, type: 3}
+  m_Name: "\u706B\u306E\u8A66\u7DF4"
+  m_EditorClassIdentifier: 
+  trialName: "\u706B\u306E\u795E"
+  trialType: 4
+  targetValue: 0
+  battleID: 0
+  rewardGod: {fileID: 11400000, guid: befeb862df9bc7f41b4ac3be606d23a0, type: 2}
+  requireStatusCheck: 1
+  statusType: 0
+  requiredStatusValue: 30
+  requireActionCount: 0
+  actionType: 0
+  requiredActionValue: 0
+  requiredTilePos: {x: 0, y: 0}
+  trialStartEffect: {fileID: 0}
+  trialSuccessEffect: {fileID: 0}

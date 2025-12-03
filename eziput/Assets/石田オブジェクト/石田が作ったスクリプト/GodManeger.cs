@@ -41,6 +41,10 @@ public class GodManeger : MonoBehaviour
             if (god.abilities != null) god.abilities.isActive = false;
         }
     }
+
+    //ランダムで、神の力を出す。
+    //すでに、誰かが持ってるなら、出さない。
+    
 #region 神の力を追加する関係
     public void addinggods(List<GodData> god, GodPlayer getplayer, bool isded)
     {
@@ -50,6 +54,14 @@ public class GodManeger : MonoBehaviour
         GetPlayer = getplayer;
         isDed = isded;
     }
+    public void addinggods(GodData god, GodPlayer getplayer)
+    {
+        if (god == null || getplayer == null)  return;
+
+        addgods.Add(god);
+        GetPlayer = getplayer;
+    }
+
     public IEnumerator GrantGodToPlayer()
     {
         if(addgods.Count == 0 || GetPlayer == null) yield break;
