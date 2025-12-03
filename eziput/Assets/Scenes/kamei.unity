@@ -894,7 +894,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2079565073}
+      - m_Target: {fileID: 255822681}
         m_TargetAssemblyTypeName: ItemUIManager, Assembly-CSharp
         m_MethodName: OnConfirmNo
         m_Mode: 1
@@ -1917,6 +1917,7 @@ GameObject:
   - component: {fileID: 255822678}
   - component: {fileID: 255822679}
   - component: {fileID: 255822680}
+  - component: {fileID: 255822681}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2082,6 +2083,54 @@ MonoBehaviour:
   statusPanel: {fileID: 1192253698}
   equippedWeaponName: "\u306A\u3057"
   equippedArmorName: "\u306A\u3057"
+--- !u!114 &255822681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255822673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1db6bd6df239361478f252118ee3d2ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemContentParent: {fileID: 2066270990}
+  weaponContentParent: {fileID: 1189214480}
+  armorContentParent: {fileID: 2087765278}
+  itemButtonPrefab: {fileID: 444738400384179437, guid: 47583eb9dc2f6d04d94f3f8b99919086,
+    type: 3}
+  confirmPanel: {fileID: 2038854548}
+  confirmText: {fileID: 1950997267}
+  weaponSlotParent: {fileID: 1612465169}
+  armorSlotParent: {fileID: 2097413996}
+  weaponStatusImage: {fileID: 1612465170}
+  armorStatusImage: {fileID: 2097413997}
+  potionSprite: {fileID: 21300000, guid: 67a3484c343ba5947980c1206ad619b2, type: 3}
+  kosinunoSprite: {fileID: 21300000, guid: 84fc6b2179083d74cbd6283e02e10f20, type: 3}
+  tateSprite: {fileID: 21300000, guid: 50772398c37fcf64ab80df3d592ea4ee, type: 3}
+  panSprite: {fileID: 21300000, guid: 72f0ca4380528414bb3272e4441f1561, type: 3}
+  kinobouSprite: {fileID: 21300000, guid: 9606ace8c621f9d4cb19297a87906b11, type: 3}
+  tetuSprite: {fileID: 21300000, guid: b1d08de60d5545e4083389175c5ac63e, type: 3}
+  isihen: {fileID: 21300000, guid: b54f46cffc7bdbb42b9e31db13753c86, type: 3}
+  isiduti: {fileID: 21300000, guid: f6b42d02f13c235438695f90b5e76d6a, type: 3}
+  nuno: {fileID: 21300000, guid: 8d16c499816726e4591643479afd8078, type: 3}
+  suna: {fileID: 21300000, guid: c45cb9f7f82a6fc4eb7cbd1501a14f79, type: 3}
+  sunanuno: {fileID: 21300000, guid: 24911690daa280246b4cfe61d4307a61, type: 3}
+  taimatu: {fileID: 21300000, guid: 9fd5617d2fff6ec42ab2d1407553ec1a, type: 3}
+  tosuto: {fileID: 21300000, guid: 90db8962849d56243ba53a2a667f2c11, type: 3}
+  doromizu: {fileID: 21300000, guid: e5804cdbca7df9e4bb8763156ea44635, type: 3}
+  mizu: {fileID: 21300000, guid: 2eb57954a7edd104da6b8111cd45d6cc, type: 3}
+  hone: {fileID: 21300000, guid: de7aebe864f1cc04c8d34cd03fe5f5c6, type: 3}
+  himo: {fileID: 21300000, guid: e689cf38ef2857546a2cc127e5804baa, type: 3}
+  honenaihu: {fileID: 21300000, guid: 1ee927392604386469056d35285f0f83, type: 3}
+  craftSlots:
+  - {fileID: 1800570248}
+  - {fileID: 33934187}
+  - {fileID: 1306350064}
+  craftResultText: {fileID: 1792539172}
+  messageDuration: 0.5
+  craftExecuteButton: {fileID: 984708922}
 --- !u!1 &272905233
 GameObject:
   m_ObjectHideFlags: 0
@@ -4718,7 +4767,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2079565073}
+      - m_Target: {fileID: 255822681}
         m_TargetAssemblyTypeName: ItemUIManager, Assembly-CSharp
         m_MethodName: OnConfirmYes
         m_Mode: 1
@@ -5756,8 +5805,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -8765,7 +8814,7 @@ RectTransform:
   m_GameObject: {fileID: 1792539170}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.88882947, y: 0.42628446, z: 2.6883}
+  m_LocalScale: {x: 0.8, y: 0.4, z: 2.7}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 193124810}
@@ -8773,7 +8822,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -37.100037, y: -74.600006}
+  m_AnchoredPosition: {x: -37.09999, y: -74.600044}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1792539172
@@ -10202,7 +10251,6 @@ GameObject:
   - component: {fileID: 2079565072}
   - component: {fileID: 2079565071}
   - component: {fileID: 2079565070}
-  - component: {fileID: 2079565073}
   m_Layer: 5
   m_Name: "\u6301\u3061\u7269Scroll View"
   m_TagString: Untagged
@@ -10262,7 +10310,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2079565073}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ItemUIManager, Assembly-CSharp
         m_MethodName: OnItemButtonClickde
         m_Mode: 5
@@ -10312,55 +10360,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2079565068}
   m_CullTransparentMesh: 1
---- !u!114 &2079565073
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2079565068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1db6bd6df239361478f252118ee3d2ca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  itemContentParent: {fileID: 2066270990}
-  weaponContentParent: {fileID: 1189214480}
-  armorContentParent: {fileID: 2087765278}
-  itemButtonPrefab: {fileID: 444738400384179437, guid: 47583eb9dc2f6d04d94f3f8b99919086,
-    type: 3}
-  confirmPanel: {fileID: 2038854548}
-  confirmText: {fileID: 1950997267}
-  weaponSlotParent: {fileID: 1612465169}
-  armorSlotParent: {fileID: 2097413996}
-  weaponStatusImage: {fileID: 1612465170}
-  armorStatusImage: {fileID: 2097413997}
-  potionSprite: {fileID: 21300000, guid: 67a3484c343ba5947980c1206ad619b2, type: 3}
-  kosinunoSprite: {fileID: 21300000, guid: 84fc6b2179083d74cbd6283e02e10f20, type: 3}
-  tateSprite: {fileID: 21300000, guid: 50772398c37fcf64ab80df3d592ea4ee, type: 3}
-  panSprite: {fileID: 21300000, guid: 72f0ca4380528414bb3272e4441f1561, type: 3}
-  bouSprite: {fileID: 21300000, guid: 9606ace8c621f9d4cb19297a87906b11, type: 3}
-  kinobouSprite: {fileID: 21300000, guid: 9606ace8c621f9d4cb19297a87906b11, type: 3}
-  tetuSprite: {fileID: 21300000, guid: b1d08de60d5545e4083389175c5ac63e, type: 3}
-  isihen: {fileID: 21300000, guid: b54f46cffc7bdbb42b9e31db13753c86, type: 3}
-  isiduti: {fileID: 21300000, guid: f6b42d02f13c235438695f90b5e76d6a, type: 3}
-  nuno: {fileID: 21300000, guid: 8d16c499816726e4591643479afd8078, type: 3}
-  suna: {fileID: 21300000, guid: c45cb9f7f82a6fc4eb7cbd1501a14f79, type: 3}
-  sunanuno: {fileID: 21300000, guid: 24911690daa280246b4cfe61d4307a61, type: 3}
-  taimatu: {fileID: 21300000, guid: 9fd5617d2fff6ec42ab2d1407553ec1a, type: 3}
-  tosuto: {fileID: 21300000, guid: 90db8962849d56243ba53a2a667f2c11, type: 3}
-  doromizu: {fileID: 21300000, guid: e5804cdbca7df9e4bb8763156ea44635, type: 3}
-  mizu: {fileID: 21300000, guid: 2eb57954a7edd104da6b8111cd45d6cc, type: 3}
-  hone: {fileID: 21300000, guid: de7aebe864f1cc04c8d34cd03fe5f5c6, type: 3}
-  himo: {fileID: 21300000, guid: e689cf38ef2857546a2cc127e5804baa, type: 3}
-  honenaihu: {fileID: 21300000, guid: 1ee927392604386469056d35285f0f83, type: 3}
-  craftSlots:
-  - {fileID: 1800570248}
-  - {fileID: 33934187}
-  - {fileID: 1306350064}
-  craftResultText: {fileID: 1792539172}
-  messageDuration: 0.5
-  craftExecuteButton: {fileID: 984708922}
 --- !u!1 &2082571147
 GameObject:
   m_ObjectHideFlags: 0

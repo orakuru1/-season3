@@ -34,7 +34,6 @@ public class ItemUIManager : MonoBehaviour
     public Sprite kosinunoSprite;
     public Sprite tateSprite;
     public Sprite panSprite;
-    public Sprite bouSprite;
     public Sprite kinobouSprite;
     public Sprite tetuSprite;
     public Sprite isihen;
@@ -96,7 +95,6 @@ public class ItemUIManager : MonoBehaviour
 
         // 名前と画像を辞書に登録
         itemSpriteDict["薬草"] = potionSprite;
-        itemSpriteDict["bou"] = bouSprite;
         itemSpriteDict["木棒"] = kinobouSprite;
         itemSpriteDict["神の腰布"] = kosinunoSprite;
         itemSpriteDict["鋼鉄"] = tateSprite;
@@ -156,6 +154,12 @@ public class ItemUIManager : MonoBehaviour
         {
             ("布", 1),
             ("砂", 1)
+        };
+
+        resipeDict["石片"] = new List<(string, int)>()
+        {
+            ("松明", 1),
+            ("鉄", 1)
         };
         
         resipeDict["水"] = new List<(string, int)>()
@@ -452,7 +456,7 @@ public class ItemUIManager : MonoBehaviour
 
         if(currentCount - alreadyUsed <= 0)
         {
-            Debug.Log($"{itemName}の所持数が不足しています");
+            StartCoroutine(ShowCraftMessage($"{itemName}の所持数が不足です!", false));
             return;
         }
 
@@ -701,7 +705,7 @@ public class ItemUIManager : MonoBehaviour
             bg.color = equipped ? new Color(0.8f, 0.8f, 1f) : Color.white;
     }
 
-    //合成ボタンを押したときに呼ばれるテキスト
+    //今までDebugで呼んでいたテキストをゲーム上で呼ぶように
     private IEnumerator ShowCraftMessage(string message, bool isSuccess)
     {
         craftResultText.gameObject.SetActive(true);
