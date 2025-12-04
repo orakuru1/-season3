@@ -53,6 +53,7 @@ public class ItemUIManager : MonoBehaviour
     [SerializeField] private List<Image> craftSlots = new List<Image>();
 
     [Header("合成結果表示UI")]
+    [SerializeField] private Image craftImage;
     [SerializeField] private Text craftResultText;  //UI Text
     [SerializeField] private float messageDuration = 2f; //表示時間
 
@@ -120,7 +121,7 @@ public class ItemUIManager : MonoBehaviour
     {
         //合成ボタンが押されたときに合成処理
         craftExecuteButton.onClick.AddListener(OnCraftExecute);
-        craftResultText.gameObject.SetActive(false);
+        craftImage.gameObject.SetActive(false);
     }
 #region 合成レシピとカテゴリ
     //アイテムのカテゴリ固定辞書
@@ -708,7 +709,7 @@ public class ItemUIManager : MonoBehaviour
     //今までDebugで呼んでいたテキストをゲーム上で呼ぶように
     private IEnumerator ShowCraftMessage(string message, bool isSuccess)
     {
-        craftResultText.gameObject.SetActive(true);
+        craftImage.gameObject.SetActive(true);
         craftResultText.text = message;
         craftResultText.color = isSuccess ? Color.white : Color.white;
 
@@ -725,6 +726,7 @@ public class ItemUIManager : MonoBehaviour
         for(float a = 1; a >= 0; a -= Time.deltaTime * 2)
         {
             craftResultText.color = new Color(craftResultText.color.r, craftResultText.color.g, craftResultText.color.b, a);
+            craftImage.gameObject.SetActive(false);
             yield return null;
         }
     }
