@@ -32,6 +32,8 @@ public class ElementGenerator : MonoBehaviour
     public int MapHeight => mapHeight;
     public float CellSize => cellSize;
 
+    public Transform Player;
+
     public void GenerateFromMap(
         int[,] mapData,
         DungeonSettings settings,
@@ -230,6 +232,10 @@ public class ElementGenerator : MonoBehaviour
 
                     // 3) 生成（safePos 高さに生成してから下で調整）
                     GameObject t = Instantiate(treasurePrefab, safePos, rotation, elementParent);
+
+                    animation aaaa = t.GetComponent<animation>();
+                    aaaa.player = Player;
+                    aaaa.itemObject = t;
 
                     // 物理同期してから最終当たり判定
                     Physics.SyncTransforms();
