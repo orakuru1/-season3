@@ -452,6 +452,14 @@ public class ItemUIManager : MonoBehaviour
 
         int currentCount = dict[itemName].count;
 
+        //装備中アイテムは選択不可
+        if((equippedWeapon != null && itemName == equippedWeaponButton.name) || 
+            equippedArmor != null && itemName == equippedArmorButton.name)
+        {
+            StartCoroutine(ShowCraftMessage($"{itemName}は装備中です", false));
+            return;
+        }
+
         //所持数チェック
         int alreadyUsed = craftItems.FindAll(x => x == itemName).Count;
 
@@ -711,7 +719,7 @@ public class ItemUIManager : MonoBehaviour
     {
         craftImage.gameObject.SetActive(true);
         craftResultText.text = message;
-        craftResultText.color = isSuccess ? Color.white : Color.white;
+        craftResultText.color = isSuccess ? Color.black : Color.black;
 
         //フェードイン
         for(float a = 0; a <= 1; a += Time.deltaTime * 2)
@@ -755,7 +763,6 @@ public class ItemUIManager : MonoBehaviour
         }
             
     }
-
 
     //=============================
     // カテゴリ取得
