@@ -5,6 +5,9 @@ public class InputHandler : MonoBehaviour
 {
     private Unit currentPlayerUnit;
     private GridBlock highlightedBlock;
+    private bool st;
+    public static InputHandler Instance { get; internal set; }
+
     private void OnEnable() => TurnManager.OnTurnStart += OnTurnStart;
     private void OnDisable() => TurnManager.OnTurnStart -= OnTurnStart;
 
@@ -13,7 +16,6 @@ public class InputHandler : MonoBehaviour
         currentPlayerUnit = unit.team == Unit.Team.Player ? unit : null;
         UpdateHighlight();
     }
-
     private void Update()
     {
         if (TurnManager.Instance.currentTeam != Unit.Team.Player) return;
@@ -101,6 +103,7 @@ public class InputHandler : MonoBehaviour
 
         if (player.isShowingAttackRange)
             player.ShowAttackRange();
+        st = true;
     }
 
     private void DoMove(PlayerUnit player)
@@ -114,20 +117,23 @@ public class InputHandler : MonoBehaviour
 
     public void UpdateHighlight()
     {
-        ClearHighlight();
-        if (currentPlayerUnit == null || GridManager.Instance == null)
-            return;
-
-        Vector2Int targetPos = currentPlayerUnit.gridPos + currentPlayerUnit.facingDir;
-        GridBlock block = GridManager.Instance.GetBlock(targetPos);
-        if (block != null)
+        if (st)
         {
-            block.SetHighlight(Color.blue);
-            highlightedBlock = block;
+            ClearHighlight();
+            if (currentPlayerUnit == null || GridManager.Instance == null)
+                return;
+
+            Vector2Int targetPos = currentPlayerUnit.gridPos + currentPlayerUnit.facingDir;
+            GridBlock block = GridManager.Instance.GetBlock(targetPos);
+            if (block != null)
+            {
+                block.SetHighlight(Color.blue);
+                highlightedBlock = block;
+            }
         }
     }
 
-    void ClearHighlight()
+    public void ClearHighlight()
     {
         if (highlightedBlock != null)
         {

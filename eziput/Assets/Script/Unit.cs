@@ -217,7 +217,7 @@ public class Unit : MonoBehaviour
         if (cur != null && cur.occupantUnit == this) cur.occupantUnit = null;
 
         Vector3 start = transform.position;
-        Vector3 end = block.transform.position + Vector3.up * 1f;
+        Vector3 end = block.transform.position + Vector3.up * 0.2f;
         float elapsed = 0f;
         float duration = 1f / moveSpeed;
 

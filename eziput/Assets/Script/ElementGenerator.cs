@@ -31,9 +31,9 @@ public class ElementGenerator : MonoBehaviour
     public int MapWidth => mapWidth;
     public int MapHeight => mapHeight;
     public float CellSize => cellSize;
-
+    public Vector3 EntranceWorldPos { get; private set; }
+    public bool EntranceFound { get; private set; } = false;
     public Transform Player;
-
     public void GenerateFromMap(
         int[,] mapData,
         DungeonSettings settings,
@@ -104,13 +104,18 @@ public class ElementGenerator : MonoBehaviour
             }
         }
 
-        // ==== entrance / exit ====
+        // Place entrance & exit
+        // Place entrance
         if (startRoom != null && entrancePrefab != null)
         {
             Vector3 p = new Vector3(startRoom.Center.x * cellSize, 0.5f, startRoom.Center.y * cellSize);
             var e = Instantiate(entrancePrefab, p, Quaternion.identity, elementParent);
             e.name = "Entrance";
             spawned.Add(e);
+
+            // ★入口座標を保存する
+            EntranceWorldPos = p;
+            EntranceFound = true;
         }
 
         if (endRoom != null && exitPrefab != null)
@@ -120,6 +125,106 @@ public class ElementGenerator : MonoBehaviour
             e.name = "Exit";
             spawned.Add(e);
         }
+
+        // Place features per room (use settings if available)
+        if (rooms != null && rooms.Count > 0)
+        {
+            // determine counts or ratios
+            int enemyPerRoom = 1;
+            int treasurePerRoom = 0;
+            int trapPerRoom = 0;
+
+            // If settings has integer counts, use them (best-effort)
+            if (settings != null)
+            {
+                // many versions of DungeonSettings exist; try common fields
+                try
+                {
+                    // if settings has enemyCount/treasureCount/trapCount fields, distribute them
+                    int totalEnemies = (int)typeof(DungeonSettings).GetField("enemyCount")?.GetValue(settings);
+                    int totalTreasures = (int)typeof(DungeonSettings).GetField("treasureCount")?.GetValue(settings);
+                    int totalTraps = (int)typeof(DungeonSettings).GetField("trapCount")?.GetValue(settings);
+
+                    enemyPerRoom = Mathf.Max(1, totalEnemies / Mathf.Max(1, rooms.Count));
+                    treasurePerRoom = Mathf.Max(0, totalTreasures / Mathf.Max(1, rooms.Count));
+                    trapPerRoom = Mathf.Max(0, totalTraps / Mathf.Max(1, rooms.Count));
+                }
+                catch
+                {
+                    // fallback: use rates if available
+                    try
+                    {
+                        float tr = (float)typeof(DungeonSettings).GetField("treasureSpawnRate")?.GetValue(settings);
+                        float er = (float)typeof(DungeonSettings).GetField("enemySpawnRate")?.GetValue(settings);
+                        float pr = (float)typeof(DungeonSettings).GetField("trapSpawnRate")?.GetValue(settings);
+                        // approximate counts per room
+                        enemyPerRoom = Mathf.Max(1, Mathf.RoundToInt(er * 5f));
+                        treasurePerRoom = Mathf.RoundToInt(tr * 3f);
+                        trapPerRoom = Mathf.RoundToInt(pr * 3f);
+                    }
+                    catch
+                    {
+                        // totally fallback defaults
+                        enemyPerRoom = 1;
+                        treasurePerRoom = 0;
+                        trapPerRoom = 0;
+                    }
+                }
+            }
+
+            // For each room, place features in random interior positions
+            foreach (var r in rooms)
+            {
+                // ensure interior bounds
+                int minX = r.x + 1;
+                int maxX = r.x + r.width - 2;
+                int minY = r.y + 1;
+                int maxY = r.y + r.height - 2;
+                if (maxX < minX || maxY < minY) continue;
+
+                // place enemies
+                for (int i = 0; i < enemyPerRoom; i++)
+                {
+                    int rx = Random.Range(minX, maxX + 1);
+                    int ry = Random.Range(minY, maxY + 1);
+                    SpawnFeature(enemyPrefab, rx, ry, "Enemy");
+                }
+                // treasures
+                for (int i = 0; i < treasurePerRoom; i++)
+                {
+                    int rx = Random.Range(minX, maxX + 1);
+                    int ry = Random.Range(minY, maxY + 1);
+                    SpawnFeature(treasurePrefab, rx, ry, "Treasure");
+                }
+                // traps
+                for (int i = 0; i < trapPerRoom; i++)
+                {
+                    int rx = Random.Range(minX, maxX + 1);
+                    int ry = Random.Range(minY, maxY + 1);
+                    SpawnFeature(trapPrefab, rx, ry, "Trap");
+                }
+            }
+        }
+        else
+        {
+            // fallback: scatter features on open floor
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    if (mapData[y, x] == 0)
+                    {
+                        float val = Random.value;
+                        if (val < 0.005f) SpawnFeature(enemyPrefab, x, y, "Enemy");
+                        else if (val < 0.007f) SpawnFeature(treasurePrefab, x, y, "Treasure");
+                        else if (val < 0.009f) SpawnFeature(trapPrefab, x, y, "Trap");
+                    }
+                }
+            }
+        }
+
+        Debug.Log("[ElementGenerator] 要素の配置が完了しました。");
+
 
 
         // =======================================================================
@@ -232,11 +337,9 @@ public class ElementGenerator : MonoBehaviour
 
                     // 3) 生成（safePos 高さに生成してから下で調整）
                     GameObject t = Instantiate(treasurePrefab, safePos, rotation, elementParent);
-
                     animation aaaa = t.GetComponent<animation>();
                     aaaa.player = Player;
                     aaaa.itemObject = t;
-
                     // 物理同期してから最終当たり判定
                     Physics.SyncTransforms();
 
@@ -582,19 +685,38 @@ public class ElementGenerator : MonoBehaviour
     // -------------------------------------------------------------------------
     //    Feature spawn
     // -------------------------------------------------------------------------
-    private void SpawnFeature(GameObject prefab, int x, int y, string baseName)
+    // spawn helpers
+    private void SpawnFeature(GameObject prefab, int x, int y, string baseName)
     {
         if (prefab == null) return;
-
         Vector3 p = new Vector3(x * cellSize, 0.5f, y * cellSize);
         GameObject o = Instantiate(prefab, p, Quaternion.identity, elementParent);
         o.name = $"{baseName}_{x}_{y}";
         spawned.Add(o);
+
+
+        Unit unit = o.GetComponent<Unit>();
+        if (unit != null)
+        {
+            // グリッド位置を設定
+            unit.gridPos = new Vector2Int(x, y);
+
+            // occupant登録
+            GridBlock block = GridManager.Instance.GetBlock(unit.gridPos);
+            if (block != null)
+            {
+                block.occupantUnit = unit;
+            }
+
+            // TurnManagerに登録（重複チェック付き）
+            if (TurnManager.Instance != null && !TurnManager.Instance.allUnits.Contains(unit))
+            {
+                TurnManager.Instance.allUnits.Add(unit);
+            }
+        }
     }
 
-    // -------------------------------------------------------------------------
-    //    Clear
-    // -------------------------------------------------------------------------
+
     private void ClearSpawned()
     {
         for (int i = spawned.Count - 1; i >= 0; i--)
@@ -603,4 +725,5 @@ public class ElementGenerator : MonoBehaviour
         }
         spawned.Clear();
     }
+
 }
