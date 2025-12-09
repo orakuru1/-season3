@@ -3440,7 +3440,7 @@ MonoBehaviour:
   attackSkills:
   - skillName: "\u4E0A\u6BB5"
     triggerKey: 114
-    attackPattern: {fileID: 11400000, guid: 1c5a55c97e70a044f9ecc09e6453aeea, type: 2}
+    attackPattern: {fileID: 11400000, guid: 925180d414007eb44a283484cf34e509, type: 2}
     power: 10
     animationID: 1
   - skillName: "\u9B54\u6CD5\u65AC\u6483"
