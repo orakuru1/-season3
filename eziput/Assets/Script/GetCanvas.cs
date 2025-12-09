@@ -18,6 +18,9 @@ public class GetCanvas : MonoBehaviour
     public GameObject itempanel;  //アイテム使いますか？panel
     public GameObject craftArea; 
 
+    [Header("神の力表示Panel")]
+    public GameObject kamipanel;
+
     [Header("プレイヤー操作スクリプト（PlayerMoveなど）")]
     public MonoBehaviour[] playerControllers; // ← 複数登録できるように変更！
 
@@ -38,6 +41,7 @@ public class GetCanvas : MonoBehaviour
     public void TogglePanel()  //ESCキーを押したとき表示非表示する
     {
         bool newState = !panel.activeSelf;
+        bool State = panel.activeSelf;
 
         panel.SetActive(newState);
         kyarastatusImage.SetActive(newState);
@@ -46,6 +50,7 @@ public class GetCanvas : MonoBehaviour
         bouguImage.SetActive(newState);
         setteiImage.SetActive(newState);
         itempanel.SetActive(newState);
+        kamipanel.SetActive(State);
 
         if (newState)
         {
