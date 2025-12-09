@@ -323,8 +323,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1735061914}
   m_HandleRect: {fileID: 1735061913}
   m_Direction: 2
-  m_Value: 1.0000002
-  m_Size: 0.61
+  m_Value: 1
+  m_Size: 0.60999995
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4322,7 +4322,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 731982361}
   m_Direction: 0
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6331,7 +6331,6 @@ MonoBehaviour:
   dangerWallMaterial: {fileID: 2100000, guid: 33bda1d413d273349a1429be650bc793, type: 2}
   elementParent: {fileID: 2087570530}
   cellSize: 2
-  Player: {fileID: 0}
 --- !u!4 &1096882722
 Transform:
   m_ObjectHideFlags: 0
@@ -7708,6 +7707,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 6277409031460633215, guid: 057a04a0ce9dc54498d7e9800ddb6949,
     type: 3}
+  eg: {fileID: 1096882721}
 --- !u!4 &1259298091
 Transform:
   m_ObjectHideFlags: 0
@@ -8323,7 +8323,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 803223274}
   m_Direction: 0
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -10705,8 +10705,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 755402277}
   m_HandleRect: {fileID: 755402276}
   m_Direction: 2
-  m_Value: 1.0000002
-  m_Size: 0.61
+  m_Value: 1
+  m_Size: 0.60999995
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
