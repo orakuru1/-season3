@@ -1,15 +1,20 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    public static event Action<GameObject> OnPlayerSpawned;
+
     // 現在選択されているルート
     public RouteType CurrentRoute { get; private set; } = RouteType.Safe;
 
     public GameObject playerPrefab;
+
+    public ElementGenerator eg;
 
     void Start()
     {
@@ -52,7 +57,6 @@ public class GameManager : MonoBehaviour
         // ElementGenerator が生成完了するまで待つ
         yield return new WaitUntil(() => ElementGeneratorFinished());
 
-        var eg = FindObjectOfType<ElementGenerator>();
         if (eg != null && eg.EntranceFound)
         {
             StartCoroutine(SpawnPlayerLater(eg.EntranceWorldPos));
@@ -62,7 +66,6 @@ public class GameManager : MonoBehaviour
     private bool ElementGeneratorFinished()
     {
         // ElementGenerator がシーンに存在して、入口を生成し終わっている場合 true
-        var eg = FindObjectOfType<ElementGenerator>();
         return (eg != null && eg.EntranceFound);
     }
     private IEnumerator SpawnPlayerLater(Vector3 worldPos)
@@ -84,6 +87,7 @@ public class GameManager : MonoBehaviour
             return;
         }
         GameObject playerObj = Instantiate(playerPrefab, worldPos, Quaternion.identity);
+        OnPlayerSpawned?.Invoke(playerObj);
         Unit unit = playerObj.GetComponent<Unit>();
         if (unit != null)
         {

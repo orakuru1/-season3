@@ -27,9 +27,10 @@ public class GetStatus : MonoBehaviour
     {
         if(playerUnit == null)
         {
+            //いずれ消せ。統合用では用済み・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
             playerUnit = FindObjectsOfType<Unit>()?.FirstOrDefault(u => u.team == Unit.Team.Player);
         }
-
+        OnEnable();
         UpdateStatus();
     }
 
@@ -57,5 +58,19 @@ public class GetStatus : MonoBehaviour
         bukisoubiText.text = $"武器: {equippedWeaponName}";
         bougusoubiText.text = $"防具: {equippedArmorName}";
 
+    }
+
+    public void OnEnable()
+    {
+        GameManager.OnPlayerSpawned += SetPlayer;
+    }
+    public void OnDisable()
+    {
+        GameManager.OnPlayerSpawned -= SetPlayer;
+    }
+    public void SetPlayer(GameObject playerObj)
+    {
+        playerUnit = playerObj.GetComponent<Unit>();
+        OnDisable();
     }
 }
