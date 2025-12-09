@@ -24,6 +24,11 @@ public class CameraFollowAdvanced : MonoBehaviour
     public float collisionBuffer = 0.3f;
 
     private float currentDistance;
+    public static CameraFollowAdvanced Instance;
+    void Awake()
+    {
+        Instance = this;
+    }
 
     //----------------------------------------
     // ★ Start時にプレイヤーを探してセット

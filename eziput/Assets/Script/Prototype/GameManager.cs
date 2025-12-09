@@ -68,13 +68,13 @@ public class GameManager : MonoBehaviour
     private IEnumerator SpawnPlayerLater(Vector3 worldPos)
     {
         SpawnPlayer(worldPos);
-// ★ GridBlock.Start() が走るまで 1 フレーム待つ
-yield return null;
+        // ★ GridBlock.Start() が走るまで 1 フレーム待つ
+        yield return null;
 
         if (InputHandler.Instance != null)
             InputHandler.Instance.ClearHighlight();
 
-}
+    }
 
     private void SpawnPlayer(Vector3 worldPos)
     {
@@ -83,7 +83,7 @@ yield return null;
             Debug.LogError("Player Prefab が設定されていません！");
             return;
         }
-GameObject playerObj = Instantiate(playerPrefab, worldPos, Quaternion.identity);
+        GameObject playerObj = Instantiate(playerPrefab, worldPos, Quaternion.identity);
         Unit unit = playerObj.GetComponent<Unit>();
         if (unit != null)
         {
@@ -98,6 +98,11 @@ GameObject playerObj = Instantiate(playerPrefab, worldPos, Quaternion.identity);
 
             if (!TurnManager.Instance.allUnits.Contains(unit))
                 TurnManager.Instance.allUnits.Insert(0, unit);
+        }
+        // ★ カメラのターゲットにする
+        if (CameraFollowAdvanced.Instance != null)
+        {
+            CameraFollowAdvanced.Instance.SetTarget(playerObj.transform);
         }
 
         Debug.Log("Player Spawned at Entrance");
