@@ -152,6 +152,7 @@ public class GodManeger : MonoBehaviour
         animationController.AttackAnimation(ability.GodAnimationID);//いずれ、神のアニメーションとアニメーション番号を作る（最初１，１個習合２，みたいな感じ）
         ///////////////////////////////////////////////////
         cooldownTimers[ability] = ability.cooldown;///////////////////////クールダウンがない場合は、入れないにしよう。（関数で共通化）SetCooldown(ability);
+        ability.floatcurrentCooldown = ability.cooldown;
         yield return new WaitUntil(() => !animationController.animationState.isAttacking);
     }
 //デバフ系のアビリティ
@@ -163,6 +164,7 @@ public class GodManeger : MonoBehaviour
         animationController2.DebuffAnimation(ability.GodAnimationID);
 
         cooldownTimers[ability] = ability.cooldown;
+        ability.floatcurrentCooldown = ability.cooldown;
         yield return new WaitUntil(() => !animationController2.animationState.isDebuffing);
         Debug.Log("デバフアニメーション終了");
     }
@@ -173,6 +175,7 @@ public class GodManeger : MonoBehaviour
 
         Debug.Log($"{ability.abilityName} を発動！（回復量 {ability.power}）");
         cooldownTimers[ability] = ability.cooldown;///////////////////////クールダウンがない場合は、入れないにしよう。
+        ability.floatcurrentCooldown = ability.cooldown;
         ability.isActive = true;
 
         //ヒールのアニメーション
@@ -192,6 +195,7 @@ public class GodManeger : MonoBehaviour
         
         Debug.Log($"{ability.abilityName} の加護で強化！({ability.description})");
         cooldownTimers[ability] = ability.cooldown;///////////////////////クールダウンがない場合は、入れないにしよう。
+        ability.floatcurrentCooldown = ability.cooldown;
         ability.isActive = true;
 
         //バフのアニメーション
@@ -395,6 +399,7 @@ public class GodManeger : MonoBehaviour
         foreach (var ability in keys)
         {
             cooldownTimers[ability]--;
+            ability.floatcurrentCooldown--;
             if (cooldownTimers[ability] <= 0)
             {
                 cooldownTimers.Remove(ability);
