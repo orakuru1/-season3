@@ -12,6 +12,11 @@ public class ElementGenerator : MonoBehaviour
     public GameObject entrancePrefab;
     public GameObject exitPrefab;
 
+    // ← ここにワーププレファブを追加
+    [Header("ワープ(ミニゲームへ遷移)")]
+    public GameObject warpPrefab;        // インスペクターでワーププレファブを設定
+    public int warpPerRoom = 1;          // 各部屋に置く数（通常1）。0にすると配置されない。
+
     [Header("マテリアル（Safe / Danger）")]
     public Material safeFloorMaterial;
     public Material dangerFloorMaterial;
@@ -125,22 +130,22 @@ public class ElementGenerator : MonoBehaviour
             spawned.Add(e);
         }
 
-        // Place features per room (use settings if available)
-        if (rooms != null && rooms.Count > 0)
+        // Place features per room (use settings if available)
+        if (rooms != null && rooms.Count > 0)
         {
-            // determine counts or ratios
-            int enemyPerRoom = 1;
+            // determine counts or ratios
+            int enemyPerRoom = 1;
             int treasurePerRoom = 0;
             int trapPerRoom = 0;
 
-            // If settings has integer counts, use them (best-effort)
-            if (settings != null)
+            // If settings has integer counts, use them (best-effort)
+            if (settings != null)
             {
-                // many versions of DungeonSettings exist; try common fields
-                try
+                // many versions of DungeonSettings exist; try common fields
+                try
                 {
-                    // if settings has enemyCount/treasureCount/trapCount fields, distribute them
-                    int totalEnemies = (int)typeof(DungeonSettings).GetField("enemyCount")?.GetValue(settings);
+                    // if settings has enemyCount/treasureCount/trapCount fields, distribute them
+                    int totalEnemies = (int)typeof(DungeonSettings).GetField("enemyCount")?.GetValue(settings);
                     int totalTreasures = (int)typeof(DungeonSettings).GetField("treasureCount")?.GetValue(settings);
                     int totalTraps = (int)typeof(DungeonSettings).GetField("trapCount")?.GetValue(settings);
 
@@ -150,64 +155,150 @@ public class ElementGenerator : MonoBehaviour
                 }
                 catch
                 {
-                    // fallback: use rates if available
-                    try
+                    // fallback: use rates if available
+                    try
                     {
                         float tr = (float)typeof(DungeonSettings).GetField("treasureSpawnRate")?.GetValue(settings);
                         float er = (float)typeof(DungeonSettings).GetField("enemySpawnRate")?.GetValue(settings);
                         float pr = (float)typeof(DungeonSettings).GetField("trapSpawnRate")?.GetValue(settings);
-                        // approximate counts per room
-                        enemyPerRoom = Mathf.Max(1, Mathf.RoundToInt(er * 5f));
+                        // approximate counts per room
+                        enemyPerRoom = Mathf.Max(1, Mathf.RoundToInt(er * 5f));
                         treasurePerRoom = Mathf.RoundToInt(tr * 3f);
                         trapPerRoom = Mathf.RoundToInt(pr * 3f);
                     }
                     catch
                     {
-                        // totally fallback defaults
-                        enemyPerRoom = 1;
+                        // totally fallback defaults
+                        enemyPerRoom = 1;
                         treasurePerRoom = 0;
                         trapPerRoom = 0;
                     }
                 }
             }
 
-            // For each room, place features in random interior positions
-            foreach (var r in rooms)
+            // For each room, place features in random interior positions
+            foreach (var r in rooms)
             {
-                // ensure interior bounds
-                int minX = r.x + 1;
+                // ensure interior bounds
+                int minX = r.x + 1;
                 int maxX = r.x + r.width - 2;
                 int minY = r.y + 1;
                 int maxY = r.y + r.height - 2;
                 if (maxX < minX || maxY < minY) continue;
 
-                // place enemies
-                for (int i = 0; i < enemyPerRoom; i++)
+                // place enemies
+                for (int i = 0; i < enemyPerRoom; i++)
                 {
                     int rx = Random.Range(minX, maxX + 1);
                     int ry = Random.Range(minY, maxY + 1);
                     SpawnFeature(enemyPrefab, rx, ry, "Enemy");
                 }
-                // treasures
-                for (int i = 0; i < treasurePerRoom; i++)
+                // treasures
+                for (int i = 0; i < treasurePerRoom; i++)
                 {
                     int rx = Random.Range(minX, maxX + 1);
                     int ry = Random.Range(minY, maxY + 1);
                     SpawnFeature(treasurePrefab, rx, ry, "Treasure");
                 }
-                // traps
-                for (int i = 0; i < trapPerRoom; i++)
+                // traps
+                for (int i = 0; i < trapPerRoom; i++)
                 {
                     int rx = Random.Range(minX, maxX + 1);
                     int ry = Random.Range(minY, maxY + 1);
                     SpawnFeature(trapPrefab, rx, ry, "Trap");
                 }
-            }
+
+                // ----------------------------
+                // ★ ここからワープ配置ロジック（追加）
+                // ----------------------------
+
+                // スタート部屋／ゴール部屋には置かない（部屋そのものを比較）
+                if (warpPrefab != null && warpPerRoom > 0)
+                {
+                    bool skipThisRoom = false;
+                    if (startRoom != null && ReferenceEquals(r, startRoom)) skipThisRoom = true;
+                    if (endRoom != null && ReferenceEquals(r, endRoom)) skipThisRoom = true;
+
+                    // もし Room 型が同一オブジェクトでなくても、中の座標で判断したい場合は下のコメント解除：
+                    // if (!skipThisRoom && startRoom != null &&
+                    //     (r.Center.x == startRoom.Center.x && r.Center.y == startRoom.Center.y)) skipThisRoom = true;
+                    // if (!skipThisRoom && endRoom != null &&
+                    //     (r.Center.x == endRoom.Center.x && r.Center.y == endRoom.Center.y)) skipThisRoom = true;
+
+                    if (!skipThisRoom)
+                    {
+                        for (int w = 0; w < warpPerRoom; w++)
+                        {
+                            bool placedWarp = false;
+                            int warpAttempts = 0;
+                            // try to find a valid grid cell inside the room
+                            while (!placedWarp && warpAttempts < 40)
+                            {
+                                warpAttempts++;
+                                int wx = Random.Range(minX, maxX + 1);
+                                int wy = Random.Range(minY, maxY + 1);
+
+                                // 1) 必ず床であること
+                                if (wx < 0 || wy < 0 || wy >= mapHeight || wx >= mapWidth) continue;
+                                if (mapData[wy, wx] != 0) continue; // 床以外は不可
+
+                                // 2) スタート/ゴールのセンターセルと被らないようにする
+                                bool conflictWithStartOrEnd = false;
+                                if (startRoom != null)
+                                {
+                                    if (wx == startRoom.Center.x && wy == startRoom.Center.y) conflictWithStartOrEnd = true;
+                                }
+                                if (endRoom != null)
+                                {
+                                    if (wx == endRoom.Center.x && wy == endRoom.Center.y) conflictWithStartOrEnd = true;
+                                }
+                                if (conflictWithStartOrEnd) continue;
+
+                                // 3) グリッドに occupant が居ないこと（Unit がいる場合は不可）
+                                GridBlock gb = null;
+                                if (GridManager.Instance != null)
+                                {
+                                    gb = GridManager.Instance.GetBlock(new Vector2Int(wx, wy));
+                                    if (gb != null && gb.occupantUnit != null) continue;
+                                }
+
+                                // 4) 物理的にめり込まないか軽くチェック（OverlapSphere）
+                                Vector3 spawnPos = new Vector3(wx * cellSize + cellSize * 0.5f, 0.5f, wy * cellSize + cellSize * 0.5f);
+                                float checkRadius = Mathf.Max(0.3f, cellSize * 0.4f);
+                                Collider[] cols = Physics.OverlapSphere(spawnPos, checkRadius);
+                                bool collision = false;
+                                foreach (var c in cols)
+                                {
+                                    if (c == null) continue;
+                                    if (c.CompareTag("Wall")) { collision = true; break; }
+                                    // 壁レイヤーが定義されている場合の追加チェックはここに入れられます
+                                }
+                                if (collision) continue;
+
+                                // 5) 置く（Y高さは0.5で仮置き。必要なら調整してください）
+                                GameObject warp = Instantiate(warpPrefab, spawnPos, Quaternion.identity, elementParent);
+                                warp.name = $"Warp_{wx}_{wy}";
+                                spawned.Add(warp);
+
+                                // もし warp に特別な初期化が必要ならここで行う
+                                placedWarp = true;
+                            } // while attempts
+                            if (!placedWarp)
+                            {
+                                Debug.LogWarning($"[ElementGenerator] Room ({r.x},{r.y}) にワープを配置できませんでした（試行数上限）");
+                            }
+                        } // for warpPerRoom
+                    } // if not skip room
+                } // if warpPrefab
+                // ----------------------------
+                // ★ ワープ配置ここまで
+                // ----------------------------
+            } // foreach rooms
         }
         else
         {
-            // fallback: scatter features on open floor
-            for (int y = 0; y < mapHeight; y++)
+            // fallback: scatter features on open floor
+            for (int y = 0; y < mapHeight; y++)
             {
                 for (int x = 0; x < mapWidth; x++)
                 {
@@ -223,6 +314,7 @@ public class ElementGenerator : MonoBehaviour
         }
 
         Debug.Log("[ElementGenerator] 要素の配置が完了しました。");
+
 
 
 
@@ -682,7 +774,7 @@ public class ElementGenerator : MonoBehaviour
     //    Feature spawn
     // -------------------------------------------------------------------------
     // spawn helpers
-    private void SpawnFeature(GameObject prefab, int x, int y, string baseName)
+    private void SpawnFeature(GameObject prefab, int x, int y, string baseName)
     {
         if (prefab == null) return;
         Vector3 p = new Vector3(x * cellSize, 0.5f, y * cellSize);
@@ -694,18 +786,18 @@ public class ElementGenerator : MonoBehaviour
         Unit unit = o.GetComponent<Unit>();
         if (unit != null)
         {
-            // グリッド位置を設定
-            unit.gridPos = new Vector2Int(x, y);
+            // グリッド位置を設定
+            unit.gridPos = new Vector2Int(x, y);
 
-            // occupant登録
-            GridBlock block = GridManager.Instance.GetBlock(unit.gridPos);
+            // occupant登録
+            GridBlock block = GridManager.Instance.GetBlock(unit.gridPos);
             if (block != null)
             {
                 block.occupantUnit = unit;
             }
 
-            // TurnManagerに登録（重複チェック付き）
-            if (TurnManager.Instance != null && !TurnManager.Instance.allUnits.Contains(unit))
+            // TurnManagerに登録（重複チェック付き）
+            if (TurnManager.Instance != null && !TurnManager.Instance.allUnits.Contains(unit))
             {
                 TurnManager.Instance.allUnits.Add(unit);
             }
