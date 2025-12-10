@@ -281,7 +281,7 @@ public class Unit : MonoBehaviour
         if (target == null || isMoving || animationController.animationState.isAttacking || animationController.animationState.isBuffing || animationController.animationState.isDebuffing || animationController.animationState.isHiling || GodManeger.Instance.isGodDescrip)
             yield break;
 
-        animationController.Initialize(target);
+        animationController.Initialize(target, TotalAttack);
         animationController.animationState.isAttacking = true;
 
         // 向き変更（相手の方向を向く）
@@ -303,7 +303,7 @@ public class Unit : MonoBehaviour
             // 攻撃アニメーション → 相手のヒットアニメーションの流れは
             // Animator のイベント経由で OnAttackAnimationEnd() / OnHitAnimationEnd() へ
             yield return new WaitUntil(() => !animationController.animationState.isAttacking);
-            target.TakeDamage(TotalAttack, this);
+            //target.TakeDamage(TotalAttack, this);
 
         }
         // ===== アニメーションなし =====
@@ -401,6 +401,7 @@ public class Unit : MonoBehaviour
     public void TakeDamage(int damage, Unit attacker = null)
     {
         status.currentHP -= damage;
+        //DamageTextManager.Instance.ShowDamage(damage, this.transform);
         if (status.currentHP <= 0) Die(attacker);
     }
 
