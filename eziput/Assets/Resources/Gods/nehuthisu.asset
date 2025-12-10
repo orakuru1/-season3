@@ -16,7 +16,7 @@ MonoBehaviour:
   godName: "\u30CD\u30D5\u30C6\u30A3\u30B9"
   title: 
   description: "\u5909\u66F4\u3055\u308C\u305F\u8AAC\u660E\u6587\u3067\u3059\u3002"
-  icon: {fileID: 21300000, guid: b654488272afdd74b86ed07949b512b6, type: 3}
+  icon: {fileID: 21300000, guid: 8c59402c1d0e71c49bf38ddf80b43504, type: 3}
   abilities:
     abilityName: 
     description: 
@@ -26,5 +26,5 @@ MonoBehaviour:
     attackPattern: 0
     cooldown: 6
     floatcurrentCooldown: 0
-    isActive: 1
+    isActive: 0
     GodAnimationID: 1004
