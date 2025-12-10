@@ -324,7 +324,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1735061913}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.60999995
+  m_Size: 0.61
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3953,6 +3953,7 @@ MonoBehaviour:
   setteiImage: {fileID: 1343723068}
   itempanel: {fileID: 1216112630}
   craftArea: {fileID: 1839169254}
+  kamipanel: {fileID: 0}
   playerControllers:
   - {fileID: 0}
   - {fileID: 0}
@@ -5911,7 +5912,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1132921477}
   m_Direction: 0
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6325,6 +6326,9 @@ MonoBehaviour:
     type: 3}
   exitPrefab: {fileID: 850271963371842223, guid: b94f730eb6a97ed439b9007212b2ab84,
     type: 3}
+  warpPrefab: {fileID: 3244763578466451285, guid: 271ffa09e4405684b92b7a592e7aa6b2,
+    type: 3}
+  warpTotalCount: 1
   safeFloorMaterial: {fileID: 2100000, guid: e11dad0122b63c84796d9d5c12fdd34e, type: 2}
   dangerFloorMaterial: {fileID: 2100000, guid: d356a0f5d859dd0469fd9b912fd3bbc5, type: 2}
   safeWallMaterial: {fileID: 2100000, guid: c1b38175ba6db9b4893d472ddd8b8400, type: 2}
@@ -10706,7 +10710,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 755402276}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.60999995
+  m_Size: 0.61
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

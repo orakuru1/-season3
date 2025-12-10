@@ -208,92 +208,79 @@ public class ElementGenerator : MonoBehaviour
                     SpawnFeature(trapPrefab, rx, ry, "Trap");
                 }
 
-                // ----------------------------
-                // ★ ここからワープ配置ロジック（追加）
-                // ----------------------------
-
-                // スタート部屋／ゴール部屋には置かない（部屋そのものを比較）
-                if (warpPrefab != null && warpTotalCount > 0)
-                {
-                    bool skipThisRoom = false;
-                    if (startRoom != null && ReferenceEquals(r, startRoom)) skipThisRoom = true;
-                    if (endRoom != null && ReferenceEquals(r, endRoom)) skipThisRoom = true;
-
-                    // もし Room 型が同一オブジェクトでなくても、中の座標で判断したい場合は下のコメント解除：
-                    // if (!skipThisRoom && startRoom != null &&
-                    //     (r.Center.x == startRoom.Center.x && r.Center.y == startRoom.Center.y)) skipThisRoom = true;
-                    // if (!skipThisRoom && endRoom != null &&
-                    //     (r.Center.x == endRoom.Center.x && r.Center.y == endRoom.Center.y)) skipThisRoom = true;
-
-                    if (!skipThisRoom)
-                    {
-                        for (int w = 0; w < warpTotalCount; w++)
-                        {
-                            bool placedWarp = false;
-                            int warpAttempts = 0;
-                            // try to find a valid grid cell inside the room
-                            while (!placedWarp && warpAttempts < 40)
-                            {
-                                warpAttempts++;
-                                int wx = Random.Range(minX, maxX + 1);
-                                int wy = Random.Range(minY, maxY + 1);
-
-                                // 1) 必ず床であること
-                                if (wx < 0 || wy < 0 || wy >= mapHeight || wx >= mapWidth) continue;
-                                if (mapData[wy, wx] != 0) continue; // 床以外は不可
-
-                                // 2) スタート/ゴールのセンターセルと被らないようにする
-                                bool conflictWithStartOrEnd = false;
-                                if (startRoom != null)
-                                {
-                                    if (wx == startRoom.Center.x && wy == startRoom.Center.y) conflictWithStartOrEnd = true;
-                                }
-                                if (endRoom != null)
-                                {
-                                    if (wx == endRoom.Center.x && wy == endRoom.Center.y) conflictWithStartOrEnd = true;
-                                }
-                                if (conflictWithStartOrEnd) continue;
-
-                                // 3) グリッドに occupant が居ないこと（Unit がいる場合は不可）
-                                GridBlock gb = null;
-                                if (GridManager.Instance != null)
-                                {
-                                    gb = GridManager.Instance.GetBlock(new Vector2Int(wx, wy));
-                                    if (gb != null && gb.occupantUnit != null) continue;
-                                }
-
-                                // 4) 物理的にめり込まないか軽くチェック（OverlapSphere）
-                                Vector3 spawnPos = new Vector3(wx * cellSize + cellSize * 0.5f, 0.5f, wy * cellSize + cellSize * 0.5f);
-                                float checkRadius = Mathf.Max(0.3f, cellSize * 0.4f);
-                                Collider[] cols = Physics.OverlapSphere(spawnPos, checkRadius);
-                                bool collision = false;
-                                foreach (var c in cols)
-                                {
-                                    if (c == null) continue;
-                                    if (c.CompareTag("Wall")) { collision = true; break; }
-                                    // 壁レイヤーが定義されている場合の追加チェックはここに入れられます
-                                }
-                                if (collision) continue;
-
-                                // 5) 置く（Y高さは0.5で仮置き。必要なら調整してください）
-                                GameObject warp = Instantiate(warpPrefab, spawnPos, Quaternion.identity, elementParent);
-                                warp.name = $"Warp_{wx}_{wy}";
-                                spawned.Add(warp);
-
-                                // もし warp に特別な初期化が必要ならここで行う
-                                placedWarp = true;
-                            } // while attempts
-                            if (!placedWarp)
-                            {
-                                Debug.LogWarning($"[ElementGenerator] Room ({r.x},{r.y}) にワープを配置できませんでした（試行数上限）");
-                            }
-                        } // for warpTotalCount
-                    } // if not skip room
-                } // if warpPrefab
-                // ----------------------------
-                // ★ ワープ配置ここまで
-                // ----------------------------
             } // foreach rooms
+
+            // ====================================================================
+            // ★ マップ全体で warpTotalCount 個のワープを配置する
+            // ====================================================================
+            if (warpPrefab != null && warpTotalCount > 0 && rooms != null && rooms.Count > 0)
+            {
+                int placedWarpCount = 0;
+                int globalAttempts = 0;
+
+                while (placedWarpCount < warpTotalCount && globalAttempts < warpTotalCount * 30)
+                {
+                    globalAttempts++;
+
+                    // ① ランダムな部屋を選ぶ（スタート・ゴールは除外）
+                    Room r = rooms[Random.Range(0, rooms.Count)];
+
+                    if (startRoom != null && r == startRoom) continue;
+                    if (endRoom != null && r == endRoom) continue;
+
+                    // 部屋の内側領域
+                    int minX = r.x + 1;
+                    int maxX = r.x + r.width - 2;
+                    int minY = r.y + 1;
+                    int maxY = r.y + r.height - 2;
+
+                    if (maxX < minX || maxY < minY) continue;
+
+                    // ② ランダムセル
+                    int wx = Random.Range(minX, maxX + 1);
+                    int wy = Random.Range(minY, maxY + 1);
+
+                    // 床でないと不可
+                    if (mapData[wy, wx] != 0) continue;
+
+                    // スタート／ゴールと被らない
+                    if (startRoom != null && wx == startRoom.Center.x && wy == startRoom.Center.y) continue;
+                    if (endRoom != null && wx == endRoom.Center.x && wy == endRoom.Center.y) continue;
+
+                    // occupant がいないか
+                    GridBlock gb = GridManager.Instance?.GetBlock(new Vector2Int(wx, wy));
+                    if (gb != null && gb.occupantUnit != null) continue;
+
+                    // ③ 衝突チェック
+                    Vector3 spawnPos = new Vector3(wx * cellSize + cellSize * 0.5f, 0.5f, wy * cellSize + cellSize * 0.5f);
+                    float checkRadius = Mathf.Max(0.3f, cellSize * 0.4f);
+                    Collider[] cols = Physics.OverlapSphere(spawnPos, checkRadius);
+                    bool collision = false;
+                    foreach (var c in cols)
+                    {
+                        if (c == null) continue;
+                        if (c.CompareTag("Wall"))
+                        {
+                            collision = true;
+                            break;
+                        }
+                    }
+                    if (collision) continue;
+
+                    // ④ 生成！
+                    GameObject warp = Instantiate(warpPrefab, spawnPos, Quaternion.identity, elementParent);
+                    warp.name = $"Warp_{wx}_{wy}";
+                    spawned.Add(warp);
+
+                    placedWarpCount++;
+                }
+
+                if (placedWarpCount < warpTotalCount)
+                {
+                    Debug.LogWarning($"[ElementGenerator] ワープ配置数が不足: {placedWarpCount}/{warpTotalCount}");
+                    }
+            }
+
         }
         else
         {
