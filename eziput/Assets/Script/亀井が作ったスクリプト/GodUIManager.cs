@@ -9,6 +9,7 @@ public class GodUIManager : MonoBehaviour
 
     //ここに4つの画像を登録（インスペクタで設定）
     public Image[] godIcons = new Image[4];
+    public Image[] cooldownMasks; 
 
     private void Awake()
     {
@@ -27,6 +28,31 @@ public class GodUIManager : MonoBehaviour
             {
                 godIcons[i].sprite = null;
                 godIcons[i].color = new Color(1,1,1,0); //透明化
+            }
+        }
+    }
+
+    public void UpdateCooldownUI(List<GodData> ownedGods)
+    {
+        for(int i = 0; i < cooldownMasks.Length; i++)
+        {
+            if(i < ownedGods.Count)
+            {
+                GodData god = ownedGods[i];
+
+                if(god.abilities.floatcurrentCooldown > 0)
+                {
+                    cooldownMasks[i].gameObject.SetActive(true);
+                    cooldownMasks[i].fillAmount = god.abilities.floatcurrentCooldown / god.abilities.cooldown;
+                }
+                else
+                {
+                    cooldownMasks[i].gameObject.SetActive(false);
+                }  
+            }
+            else
+            {
+                cooldownMasks[i].gameObject.SetActive(false);
             }
         }
     }

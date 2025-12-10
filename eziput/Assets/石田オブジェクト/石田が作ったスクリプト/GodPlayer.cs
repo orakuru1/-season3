@@ -110,5 +110,19 @@ public class GodPlayer : MonoBehaviour
         {
             //GodManeger.Instance.UseGodAbility(ownedGods[0].abilities, this.gameObject, this.gameObject);
         }
+
+        foreach(var god in ownedGods)
+        {
+            if(god.abilities != null && god.abilities.floatcurrentCooldown > 0f)
+            {
+                god.abilities.floatcurrentCooldown -= Time.deltaTime;
+                if(god.abilities.floatcurrentCooldown < 0f)
+                {
+                    god.abilities.floatcurrentCooldown = 0f;
+                }
+            }
+        }
+
+        GodUIManager.Instance.UpdateCooldownUI(ownedGods);
     }
 }
