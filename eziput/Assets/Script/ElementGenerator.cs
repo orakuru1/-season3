@@ -15,7 +15,7 @@ public class ElementGenerator : MonoBehaviour
     // ← ここにワーププレファブを追加
     [Header("ワープ(ミニゲームへ遷移)")]
     public GameObject warpPrefab;        // インスペクターでワーププレファブを設定
-    public int warpPerRoom = 1;          // 各部屋に置く数（通常1）。0にすると配置されない。
+    public int warpTotalCount = 1;          // マップ全体に置く数（通常1）。0にすると配置されない。
 
     [Header("マテリアル（Safe / Danger）")]
     public Material safeFloorMaterial;
@@ -213,7 +213,7 @@ public class ElementGenerator : MonoBehaviour
                 // ----------------------------
 
                 // スタート部屋／ゴール部屋には置かない（部屋そのものを比較）
-                if (warpPrefab != null && warpPerRoom > 0)
+                if (warpPrefab != null && warpTotalCount > 0)
                 {
                     bool skipThisRoom = false;
                     if (startRoom != null && ReferenceEquals(r, startRoom)) skipThisRoom = true;
@@ -227,7 +227,7 @@ public class ElementGenerator : MonoBehaviour
 
                     if (!skipThisRoom)
                     {
-                        for (int w = 0; w < warpPerRoom; w++)
+                        for (int w = 0; w < warpTotalCount; w++)
                         {
                             bool placedWarp = false;
                             int warpAttempts = 0;
@@ -287,7 +287,7 @@ public class ElementGenerator : MonoBehaviour
                             {
                                 Debug.LogWarning($"[ElementGenerator] Room ({r.x},{r.y}) にワープを配置できませんでした（試行数上限）");
                             }
-                        } // for warpPerRoom
+                        } // for warpTotalCount
                     } // if not skip room
                 } // if warpPrefab
                 // ----------------------------
