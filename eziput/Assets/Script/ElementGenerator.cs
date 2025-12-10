@@ -268,7 +268,7 @@ public class ElementGenerator : MonoBehaviour
                     if (collision) continue;
 
                     // ④ 生成！
-                    GameObject warp = Instantiate(warpPrefab, spawnPos, Quaternion.identity, elementParent);
+                    GameObject warp = Instantiate(warpPrefab, spawnPos, warpPrefab.transform.rotation, elementParent);
                     warp.name = $"Warp_{wx}_{wy}";
                     spawned.Add(warp);
 
