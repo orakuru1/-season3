@@ -6,6 +6,7 @@ public class GodPlayer : MonoBehaviour
 {
     //所有している神の力リスト
     public List<GodData> ownedGods = new List<GodData>();
+    private Unit u;
     private const int maxGods = 4;
 
     //神を追加
@@ -96,6 +97,7 @@ public class GodPlayer : MonoBehaviour
 
     void Start()
     {
+        u = this.GetComponent<Unit>();
         GodUIManager.Instance.UpdateGodIcons(ownedGods);
         //AddRandomGod();
         //GodManeger.Instance.descriptionGod(ownedGods[0]);
@@ -110,19 +112,23 @@ public class GodPlayer : MonoBehaviour
         {
             //GodManeger.Instance.UseGodAbility(ownedGods[0].abilities, this.gameObject, this.gameObject);
         }
-
-        foreach(var god in ownedGods)
+        if(u.team == Unit.Team.Player)
         {
-            if(god.abilities != null && god.abilities.floatcurrentCooldown > 0f)
+            foreach(var god in ownedGods)
             {
-                god.abilities.floatcurrentCooldown -= Time.deltaTime;
-                if(god.abilities.floatcurrentCooldown < 0f)
+                if(god.abilities != null && god.abilities.floatcurrentCooldown > 0f)
                 {
-                    god.abilities.floatcurrentCooldown = 0f;
+                    god.abilities.floatcurrentCooldown -= Time.deltaTime;
+                    if(god.abilities.floatcurrentCooldown < 0f)
+                    {
+                        god.abilities.floatcurrentCooldown = 0f;
+                    }
                 }
             }
+
+            GodUIManager.Instance.UpdateCooldownUI(ownedGods);
         }
 
-        GodUIManager.Instance.UpdateCooldownUI(ownedGods);
+
     }
 }
