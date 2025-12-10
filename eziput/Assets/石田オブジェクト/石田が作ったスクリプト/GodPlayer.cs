@@ -118,7 +118,6 @@ public class GodPlayer : MonoBehaviour
             {
                 if(god.abilities != null && god.abilities.floatcurrentCooldown > 0f)
                 {
-                    god.abilities.floatcurrentCooldown -= Time.deltaTime;
                     if(god.abilities.floatcurrentCooldown < 0f)
                     {
                         god.abilities.floatcurrentCooldown = 0f;

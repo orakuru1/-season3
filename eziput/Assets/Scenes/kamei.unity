@@ -3398,6 +3398,7 @@ GameObject:
   - component: {fileID: 595541245}
   - component: {fileID: 595541247}
   - component: {fileID: 595541246}
+  - component: {fileID: 595541248}
   m_Layer: 5
   m_Name: "\u795E\u306E\u30B9\u30AD\u30EB\u8868\u793APanel"
   m_TagString: Untagged
@@ -3467,6 +3468,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 595541244}
   m_CullTransparentMesh: 1
+--- !u!114 &595541248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595541244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4300606074064534bb21568b427d84c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  godIcons:
+  - {fileID: 1290869254}
+  - {fileID: 1992819417}
+  - {fileID: 1782329319}
+  - {fileID: 1517834296}
+  cooldownMasks: []
 --- !u!224 &597136895 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3381244449783425708, guid: fffdd66077500844fb746e35827af211,
@@ -11377,8 +11396,8 @@ MonoBehaviour:
   ownedGods:
   - {fileID: 11400000, guid: befeb862df9bc7f41b4ac3be606d23a0, type: 2}
   - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
+  - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
 --- !u!1 &2144641082
 GameObject:
   m_ObjectHideFlags: 0
