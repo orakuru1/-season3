@@ -38,11 +38,6 @@ public class ElementGenerator : MonoBehaviour
     public float CellSize => cellSize;
     public Vector3 EntranceWorldPos { get; private set; }
     public bool EntranceFound { get; private set; } = false;
-<<<<<<< Updated upstream
-=======
-    public Transform Player;
-
->>>>>>> Stashed changes
     public void GenerateFromMap(
         int[,] mapData,
         DungeonSettings settings,
