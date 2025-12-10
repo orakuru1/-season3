@@ -43,6 +43,11 @@ public class GodPlayer : MonoBehaviour
             yield return StartCoroutine(HandleGodLimit());
         }
 
+        //yield return StartCoroutine(HandleGodLimit());
+        GodUIManager.Instance.UpdateGodIcons(ownedGods);
+        GodUIManager ui = FindObjectOfType<GodUIManager>();
+        ui.UpdateGodIcons(ownedGods);
+
     }
 
     public IEnumerator HandleGodLimit()
@@ -91,6 +96,7 @@ public class GodPlayer : MonoBehaviour
 
     void Start()
     {
+        GodUIManager.Instance.UpdateGodIcons(ownedGods);
         //AddRandomGod();
         //GodManeger.Instance.descriptionGod(ownedGods[0]);
         //GodManeger.Instance.UseGodAbility(ownedGods[0].abilities, this.gameObject, this.gameObject);
