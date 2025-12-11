@@ -3412,6 +3412,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridManager: {fileID: 0}
+  hpSlider: {fileID: 0}
+  hptext: {fileID: 0}
   status:
     unitName: Unit
     exp: 0

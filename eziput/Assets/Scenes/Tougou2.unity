@@ -7967,6 +7967,8 @@ MonoBehaviour:
   playerPrefab: {fileID: 6277409031460633215, guid: 057a04a0ce9dc54498d7e9800ddb6949,
     type: 3}
   eg: {fileID: 1096882721}
+  hpSlider: {fileID: 1636714324}
+  hptext: {fileID: 880869431}
 --- !u!4 &1259298091
 Transform:
   m_ObjectHideFlags: 0
@@ -10553,6 +10555,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridManager: {fileID: 0}
+  hpSlider: {fileID: 0}
+  hptext: {fileID: 0}
   status:
     unitName: Unit
     exp: 0

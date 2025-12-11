@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Unit : MonoBehaviour
 {
     public GridManager gridManager;
+    public Slider hpSlider;
+    public Text hptext;
 
 
     [System.Serializable]
@@ -100,6 +103,7 @@ public class Unit : MonoBehaviour
             transform.position = block.transform.position + Vector3.up * 1f;
         }
 
+        UpdateHPBar(status.currentHP);
         anim = GetComponent<Animator>();
         animationController = GetComponent<AnimationController>();
 
@@ -402,8 +406,22 @@ public class Unit : MonoBehaviour
     public void TakeDamage(int damage, Unit attacker = null)
     {
         status.currentHP -= damage;
+        UpdateHPBar(status.currentHP);
         DamageTextManager.Instance.ShowDamage(damage, this.transform);
         if (status.currentHP <= 0) Die(attacker);
+    }
+
+    void UpdateHPBar(float currentHP)
+    {
+        if(hpSlider != null)
+        {
+            hpSlider.value = (float)status.currentHP / (float)status.maxHP;
+        }
+
+        if(hptext != null)
+        {
+            hptext.text = Mathf.CeilToInt(status.currentHP) + "/" + Mathf.CeilToInt(status.maxHP);
+        }
     }
 
     public void LevelUp()

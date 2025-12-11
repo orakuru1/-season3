@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 
@@ -28,6 +29,12 @@ public class GameManager : MonoBehaviour
     // -----------------------
     public GameObject playerPrefab;
     public ElementGenerator eg;
+
+    // -----------------------
+    // HP関連UI   渡すよう
+    // -----------------------
+    public Slider hpSlider;
+    public Text hptext;
 
     // =======================
     // 初期化
@@ -184,6 +191,8 @@ public class GameManager : MonoBehaviour
         Unit unit = playerObj.GetComponent<Unit>();
         if (unit != null)
         {
+            unit.hpSlider = hpSlider;
+            unit.hptext = hptext;
             unit.gridPos = new Vector2Int(
                 Mathf.RoundToInt(worldPos.x / 2),
                 Mathf.RoundToInt(worldPos.z / 2)
