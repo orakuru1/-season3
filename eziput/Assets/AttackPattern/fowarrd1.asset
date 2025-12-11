@@ -10,12 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e1aa8b0dbb0af3e418811cdbbc88b9cc, type: 3}
-  m_Name: CrossPattern
+  m_Name: fowarrd1
   m_EditorClassIdentifier: 
-  patternName: New Pattern
+  patternName: "\u524D\u65B9\u5411\uFF11\u30DE\u30B9"
   relativePositions:
   - {x: 0, y: 1}
-  - {x: 0, y: 2}
-  - {x: 1, y: 0}
-  - {x: 2, y: 0}
-  isAreaAttack: 1
+  isAreaAttack: 0

@@ -31,6 +31,7 @@ public class GodAbility
     public float floatcurrentCooldown; // 現在のクールダウン時間
     [HideInInspector] public bool isActive;        // 発動中かどうか
     public int GodAnimationID;//普通の数字はプレイヤーの攻撃で使ってるけど、神の攻撃は1000番台を使おう
+    public int DethAnimationID;
 }
 
 public enum AbilityTrigger

@@ -38,6 +38,7 @@ public class Unit : MonoBehaviour
         public AttackPatternBase attackPattern;
         public int power = 10;
         public int animationID = 1;
+        public int DethAnimationID = 2;
 
     }
 
@@ -401,7 +402,7 @@ public class Unit : MonoBehaviour
     public void TakeDamage(int damage, Unit attacker = null)
     {
         status.currentHP -= damage;
-        //DamageTextManager.Instance.ShowDamage(damage, this.transform);
+        DamageTextManager.Instance.ShowDamage(damage, this.transform);
         if (status.currentHP <= 0) Die(attacker);
     }
 
@@ -439,8 +440,15 @@ public class Unit : MonoBehaviour
             }
             
         }
+        if (GetComponent<Animator>() == null)
+        {
+            Destroy(gameObject);
+        }
 
-        // このユニットを削除
+    }
+    public void AnimationDeth()
+    {
+         // このユニットを削除
         Destroy(gameObject);
     }
 

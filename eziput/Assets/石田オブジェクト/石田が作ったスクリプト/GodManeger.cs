@@ -148,7 +148,7 @@ public class GodManeger : MonoBehaviour
     {
         ability.isActive = true;
         AnimationController animationController = user.GetComponent<AnimationController>();//ここら辺の処理は、attack等にそれぞれでまとめる。
-        animationController.Initialize(target, ability.power);
+        animationController.Initialize(target, ability.power, ability.DethAnimationID);
         animationController.AttackAnimation(ability.GodAnimationID);//いずれ、神のアニメーションとアニメーション番号を作る（最初１，１個習合２，みたいな感じ）
         ///////////////////////////////////////////////////
         cooldownTimers[ability] = ability.cooldown;///////////////////////クールダウンがない場合は、入れないにしよう。（関数で共通化）SetCooldown(ability);

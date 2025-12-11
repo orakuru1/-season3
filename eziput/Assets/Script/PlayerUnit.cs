@@ -53,12 +53,12 @@ public class PlayerUnit : Unit
         {
             if (targets.Count == 1)
             {
-                animationController.Initialize(targets[0], skill.power);
+                animationController.Initialize(targets[0], skill.power, skill.DethAnimationID);
                 animationController.AttackAnimation(skill.animationID);
             }
             else
             {
-                animationController.Initialize(targets, skill.power);
+                animationController.Initialize(targets, skill.power, skill.DethAnimationID);
                 animationController.AttackAnimation(skill.animationID);
             }
 

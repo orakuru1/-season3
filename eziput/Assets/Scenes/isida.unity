@@ -2546,7 +2546,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!73398921 &271772374
 VFXRenderer:
   serializedVersion: 1
@@ -2555,7 +2555,7 @@ VFXRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 271772373}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -2952,6 +2952,7 @@ MonoBehaviour:
     attackPattern: {fileID: 0}
     power: 10
     animationID: 1
+    DethAnimationID: 2
   anim: {fileID: 0}
   animationController: {fileID: 0}
   equidpAttackBonus: 0
@@ -2963,6 +2964,7 @@ MonoBehaviour:
     attackPattern: {fileID: 0}
     power: 10
     animationID: 1
+    DethAnimationID: 2
   isUsingSkill: 0
 --- !u!136 &378460197
 CapsuleCollider:
@@ -51518,11 +51520,13 @@ MonoBehaviour:
     attackPattern: {fileID: 11400000, guid: 925180d414007eb44a283484cf34e509, type: 2}
     power: 10
     animationID: 1
+    DethAnimationID: 200
   - skillName: "\u9B54\u6CD5\u65AC\u6483"
     triggerKey: 116
-    attackPattern: {fileID: 11400000, guid: 925180d414007eb44a283484cf34e509, type: 2}
+    attackPattern: {fileID: 11400000, guid: cde4c948a286cda45bc792f656e021f7, type: 2}
     power: 20
     animationID: 2
+    DethAnimationID: 201
   anim: {fileID: 0}
   animationController: {fileID: 0}
   equidpAttackBonus: 0
@@ -51534,6 +51538,7 @@ MonoBehaviour:
     attackPattern: {fileID: 0}
     power: 10
     animationID: 1
+    DethAnimationID: 2
   isUsingSkill: 0
 --- !u!114 &1870630962
 MonoBehaviour:
@@ -51629,6 +51634,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fa122d0e88f3c741bddda2297d52e2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1955036989
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1955036991}
+  - component: {fileID: 1955036990}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1955036990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1955036989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4300606074064534bb21568b427d84c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  godIcons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  cooldownMasks: []
+--- !u!4 &1955036991
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1955036989}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 12.391843, y: 7.325897, z: 106.16499}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 36
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2005886358
 GameObject:
   m_ObjectHideFlags: 0

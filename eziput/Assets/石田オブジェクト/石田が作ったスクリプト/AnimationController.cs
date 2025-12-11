@@ -8,6 +8,7 @@ public class AnimationController : MonoBehaviour
 
     public List<Unit> Target = new List<Unit>(); // 攻撃する先
     public int damage;
+    private int DethAnimationID;
     private int remaininghits;
     public AnimationController attacker; // 攻撃してきた人
     public AnimationState animationState = new AnimationState();//条件を構造体にまとめた
@@ -23,19 +24,21 @@ public class AnimationController : MonoBehaviour
         anim = GetComponent<Animator>();
     }
 
-    public void Initialize(Unit target, int dmg = 0)
+    public void Initialize(Unit target, int dmg = 0, int danim = 200)
     {
         Target.Clear();
         Target.Add(target);
         damage = dmg;
+        DethAnimationID = danim;
         animationState.isAttacking = true;
         animationState.ismultipleTaget = false;
     }
-    public void Initialize(List<Unit> targets, int dmg = 0)
+    public void Initialize(List<Unit> targets, int dmg = 0, int danim = 200)
     {
         Target.Clear();
         Target = targets;
         damage = dmg;
+        DethAnimationID = danim;
         animationState.isAttacking = true;
         animationState.ismultipleTaget = true;
     }
@@ -142,7 +145,7 @@ public class AnimationController : MonoBehaviour
                     ttt.TakeDamage(damage, Im);//ダメージを受ける処理を先にすることで、生きてるか死んでるかで、どっちのアニメーションをするか分けれる。
                     if (ttt.status.currentHP <= 0)
                     {
-                        //animator.SetInteger("Hit", 2); // 死亡アニメーション
+                        animator.SetInteger("Hit", DethAnimationID); // 死亡アニメーション
                     }
                     else
                     {
@@ -179,7 +182,7 @@ public class AnimationController : MonoBehaviour
                 Target[0].TakeDamage(damage, Im);//ダメージを受ける処理を先にすることで、生きてるか死んでるかで、どっちのアニメーションをするか分けれる。
                 if (Target[0].status.currentHP <= 0)
                 {
-                    //animator.SetInteger("Hit", 2); // 死亡アニメーション
+                    animator.SetInteger("Hit", DethAnimationID); // 死亡アニメーション
                 }
                 else
                 {

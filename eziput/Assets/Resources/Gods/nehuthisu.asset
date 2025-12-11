@@ -28,3 +28,4 @@ MonoBehaviour:
     floatcurrentCooldown: 0
     isActive: 0
     GodAnimationID: 1004
+    DethAnimationID: 200
