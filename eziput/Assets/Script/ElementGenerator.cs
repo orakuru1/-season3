@@ -36,7 +36,7 @@ public class ElementGenerator : MonoBehaviour
     public Transform elementParent;
 
     [Header("マップ設定")]
-    public float cellSize = 1.0f;
+    public float cellSize = 2.0f;
 
     private int mapWidth;
     private int mapHeight;
@@ -116,15 +116,36 @@ public class ElementGenerator : MonoBehaviour
                 }
             }
         }
+        // =======================================================================
+        // ★ 柱の配置処理（部屋の四隅 + 通路）
+        // =======================================================================
 
-        // =======================================================================
-        // ★ 部屋の四隅に柱を配置
-        // =======================================================================
+        List<GameObject> pillarObjects = new List<GameObject>(); // 天井計算用
+
+        void PlacePillar(Vector3 pos)
+        {
+            GameObject p = Instantiate(pillarPrefab, pos, Quaternion.identity, elementParent);
+            p.name = $"Pillar_{pos.x}_{pos.z}";
+            spawned.Add(p);
+
+            // 天井計算用に保存
+            pillarObjects.Add(p);
+
+            // ▼ マテリアル適用
+            var pillarRenderer = p.GetComponent<MeshRenderer>();
+            if (pillarRenderer != null)
+                pillarRenderer.sharedMaterial = (route == RouteType.Danger) ? dangerPillarMaterial : safePillarMaterial;
+
+            // ⚠ 子メッシュ(Pillar_Base)の scale / pos を一切いじらない！
+            //    Prefabのスケールそのままを使う（床接地＋天井計算に必須）
+        }
+
+
+        // --- 部屋四隅
         if (pillarPrefab != null && rooms != null)
         {
             foreach (var r in rooms)
             {
-                // 四隅の座標
                 Vector2Int[] corners = new Vector2Int[]
                 {
                     new Vector2Int(r.x, r.y),
@@ -135,26 +156,17 @@ public class ElementGenerator : MonoBehaviour
 
                 foreach (var c in corners)
                 {
-                    // 壁判定を避ける（床なら置ける）
                     if (mapData[c.y, c.x] == 0)
                     {
                         Vector3 pos = new Vector3(c.x * cellSize, 0f, c.y * cellSize);
-                        GameObject p = Instantiate(pillarPrefab, pos, Quaternion.identity, elementParent);
-                        p.name = $"Pillar_RoomCorner_{c.x}_{c.y}";
-                        spawned.Add(p);
-                        var pillarRenderer = p.GetComponent<MeshRenderer>();
-                        if (pillarRenderer != null)
-                        {
-                            pillarRenderer.sharedMaterial = (route == RouteType.Danger) ? dangerPillarMaterial : safePillarMaterial;
-                        }
+                        PlacePillar(pos);
                     }
                 }
             }
         }
 
-        // =======================================================================
-        // ★ 通路に一定間隔で柱を配置（corridorPillarInterval 間隔）
-        // =======================================================================
+
+        // --- 通路柱
         if (pillarPrefab != null && corridorPillarInterval > 0)
         {
             int interval = Mathf.Max(2, corridorPillarInterval);
@@ -163,15 +175,13 @@ public class ElementGenerator : MonoBehaviour
             {
                 for (int x = 0; x < mapWidth; x++)
                 {
-                    // 床タイルのみ
                     if (mapData[y, x] != 0) continue;
 
-                    // 部屋の内側はスキップ（四隅はすでに置いたため）
                     bool isRoomInside = false;
                     foreach (var r in rooms)
                     {
                         if (x > r.x && x < r.x + r.width - 1 &&
-                        y > r.y && y < r.y + r.height - 1)
+                            y > r.y && y < r.y + r.height - 1)
                         {
                             isRoomInside = true;
                             break;
@@ -179,55 +189,89 @@ public class ElementGenerator : MonoBehaviour
                     }
                     if (isRoomInside) continue;
 
-                    // 一定間隔（グリッド座標が interval の倍数）
                     if (x % interval == 0 && y % interval == 0)
                     {
                         Vector3 pos = new Vector3(x * cellSize, 0f, y * cellSize);
-                        GameObject p = Instantiate(pillarPrefab, pos, Quaternion.identity, elementParent);
-                        p.name = $"Pillar_Corridor_{x}_{y}";
-                        spawned.Add(p);
-                        var pillarRenderer = p.GetComponent<MeshRenderer>();
-                        if (pillarRenderer != null)
-                        {
-                            pillarRenderer.sharedMaterial = (route == RouteType.Danger) ? dangerPillarMaterial : safePillarMaterial;
-                        }
+                        PlacePillar(pos);
                     }
                 }
             }
         }
 
+
         // =======================================================================
-        // ★ 天井を生成（壁の上に flat に配置）
+        // ★ すべての柱の「最高点」を算出 → 天井の位置を決定
         // =======================================================================
-        if (ceilingPrefab != null)
+
+        float maxTop = float.MinValue;
+
+        foreach (var p in pillarObjects)
         {
-            float wallHeight = 2f; // ← 壁PrefabのScale.yに合わせる
-            float ceilingThickness = 0.2f; // ← 天井CubeのScale.y / 2
-
-            for (int y = 0; y < mapHeight; y++)
+            Transform mesh = p.transform.Find("Pillar_Base_Container/Pillar_Base");
+            if (mesh != null)
             {
-                for (int x = 0; x < mapWidth; x++)
+                Renderer r = mesh.GetComponent<Renderer>();
+                if (r != null)
                 {
-                    if (mapData[y, x] == 0) // 床の上だけに天井を置く
-                    {
-                        Vector3 pos = new Vector3(
-                            x * cellSize,
-                            wallHeight + ceilingThickness,
-                            y * cellSize
-                        );
-
-                        GameObject c = Instantiate(ceilingPrefab, pos, Quaternion.identity, elementParent);
-                        c.name = $"Ceiling_{x}_{y}";
-                        spawned.Add(c);
-                        var ceilRenderer = c.GetComponent<MeshRenderer>();
-                        if (ceilRenderer != null)
-                        {
-                            ceilRenderer.sharedMaterial = (route == RouteType.Danger) ? dangerCeilingMaterial : safeCeilingMaterial;
-                        }
-                    }
+                    // bounds.max.y = ワールド座標での「柱のてっぺん」
+                    maxTop = Mathf.Max(maxTop, r.bounds.max.y);
                 }
             }
         }
+
+        if (maxTop == float.MinValue)
+        {
+            Debug.LogWarning("柱が1本も見つからず、天井を配置できませんでした。");
+            return;
+        }
+
+
+        // =======================================================================
+        // ★ 天井をマップ全体に設置（厚み 0.2 固定）
+        // =======================================================================
+
+        float ceilingThickness = 0.2f;
+
+        float ceilingBottomY = maxTop;             // 天井裏面 = 柱のてっぺん
+        float ceilingCenterY = ceilingBottomY + (ceilingThickness * 0.5f);
+
+        float mapWidthWorld = mapWidth * cellSize;
+        float mapHeightWorld = mapHeight * cellSize;
+
+        // 天井の中心位置
+        Vector3 ceilingPos = new Vector3(
+            mapWidthWorld / 2f - cellSize / 2f,
+            ceilingCenterY,
+            mapHeightWorld / 2f - cellSize / 2f
+        );
+
+        GameObject ceiling = Instantiate(ceilingPrefab, ceilingPos, Quaternion.identity, elementParent);
+        ceiling.name = "Ceiling_All";
+
+        // マップ全体を覆うように拡大
+        ceiling.transform.localScale = new Vector3(
+            mapWidthWorld,
+            ceilingThickness,
+            mapHeightWorld
+        );
+
+        // マテリアル
+        var ceilRenderer = ceiling.GetComponent<MeshRenderer>() ?? ceiling.GetComponentInChildren<MeshRenderer>();
+        if (ceilRenderer != null)
+        {
+            ceilRenderer.sharedMaterial = (route == RouteType.Danger)
+                ? dangerCeilingMaterial
+                : safeCeilingMaterial;
+        }
+
+        spawned.Add(ceiling);
+
+
+        // =======================================================================
+        // ★ 最終ステップ：柱のスケール調整は一切しない
+        //   → Prefab のスケールを完全に信用して使う
+        // =======================================================================
+        // （空…調整コードなし）
 
         // Place entrance & exit
         // Place entrance
