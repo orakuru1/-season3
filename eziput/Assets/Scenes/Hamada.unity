@@ -922,6 +922,8 @@ MonoBehaviour:
     type: 3}
   exitPrefab: {fileID: 850271963371842223, guid: b94f730eb6a97ed439b9007212b2ab84,
     type: 3}
+  warpPrefab: {fileID: 0}
+  warpTotalCount: 1
   safeFloorMaterial: {fileID: 2100000, guid: e11dad0122b63c84796d9d5c12fdd34e, type: 2}
   dangerFloorMaterial: {fileID: 2100000, guid: d356a0f5d859dd0469fd9b912fd3bbc5, type: 2}
   safeWallMaterial: {fileID: 2100000, guid: c1b38175ba6db9b4893d472ddd8b8400, type: 2}

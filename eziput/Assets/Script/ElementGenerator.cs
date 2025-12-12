@@ -6,6 +6,11 @@ public class ElementGenerator : MonoBehaviour
     [Header("プレハブ")]
     public GameObject floorPrefab;
     public GameObject wallPrefab;
+    public GameObject pillarPrefab;
+    public int corridorPillarInterval = 6; // 通路の柱間隔(お好みで変更)
+    public GameObject ceilingPrefab;
+    public float ceilingThickness = 0.3f; 
+    public float ceilingHeight = 2.5f; // 壁が2mなので自然な高さ
     public GameObject enemyPrefab;
     public GameObject treasurePrefab;
     public GameObject trapPrefab;
@@ -22,6 +27,10 @@ public class ElementGenerator : MonoBehaviour
     public Material dangerFloorMaterial;
     public Material safeWallMaterial;
     public Material dangerWallMaterial;
+    public Material safePillarMaterial;
+    public Material dangerPillarMaterial;
+    public Material safeCeilingMaterial;
+    public Material dangerCeilingMaterial;
 
     [Header("親オブジェクト")]
     public Transform elementParent;
@@ -103,6 +112,118 @@ public class ElementGenerator : MonoBehaviour
                             rend.sharedMaterial = safeWallMaterial;
                         else if (mapData[y, x] == 1 && route == RouteType.Danger && dangerWallMaterial != null)
                             rend.sharedMaterial = dangerWallMaterial;
+                    }
+                }
+            }
+        }
+
+        // =======================================================================
+        // ★ 部屋の四隅に柱を配置
+        // =======================================================================
+        if (pillarPrefab != null && rooms != null)
+        {
+            foreach (var r in rooms)
+            {
+                // 四隅の座標
+                Vector2Int[] corners = new Vector2Int[]
+                {
+                    new Vector2Int(r.x, r.y),
+                    new Vector2Int(r.x + r.width - 1, r.y),
+                    new Vector2Int(r.x, r.y + r.height - 1),
+                    new Vector2Int(r.x + r.width - 1, r.y + r.height - 1)
+                };
+
+                foreach (var c in corners)
+                {
+                    // 壁判定を避ける（床なら置ける）
+                    if (mapData[c.y, c.x] == 0)
+                    {
+                        Vector3 pos = new Vector3(c.x * cellSize, 0f, c.y * cellSize);
+                        GameObject p = Instantiate(pillarPrefab, pos, Quaternion.identity, elementParent);
+                        p.name = $"Pillar_RoomCorner_{c.x}_{c.y}";
+                        spawned.Add(p);
+                        var pillarRenderer = p.GetComponent<MeshRenderer>();
+                        if (pillarRenderer != null)
+                        {
+                            pillarRenderer.sharedMaterial = (route == RouteType.Danger) ? dangerPillarMaterial : safePillarMaterial;
+                        }
+                    }
+                }
+            }
+        }
+
+        // =======================================================================
+        // ★ 通路に一定間隔で柱を配置（corridorPillarInterval 間隔）
+        // =======================================================================
+        if (pillarPrefab != null && corridorPillarInterval > 0)
+        {
+            int interval = Mathf.Max(2, corridorPillarInterval);
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    // 床タイルのみ
+                    if (mapData[y, x] != 0) continue;
+
+                    // 部屋の内側はスキップ（四隅はすでに置いたため）
+                    bool isRoomInside = false;
+                    foreach (var r in rooms)
+                    {
+                        if (x > r.x && x < r.x + r.width - 1 &&
+                        y > r.y && y < r.y + r.height - 1)
+                        {
+                            isRoomInside = true;
+                            break;
+                        }
+                    }
+                    if (isRoomInside) continue;
+
+                    // 一定間隔（グリッド座標が interval の倍数）
+                    if (x % interval == 0 && y % interval == 0)
+                    {
+                        Vector3 pos = new Vector3(x * cellSize, 0f, y * cellSize);
+                        GameObject p = Instantiate(pillarPrefab, pos, Quaternion.identity, elementParent);
+                        p.name = $"Pillar_Corridor_{x}_{y}";
+                        spawned.Add(p);
+                        var pillarRenderer = p.GetComponent<MeshRenderer>();
+                        if (pillarRenderer != null)
+                        {
+                            pillarRenderer.sharedMaterial = (route == RouteType.Danger) ? dangerPillarMaterial : safePillarMaterial;
+                        }
+                    }
+                }
+            }
+        }
+
+        // =======================================================================
+        // ★ 天井を生成（壁の上に flat に配置）
+        // =======================================================================
+        if (ceilingPrefab != null)
+        {
+            float wallHeight = 2f; // ← 壁PrefabのScale.yに合わせる
+            float ceilingThickness = 0.2f; // ← 天井CubeのScale.y / 2
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    if (mapData[y, x] == 0) // 床の上だけに天井を置く
+                    {
+                        Vector3 pos = new Vector3(
+                            x * cellSize,
+                            wallHeight + ceilingThickness,
+                            y * cellSize
+                        );
+
+                        GameObject c = Instantiate(ceilingPrefab, pos, Quaternion.identity, elementParent);
+                        c.name = $"Ceiling_{x}_{y}";
+                        spawned.Add(c);
+                        var ceilRenderer = c.GetComponent<MeshRenderer>();
+                        if (ceilRenderer != null)
+                        {
+                            ceilRenderer.sharedMaterial = (route == RouteType.Danger) ? dangerCeilingMaterial : safeCeilingMaterial;
+                        }
                     }
                 }
             }
