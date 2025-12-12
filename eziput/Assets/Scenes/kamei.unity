@@ -11343,6 +11343,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridManager: {fileID: 0}
+  hpSlider: {fileID: 2144641084}
+  hptext: {fileID: 69119920}
   status:
     unitName: a
     exp: 0
@@ -11380,6 +11382,7 @@ MonoBehaviour:
     attackPattern: {fileID: 0}
     power: 10
     animationID: 1
+    DethAnimationID: 2
   isUsingSkill: 0
 --- !u!114 &2136582329
 MonoBehaviour:
