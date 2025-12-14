@@ -4324,7 +4324,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 731982361}
   m_Direction: 0
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6594,7 +6594,7 @@ MonoBehaviour:
   warpPrefab: {fileID: 3244763578466451285, guid: 271ffa09e4405684b92b7a592e7aa6b2,
     type: 3}
   warpTotalCount: 1
-  midBossPrefab: {fileID: 449506714180415203, guid: d6afcccaab610da46a02500dd8f93039,
+  midBossPrefab: {fileID: 5865391548986886641, guid: 2a7077ed9a5046a4293d86c373e79360,
     type: 3}
   midBossSearchRadius: 3
   safeFloorMaterial: {fileID: 2100000, guid: e11dad0122b63c84796d9d5c12fdd34e, type: 2}
@@ -8600,7 +8600,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 803223274}
   m_Direction: 0
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -9545,7 +9545,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1155407059}
   m_Direction: 2
   m_Value: 0.99999976
-  m_Size: 0.61
+  m_Size: 0.60999995
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -10640,6 +10640,7 @@ MonoBehaviour:
     isBuffing: 0
     isDebuffing: 0
     isHiling: 0
+  anim: {fileID: 0}
 --- !u!136 &1425393203
 CapsuleCollider:
   m_ObjectHideFlags: 0
