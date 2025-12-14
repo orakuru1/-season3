@@ -78,7 +78,6 @@ public class Unit : MonoBehaviour
     {
         gridManager = GridManager.Instance;
         gridManager = FindObjectOfType<GridManager>();
-        animationController = GetComponent<AnimationController>();
         if (team == Team.Player)
         {
             status.speed = 10;
@@ -104,8 +103,8 @@ public class Unit : MonoBehaviour
         }
 
         UpdateHPBar(status.currentHP);
-        anim = GetComponent<Animator>();
-        animationController = GetComponent<AnimationController>();
+        if(anim == null) anim = GetComponent<Animator>();
+        if(animationController == null) animationController = GetComponent<AnimationController>();
 
         if (animationController != null)
         {
