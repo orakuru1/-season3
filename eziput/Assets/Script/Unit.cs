@@ -382,6 +382,7 @@ public class Unit : MonoBehaviour
         if (status.currentHP > status.maxHP)
             status.currentHP = status.maxHP;
 
+        UpdateHPBar(status.currentHP);
         Debug.Log($"{gameObject.name}は{amount}回復した！");
     }
     
