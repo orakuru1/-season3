@@ -13,7 +13,7 @@ public class AnimationController : MonoBehaviour
     public AnimationController attacker; // 攻撃してきた人
     public AnimationState animationState = new AnimationState();//条件を構造体にまとめた
 
-    private Animator anim;
+    public Animator anim;
 
 
     public System.Action onAnimationEnd;// アニメーション終了時に呼ばれるイベント
@@ -21,7 +21,8 @@ public class AnimationController : MonoBehaviour
     void Start()
     {
         Im = GetComponent<Unit>();
-        anim = GetComponent<Animator>();
+        if(anim == null) anim = GetComponent<Animator>();
+        
     }
 
     public void Initialize(Unit target, int dmg = 0, int danim = 200)
@@ -135,10 +136,10 @@ public class AnimationController : MonoBehaviour
             remaininghits = Target.Count;
             foreach (var ttt in Target)
             {
-                AnimationController tgt = ttt.GetComponent<AnimationController>();
+                AnimationController tgt = ttt.animationController;
                 Debug.Log("ヒットアニメーション開始");
                 tgt.attacker = this;
-                Animator animator = tgt.GetComponent<Animator>();
+                Animator animator = tgt.anim;//tgt.anim;
 
                 if (animator != null)
                 {
@@ -172,10 +173,10 @@ public class AnimationController : MonoBehaviour
         {
             Debug.Log("シングルターゲットヒットアニメーション開始");
             remaininghits = 1;
-            AnimationController tgt = Target[0].GetComponent<AnimationController>();
+            AnimationController tgt = Target[0].animationController;
             Debug.Log("ヒットアニメーション開始");
             tgt.attacker = this;
-            Animator animator = tgt.GetComponent<Animator>();
+            Animator animator = tgt.anim;
 
             if (animator != null)
             {

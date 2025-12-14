@@ -6,6 +6,11 @@ public class ElementGenerator : MonoBehaviour
     [Header("プレハブ")]
     public GameObject floorPrefab;
     public GameObject wallPrefab;
+    public GameObject pillarPrefab;
+    public int corridorPillarInterval = 6; // 通路の柱間隔(お好みで変更)
+    public GameObject ceilingPrefab;
+    public float ceilingThickness = 0.3f; 
+    public float ceilingHeight = 2.5f; // 壁が2mなので自然な高さ
     public GameObject enemyPrefab;
     public GameObject treasurePrefab;
     public GameObject trapPrefab;
@@ -17,17 +22,26 @@ public class ElementGenerator : MonoBehaviour
     public GameObject warpPrefab;        // インスペクターでワーププレファブを設定
     public int warpTotalCount = 1;          // マップ全体に置く数（通常1）。0にすると配置されない。
 
+    [Header("中ボス")]
+    public GameObject midBossPrefab;
+    public int midBossSearchRadius = 3; // 出口から何マス以内か
+
+
     [Header("マテリアル（Safe / Danger）")]
     public Material safeFloorMaterial;
     public Material dangerFloorMaterial;
     public Material safeWallMaterial;
     public Material dangerWallMaterial;
+    public Material safePillarMaterial;
+    public Material dangerPillarMaterial;
+    public Material safeCeilingMaterial;
+    public Material dangerCeilingMaterial;
 
     [Header("親オブジェクト")]
     public Transform elementParent;
 
     [Header("マップ設定")]
-    public float cellSize = 1.0f;
+    public float cellSize = 2.0f;
 
     private int mapWidth;
     private int mapHeight;
@@ -107,6 +121,162 @@ public class ElementGenerator : MonoBehaviour
                 }
             }
         }
+        // =======================================================================
+        // ★ 柱の配置処理（部屋の四隅 + 通路）
+        // =======================================================================
+
+        List<GameObject> pillarObjects = new List<GameObject>(); // 天井計算用
+
+        void PlacePillar(Vector3 pos)
+        {
+            GameObject p = Instantiate(pillarPrefab, pos, Quaternion.identity, elementParent);
+            p.name = $"Pillar_{pos.x}_{pos.z}";
+            spawned.Add(p);
+
+            // 天井計算用に保存
+            pillarObjects.Add(p);
+
+            // ▼ マテリアル適用
+            var pillarRenderer = p.GetComponent<MeshRenderer>();
+            if (pillarRenderer != null)
+                pillarRenderer.sharedMaterial = (route == RouteType.Danger) ? dangerPillarMaterial : safePillarMaterial;
+
+            // ⚠ 子メッシュ(Pillar_Base)の scale / pos を一切いじらない！
+            //    Prefabのスケールそのままを使う（床接地＋天井計算に必須）
+        }
+
+
+        // --- 部屋四隅
+        if (pillarPrefab != null && rooms != null)
+        {
+            foreach (var r in rooms)
+            {
+                Vector2Int[] corners = new Vector2Int[]
+                {
+                    new Vector2Int(r.x, r.y),
+                    new Vector2Int(r.x + r.width - 1, r.y),
+                    new Vector2Int(r.x, r.y + r.height - 1),
+                    new Vector2Int(r.x + r.width - 1, r.y + r.height - 1)
+                };
+
+                foreach (var c in corners)
+                {
+                    if (mapData[c.y, c.x] == 0)
+                    {
+                        Vector3 pos = new Vector3(c.x * cellSize, 0f, c.y * cellSize);
+                        PlacePillar(pos);
+                    }
+                }
+            }
+        }
+
+
+        // --- 通路柱
+        if (pillarPrefab != null && corridorPillarInterval > 0)
+        {
+            int interval = Mathf.Max(2, corridorPillarInterval);
+
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    if (mapData[y, x] != 0) continue;
+
+                    bool isRoomInside = false;
+                    foreach (var r in rooms)
+                    {
+                        if (x > r.x && x < r.x + r.width - 1 &&
+                            y > r.y && y < r.y + r.height - 1)
+                        {
+                            isRoomInside = true;
+                            break;
+                        }
+                    }
+                    if (isRoomInside) continue;
+
+                    if (x % interval == 0 && y % interval == 0)
+                    {
+                        Vector3 pos = new Vector3(x * cellSize, 0f, y * cellSize);
+                        PlacePillar(pos);
+                    }
+                }
+            }
+        }
+
+
+        // =======================================================================
+        // ★ すべての柱の「最高点」を算出 → 天井の位置を決定
+        // =======================================================================
+
+        float maxTop = float.MinValue;
+
+        foreach (var p in pillarObjects)
+        {
+            Transform mesh = p.transform.Find("Pillar_Base_Container/Pillar_Base");
+            if (mesh != null)
+            {
+                Renderer r = mesh.GetComponent<Renderer>();
+                if (r != null)
+                {
+                    // bounds.max.y = ワールド座標での「柱のてっぺん」
+                    maxTop = Mathf.Max(maxTop, r.bounds.max.y);
+                }
+            }
+        }
+
+        if (maxTop == float.MinValue)
+        {
+            Debug.LogWarning("柱が1本も見つからず、天井を配置できませんでした。");
+            return;
+        }
+
+
+        // =======================================================================
+        // ★ 天井をマップ全体に設置（厚み 0.2 固定）
+        // =======================================================================
+
+        float ceilingThickness = 0.2f;
+
+        float ceilingBottomY = maxTop;             // 天井裏面 = 柱のてっぺん
+        float ceilingCenterY = ceilingBottomY + (ceilingThickness * 0.5f);
+
+        float mapWidthWorld = mapWidth * cellSize;
+        float mapHeightWorld = mapHeight * cellSize;
+
+        // 天井の中心位置
+        Vector3 ceilingPos = new Vector3(
+            mapWidthWorld / 2f - cellSize / 2f,
+            ceilingCenterY,
+            mapHeightWorld / 2f - cellSize / 2f
+        );
+
+        GameObject ceiling = Instantiate(ceilingPrefab, ceilingPos, Quaternion.identity, elementParent);
+        ceiling.name = "Ceiling_All";
+
+        // マップ全体を覆うように拡大
+        ceiling.transform.localScale = new Vector3(
+            mapWidthWorld,
+            ceilingThickness,
+            mapHeightWorld
+        );
+
+        // マテリアル
+        var ceilRenderer = ceiling.GetComponent<MeshRenderer>() ?? ceiling.GetComponentInChildren<MeshRenderer>();
+        if (ceilRenderer != null)
+        {
+            ceilRenderer.sharedMaterial = (route == RouteType.Danger)
+                ? dangerCeilingMaterial
+                : safeCeilingMaterial;
+        }
+
+        spawned.Add(ceiling);
+
+
+        // =======================================================================
+        // ★ 最終ステップ：柱のスケール調整は一切しない
+        //   → Prefab のスケールを完全に信用して使う
+        // =======================================================================
+        // （空…調整コードなし）
 
         // Place entrance & exit
         // Place entrance
@@ -122,12 +292,94 @@ public class ElementGenerator : MonoBehaviour
             EntranceFound = true;
         }
 
+        GameObject exitObject = null; // ★ 追加（クラス内 or メソッド先頭）
         if (endRoom != null && exitPrefab != null)
         {
             Vector3 p = new Vector3(endRoom.Center.x * cellSize, 0.5f, endRoom.Center.y * cellSize);
-            var e = Instantiate(exitPrefab, p, Quaternion.identity, elementParent);
-            e.name = "Exit";
-            spawned.Add(e);
+            exitObject = Instantiate(exitPrefab, p, Quaternion.identity, elementParent);
+            exitObject.name = "Exit";
+            spawned.Add(exitObject);
+        }
+
+        // =======================================================================
+        // ★ 中ボスを出口付近に配置（最終完成形）
+        // =======================================================================
+        if (midBossPrefab != null && exitObject != null)
+        {
+            Vector3 exitPos = exitObject.transform.position;
+
+            // 出口のセル座標
+            int exitX = Mathf.RoundToInt(exitPos.x / cellSize);
+            int exitY = Mathf.RoundToInt(exitPos.z / cellSize);
+
+            List<Vector2Int> candidates = new List<Vector2Int>();
+
+            // 出口周囲を探索
+            for (int dy = -midBossSearchRadius; dy <= midBossSearchRadius; dy++)
+            {
+                for (int dx = -midBossSearchRadius; dx <= midBossSearchRadius; dx++)
+                {
+                    int x = exitX + dx;
+                    int y = exitY + dy;
+
+                    // 範囲外
+                    if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight)
+                        continue;
+
+                    // 出口セルそのものは除外
+                    if (x == exitX && y == exitY)
+                        continue;
+
+                    // 床タイルのみ
+                    if (mapData[y, x] == 0)
+                        candidates.Add(new Vector2Int(x, y));
+                }
+            }
+
+            if (candidates.Count > 0)
+            {
+                // ランダムで1マス選択
+                Vector2Int spawnCell = candidates[Random.Range(0, candidates.Count)];
+
+                // 上空から Raycast
+                Vector3 rayStart = new Vector3(
+                    spawnCell.x * cellSize + cellSize * 0.5f,
+                    10f,
+                    spawnCell.y * cellSize + cellSize * 0.5f
+                );
+
+                if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 30f))
+                {
+                    // いったん床ヒット位置に生成
+                    GameObject boss = Instantiate(midBossPrefab, hit.point, Quaternion.identity, elementParent);
+                    boss.name = "MidBoss";
+                    spawned.Add(boss);
+
+                    // ★ Collider の「最下点」を床に完全一致させる
+                    Collider col = boss.GetComponentInChildren<Collider>();
+                    if (col != null)
+                    {
+                        float bottomY = col.bounds.min.y;      // コライダーのワールド最下点
+                        float diff = hit.point.y - bottomY;    // 床との差
+
+                        boss.transform.position += new Vector3(0f, diff, 0f);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("MidBoss に Collider が見つかりません");
+                    }
+
+                    Debug.Log($"[MidBoss] Spawned at {spawnCell}");
+                }
+                else
+                {
+                    Debug.LogWarning("中ボス配置位置で床が見つかりませんでした");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("中ボス配置候補が見つかりませんでした");
+            }
         }
 
         // Place features per room (use settings if available)

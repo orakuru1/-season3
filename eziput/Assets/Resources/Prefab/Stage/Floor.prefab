@@ -114,3 +114,5 @@ MonoBehaviour:
   isWalkable: 1
   occupantUnit: {fileID: 0}
   isRamp: 0
+  hasEvent: 0
+  eventID: 

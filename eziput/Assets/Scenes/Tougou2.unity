@@ -324,7 +324,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1735061913}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.60999995
+  m_Size: 0.61
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6575,6 +6575,13 @@ MonoBehaviour:
     type: 3}
   wallPrefab: {fileID: 1333383309030766332, guid: a55c01114afa0c747bf43d8623455bea,
     type: 3}
+  pillarPrefab: {fileID: 6685442326209300413, guid: fb44b8fecea378148b1c91e130732789,
+    type: 3}
+  corridorPillarInterval: 6
+  ceilingPrefab: {fileID: 7075099511425319883, guid: 4b7f87b14e0d3d64694747f320fc069a,
+    type: 3}
+  ceilingThickness: 0.3
+  ceilingHeight: 2.5
   enemyPrefab: {fileID: 1425393199}
   treasurePrefab: {fileID: 7447380110618312217, guid: 036a70210fa8adb41ae74cbae0809ce9,
     type: 3}
@@ -6587,10 +6594,19 @@ MonoBehaviour:
   warpPrefab: {fileID: 3244763578466451285, guid: 271ffa09e4405684b92b7a592e7aa6b2,
     type: 3}
   warpTotalCount: 1
+  midBossPrefab: {fileID: 5865391548986886641, guid: 2a7077ed9a5046a4293d86c373e79360,
+    type: 3}
+  midBossSearchRadius: 3
   safeFloorMaterial: {fileID: 2100000, guid: e11dad0122b63c84796d9d5c12fdd34e, type: 2}
   dangerFloorMaterial: {fileID: 2100000, guid: d356a0f5d859dd0469fd9b912fd3bbc5, type: 2}
   safeWallMaterial: {fileID: 2100000, guid: c1b38175ba6db9b4893d472ddd8b8400, type: 2}
   dangerWallMaterial: {fileID: 2100000, guid: 33bda1d413d273349a1429be650bc793, type: 2}
+  safePillarMaterial: {fileID: 2100000, guid: c1b38175ba6db9b4893d472ddd8b8400, type: 2}
+  dangerPillarMaterial: {fileID: 2100000, guid: 33bda1d413d273349a1429be650bc793,
+    type: 2}
+  safeCeilingMaterial: {fileID: 2100000, guid: e11dad0122b63c84796d9d5c12fdd34e, type: 2}
+  dangerCeilingMaterial: {fileID: 2100000, guid: d356a0f5d859dd0469fd9b912fd3bbc5,
+    type: 2}
   elementParent: {fileID: 2087570530}
   cellSize: 2
 --- !u!4 &1096882722
@@ -10624,6 +10640,7 @@ MonoBehaviour:
     isBuffing: 0
     isDebuffing: 0
     isHiling: 0
+  anim: {fileID: 0}
 --- !u!136 &1425393203
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -11046,7 +11063,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 755402276}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.60999995
+  m_Size: 0.61
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
