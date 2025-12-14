@@ -22,6 +22,11 @@ public class ElementGenerator : MonoBehaviour
     public GameObject warpPrefab;        // インスペクターでワーププレファブを設定
     public int warpTotalCount = 1;          // マップ全体に置く数（通常1）。0にすると配置されない。
 
+    [Header("中ボス")]
+    public GameObject midBossPrefab;
+    public int midBossSearchRadius = 3; // 出口から何マス以内か
+
+
     [Header("マテリアル（Safe / Danger）")]
     public Material safeFloorMaterial;
     public Material dangerFloorMaterial;
@@ -287,12 +292,94 @@ public class ElementGenerator : MonoBehaviour
             EntranceFound = true;
         }
 
+        GameObject exitObject = null; // ★ 追加（クラス内 or メソッド先頭）
         if (endRoom != null && exitPrefab != null)
         {
             Vector3 p = new Vector3(endRoom.Center.x * cellSize, 0.5f, endRoom.Center.y * cellSize);
-            var e = Instantiate(exitPrefab, p, Quaternion.identity, elementParent);
-            e.name = "Exit";
-            spawned.Add(e);
+            exitObject = Instantiate(exitPrefab, p, Quaternion.identity, elementParent);
+            exitObject.name = "Exit";
+            spawned.Add(exitObject);
+        }
+
+        // =======================================================================
+        // ★ 中ボスを出口付近に配置（最終完成形）
+        // =======================================================================
+        if (midBossPrefab != null && exitObject != null)
+        {
+            Vector3 exitPos = exitObject.transform.position;
+
+            // 出口のセル座標
+            int exitX = Mathf.RoundToInt(exitPos.x / cellSize);
+            int exitY = Mathf.RoundToInt(exitPos.z / cellSize);
+
+            List<Vector2Int> candidates = new List<Vector2Int>();
+
+            // 出口周囲を探索
+            for (int dy = -midBossSearchRadius; dy <= midBossSearchRadius; dy++)
+            {
+                for (int dx = -midBossSearchRadius; dx <= midBossSearchRadius; dx++)
+                {
+                    int x = exitX + dx;
+                    int y = exitY + dy;
+
+                    // 範囲外
+                    if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight)
+                        continue;
+
+                    // 出口セルそのものは除外
+                    if (x == exitX && y == exitY)
+                        continue;
+
+                    // 床タイルのみ
+                    if (mapData[y, x] == 0)
+                        candidates.Add(new Vector2Int(x, y));
+                }
+            }
+
+            if (candidates.Count > 0)
+            {
+                // ランダムで1マス選択
+                Vector2Int spawnCell = candidates[Random.Range(0, candidates.Count)];
+
+                // 上空から Raycast
+                Vector3 rayStart = new Vector3(
+                    spawnCell.x * cellSize + cellSize * 0.5f,
+                    10f,
+                    spawnCell.y * cellSize + cellSize * 0.5f
+                );
+
+                if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 30f))
+                {
+                    // いったん床ヒット位置に生成
+                    GameObject boss = Instantiate(midBossPrefab, hit.point, Quaternion.identity, elementParent);
+                    boss.name = "MidBoss";
+                    spawned.Add(boss);
+
+                    // ★ Collider の「最下点」を床に完全一致させる
+                    Collider col = boss.GetComponentInChildren<Collider>();
+                    if (col != null)
+                    {
+                        float bottomY = col.bounds.min.y;      // コライダーのワールド最下点
+                        float diff = hit.point.y - bottomY;    // 床との差
+
+                        boss.transform.position += new Vector3(0f, diff, 0f);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("MidBoss に Collider が見つかりません");
+                    }
+
+                    Debug.Log($"[MidBoss] Spawned at {spawnCell}");
+                }
+                else
+                {
+                    Debug.LogWarning("中ボス配置位置で床が見つかりませんでした");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("中ボス配置候補が見つかりませんでした");
+            }
         }
 
         // Place features per room (use settings if available)

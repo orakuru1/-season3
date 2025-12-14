@@ -932,6 +932,9 @@ MonoBehaviour:
   warpPrefab: {fileID: 3244763578466451285, guid: 271ffa09e4405684b92b7a592e7aa6b2,
     type: 3}
   warpTotalCount: 1
+  midBossPrefab: {fileID: 449506714180415203, guid: d6afcccaab610da46a02500dd8f93039,
+    type: 3}
+  midBossSearchRadius: 3
   safeFloorMaterial: {fileID: 2100000, guid: e11dad0122b63c84796d9d5c12fdd34e, type: 2}
   dangerFloorMaterial: {fileID: 2100000, guid: d356a0f5d859dd0469fd9b912fd3bbc5, type: 2}
   safeWallMaterial: {fileID: 2100000, guid: c1b38175ba6db9b4893d472ddd8b8400, type: 2}
