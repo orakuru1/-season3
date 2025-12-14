@@ -352,6 +352,7 @@ public class ElementGenerator : MonoBehaviour
                 {
                     // いったん床ヒット位置に生成
                     GameObject boss = Instantiate(midBossPrefab, hit.point, Quaternion.identity, elementParent);
+                    //グリッドポスを入れる処理がない。っていうかここら辺の生成したときにやらないといけないことはわからない。/////////////////////////
                     boss.name = "MidBoss";
                     spawned.Add(boss);
 
