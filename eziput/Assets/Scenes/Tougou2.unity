@@ -323,7 +323,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1735061914}
   m_HandleRect: {fileID: 1735061913}
   m_Direction: 2
-  m_Value: 1.0000002
+  m_Value: 1
   m_Size: 0.61
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -3993,7 +3993,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1957, y: 600}
+  m_ReferenceResolution: {x: 2136.2, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -9543,7 +9543,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1155407060}
   m_HandleRect: {fileID: 1155407059}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0.99999976
   m_Size: 0.61
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -11061,7 +11061,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 755402277}
   m_HandleRect: {fileID: 755402276}
   m_Direction: 2
-  m_Value: 1.0000002
+  m_Value: 1
   m_Size: 0.61
   m_NumberOfSteps: 0
   m_OnValueChanged:
