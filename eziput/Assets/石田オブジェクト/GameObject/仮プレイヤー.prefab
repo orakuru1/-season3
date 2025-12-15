@@ -3399,6 +3399,7 @@ MonoBehaviour:
     isBuffing: 0
     isDebuffing: 0
     isHiling: 0
+  anim: {fileID: 0}
 --- !u!114 &6619376180242351917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3418,8 +3419,8 @@ MonoBehaviour:
     unitName: Unit
     exp: 0
     level: 1
-    maxHP: 20
-    currentHP: 20
+    maxHP: 100
+    currentHP: 100
     attack: 5
     defense: 3
     moveRange: 3
