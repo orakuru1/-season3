@@ -8,6 +8,11 @@ public class EnemyAI : MonoBehaviour
     private Unit unit;
     private EnemyUnit enemyUnit;
 
+    // === 中ボス用移動制限 ===
+    public bool useMoveLimit = false;
+    public Vector2Int moveCenter;   // 基準マス
+    public int moveRadius = 0;
+
     private void Awake()
     {
         unit = GetComponent<Unit>();
@@ -16,6 +21,11 @@ public class EnemyAI : MonoBehaviour
 
     public IEnumerator ExecuteEnemyTurn()
     {
+        if (IsOutsideMoveRange())
+        {
+            yield return StartCoroutine(ReturnToCenter());
+            yield break;
+        }
         var players = FindObjectsOfType<Unit>()
             .Where(u => u.team == Unit.Team.Player)
             .ToList();
@@ -68,6 +78,7 @@ public class EnemyAI : MonoBehaviour
 
         // 視界にいない / 5マスより遠い → 索敵行動
         yield return StartCoroutine(RandomWander());
+        yield return null;
     }
 
     private IEnumerator RandomWander()
@@ -78,6 +89,10 @@ public class EnemyAI : MonoBehaviour
         foreach (var dir in dirs)
         {
             Vector2Int candidate = unit.gridPos + dir;
+
+            // ★ 中ボス移動制限チェック
+            if (!IsWithinMoveRange(candidate))
+                continue;
 
             // マップ内かチェック
             var block = GridManager.Instance.GetBlock(candidate);
@@ -191,6 +206,43 @@ public class EnemyAI : MonoBehaviour
         }
 
         return false;
+    }
+
+    bool IsWithinMoveRange(Vector2Int target)
+    {
+        if (!useMoveLimit) return true;
+
+        int dist = Mathf.Abs(target.x - moveCenter.x)
+                 + Mathf.Abs(target.y - moveCenter.y);
+
+        return dist <= moveRadius;
+    }
+    bool IsOutsideMoveRange()
+    {
+        if (!useMoveLimit) return false;
+        return !IsWithinMoveRange(unit.gridPos);
+    }
+
+    IEnumerator ReturnToCenter()
+    {
+        Debug.Log($"{unit.name} はテリトリー外！初期位置へ戻る");
+
+        var path = GridManager.Instance.FindPath(unit.gridPos, moveCenter);
+
+        if (path == null || path.Count < 2)
+        {
+            Debug.LogWarning("戻る経路が見つからない");
+            yield break;
+        }
+
+        // ★ 1マスだけ戻る（重要）
+        Vector2Int next = path[1].gridPos;
+
+        // 念のため再チェック
+        if (!IsWithinMoveRange(next))
+            yield break;
+
+        yield return StartCoroutine(unit.MoveTowardNearestCoroutine(next));
     }
 
 

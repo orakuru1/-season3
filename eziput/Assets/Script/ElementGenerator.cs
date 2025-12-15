@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class ElementGenerator : MonoBehaviour
 {
@@ -52,6 +53,7 @@ public class ElementGenerator : MonoBehaviour
     public float CellSize => cellSize;
     public Vector3 EntranceWorldPos { get; private set; }
     public bool EntranceFound { get; private set; } = false;
+
     public void GenerateFromMap(
         int[,] mapData,
         DungeonSettings settings,
@@ -133,17 +135,30 @@ public class ElementGenerator : MonoBehaviour
             p.name = $"Pillar_{pos.x}_{pos.z}";
             spawned.Add(p);
 
-            // 天井計算用に保存
             pillarObjects.Add(p);
 
-            // ▼ マテリアル適用
+            // マテリアル
             var pillarRenderer = p.GetComponent<MeshRenderer>();
             if (pillarRenderer != null)
-                pillarRenderer.sharedMaterial = (route == RouteType.Danger) ? dangerPillarMaterial : safePillarMaterial;
+                pillarRenderer.sharedMaterial =
+                    (route == RouteType.Danger) ? dangerPillarMaterial : safePillarMaterial;
 
-            // ⚠ 子メッシュ(Pillar_Base)の scale / pos を一切いじらない！
-            //    Prefabのスケールそのままを使う（床接地＋天井計算に必須）
+            // =====================================================
+            // ★ 柱の下の床マスを通行不可にする
+            // =====================================================
+            int gx = Mathf.RoundToInt(pos.x / cellSize);
+            int gy = Mathf.RoundToInt(pos.z / cellSize);
+
+            if (GridManager.Instance != null)
+            {
+                GridBlock block = GridManager.Instance.GetBlock(new Vector2Int(gx, gy));
+                if (block != null)
+                {
+                    block.isWalkable = false;
+                }
+            }
         }
+
 
 
         // --- 部屋四隅
@@ -341,13 +356,22 @@ public class ElementGenerator : MonoBehaviour
 
             Vector2Int spawnCell = candidates[Random.Range(0, candidates.Count)];
 
-            // SpawnFeature を使う
             SpawnFeature(
                 midBossPrefab,
                 spawnCell.x,
                 spawnCell.y,
                 "MidBoss"
             );
+
+            // ★ 中ボスだけ移動制限を設定
+            var bossObj = spawned.Last();
+            var ai = bossObj.GetComponent<EnemyAI>();
+            if (ai != null)
+            {
+                ai.useMoveLimit = true;
+                ai.moveCenter = spawnCell;
+                ai.moveRadius = 3; // ← 好きな範囲
+            }
 
             Debug.Log($"[MidBoss] Spawned at {spawnCell}");
         }
