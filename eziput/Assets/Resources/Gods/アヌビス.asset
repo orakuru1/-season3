@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c0917b37f750974c8b4509aa43d13fe, type: 3}
-  m_Name: "\u30C8\u30C8"
+  m_Name: "\u30A2\u30CC\u30D3\u30B9"
   m_EditorClassIdentifier: 
   id: 1
-  godName: "\u30C8\u30C8"
-  title: "\u77E5\u6075\u306E\u795E"
+  godName: "\u30A2\u30CC\u30D3\u30B9"
+  title: "\u51A5\u754C\u306E\u795E"
   description: "\u5909\u66F4\u3055\u308C\u305F\u8AAC\u660E\u6587\u3067\u3059\u3002"
-  icon: {fileID: 21300000, guid: 31f61fb8f4013434da68bacafda25812, type: 3}
+  icon: {fileID: 21300000, guid: e2479ccc4bde90041a24217b930d164f, type: 3}
   abilities:
     abilityName: "\u795E\u57DF\u691C\u7D22"
     description: "\u77E5\u6075\u306E\u5411\u4E0A"

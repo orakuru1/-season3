@@ -3492,7 +3492,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ownedGods:
   - {fileID: 11400000, guid: befeb862df9bc7f41b4ac3be606d23a0, type: 2}
-  - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
+  - {fileID: 11400000, guid: 4b9157fa1c6922348bb53f53fb3c341e, type: 2}
 --- !u!1 &6410726105429725559
 GameObject:
   m_ObjectHideFlags: 0

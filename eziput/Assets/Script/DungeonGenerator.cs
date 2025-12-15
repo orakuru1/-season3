@@ -391,6 +391,14 @@ public class DungeonGenerator : MonoBehaviour
 
         elementGenerator.GenerateFromMap(mapData, s, rooms, startRoom, endRoom, floorList);
     }
+
+    public void GameOveaaaaaa()
+    {
+        GameManager.Instance.GameOvedUI();
+        TurnManager.Instance.allUnits.Clear();
+        GenerateNow();
+        StartCoroutine(GameManager.Instance.SpawnPlayerAfterGenerate());
+    }
 }
 
 [System.Serializable]

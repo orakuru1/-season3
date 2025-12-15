@@ -275,7 +275,7 @@ public class GameManager : MonoBehaviour
     // =======================
     // プレイヤー生成
     // =======================
-    private IEnumerator SpawnPlayerAfterGenerate()
+    public IEnumerator SpawnPlayerAfterGenerate()
     {
         yield return new WaitUntil(() => eg != null && eg.EntranceFound);
         SpawnPlayer(eg.EntranceWorldPos);

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5865391548986886647}
   - component: {fileID: 5865391548986886646}
   - component: {fileID: 569499968592141144}
+  - component: {fileID: 8992817457766031524}
   m_Layer: 0
   m_Name: "\u30A2\u30CC\u30D3\u30B9\uFF08\u89AA\uFF09"
   m_TagString: Untagged
@@ -46,6 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fa122d0e88f3c741bddda2297d52e2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMoveLimit: 0
+  moveCenter: {x: 0, y: 0}
+  moveRadius: 0
 --- !u!114 &569499968592141144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,6 +97,20 @@ MonoBehaviour:
   equipDefenseBonus: 0
   godPlayer: {fileID: 0}
   isUsingSkill: 0
+--- !u!114 &8992817457766031524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5865391548986886641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a792bd860f623c4e8c4109666d6f2c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownedGods:
+  - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
 --- !u!1001 &5541895227699303919
 PrefabInstance:
   m_ObjectHideFlags: 0
