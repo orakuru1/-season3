@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class ElementGenerator : MonoBehaviour
 {
@@ -53,6 +54,7 @@ public class ElementGenerator : MonoBehaviour
     public float CellSize => cellSize;
     public Vector3 EntranceWorldPos { get; private set; }
     public bool EntranceFound { get; private set; } = false;
+
     public void GenerateFromMap(
         int[,] mapData,
         DungeonSettings settings,
@@ -210,13 +212,22 @@ public class ElementGenerator : MonoBehaviour
 
             Vector2Int spawnCell = candidates[Random.Range(0, candidates.Count)];
 
-            // SpawnFeature を使う
             SpawnFeature(
                 midBossPrefab,
                 spawnCell.x,
                 spawnCell.y,
                 "MidBoss"
             );
+
+            // ★ 中ボスだけ移動制限を設定
+            var bossObj = spawned.Last();
+            var ai = bossObj.GetComponent<EnemyAI>();
+            if (ai != null)
+            {
+                ai.useMoveLimit = true;
+                ai.moveCenter = spawnCell;
+                ai.moveRadius = 3; // ← 好きな範囲
+            }
 
             Debug.Log($"[MidBoss] Spawned at {spawnCell}");
         }

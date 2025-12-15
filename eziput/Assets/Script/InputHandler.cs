@@ -125,7 +125,7 @@ public class InputHandler : MonoBehaviour
 
             Vector2Int targetPos = currentPlayerUnit.gridPos + currentPlayerUnit.facingDir;
             GridBlock block = GridManager.Instance.GetBlock(targetPos);
-            if (block != null)
+            if (block != null && GridManager.Instance.IsWalkable(targetPos))
             {
                 block.SetHighlight(Color.blue);
                 highlightedBlock = block;
