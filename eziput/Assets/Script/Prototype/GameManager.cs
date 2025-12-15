@@ -1,52 +1,93 @@
+using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-
     public static event Action<GameObject> OnPlayerSpawned;
 
-    // -----------------------
-    // ステージ & ルート管理
-    // -----------------------
+    // =======================
+    // ステージ & ルート
+    // =======================
     public int CurrentStage { get; private set; } = 1;
-    public const int MaxStage = 4;  // 最終ステージ（4）
-
+    public const int MaxStage = 4;
     public RouteType CurrentRoute { get; private set; } = RouteType.Safe;
 
-    // -----------------------
-    // ステージクリア条件
-    // -----------------------
-    public bool IsBossDefeated { get; set; } = false;
-    public bool IsItemCrafted { get; set; } = false;
+    // =======================
+    // ステージ条件
+    // =======================
+    public bool IsBossDefeated { get; set; }
+    public bool IsItemCrafted { get; set; }
 
-    // -----------------------
-    // プレイヤー & 入口関連
-    // -----------------------
+    // =======================
+    // プレイヤー生成
+    // =======================
     public GameObject playerPrefab;
     public ElementGenerator eg;
 
-    // -----------------------
-    // HP関連UI   渡すよう
-    // -----------------------
+    // =======================
+    // HP UI
+    // =======================
     public Slider hpSlider;
     public Text hptext;
+
+    // =======================
+    // Game Clear UI（Stage1）
+    // =======================
+    [Header("Game Clear UI")]
+    public CanvasGroup gameClearCanvasGroup;
+    public float gameClearFadeTime = 1.5f;
+    public AudioClip stage1ClearSE;
+
+    // =======================
+    // Game Over UI
+    // =======================
+    [Header("Game Over UI")]
+    public CanvasGroup gameOverCanvasGroup;
+    public float gameOverFadeTime = 1.5f;
+    public AudioClip gameOverSE;
+
+    // =======================
+    // BGM
+    // =======================
+    [Header("BGM")]
+    public AudioSource bgmSource;
+
+    [Header("Game Over BGM Settings")]
+    public AudioClip gameOverBGM;
+    public float gameOverBgmTargetVolume = 0.4f;
+    public float gameOverBgmFadeInTime = 2.0f;
+    public float silenceDurationBeforeGameOverBgm = 0.5f;
 
     // =======================
     // 初期化
     // =======================
     private void Awake()
     {
-        if (Instance == null) Instance = this; else Destroy(gameObject);
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
     }
 
     private void Start()
     {
+        InitCanvasGroup(gameClearCanvasGroup);
+        InitCanvasGroup(gameOverCanvasGroup);
+
         StartCoroutine(SpawnPlayerAfterGenerate());
+    }
+
+    private void InitCanvasGroup(CanvasGroup cg)
+    {
+        if (cg == null) return;
+        cg.alpha = 0f;
+        cg.interactable = false;
+        cg.blocksRaycasts = false;
+        cg.gameObject.SetActive(false);
     }
 
     // =======================
@@ -55,14 +96,12 @@ public class GameManager : MonoBehaviour
     public void SelectSafeRoute()
     {
         CurrentRoute = RouteType.Safe;
-        Debug.Log($"【Stage{CurrentStage}】Safeルートを選択");
         SceneManager.LoadScene("Tougou2");
     }
 
     public void SelectDangerRoute()
     {
         CurrentRoute = RouteType.Danger;
-        Debug.Log($"【Stage{CurrentStage}】Dangerルートを選択");
         SceneManager.LoadScene("Tougou2");
     }
 
@@ -76,105 +115,165 @@ public class GameManager : MonoBehaviour
     // =======================
     public void TryStageClear()
     {
-        if (!IsBossDefeated)
-        {
-            Debug.Log("ボスを倒していません！");
+        if (!IsBossDefeated || !IsItemCrafted)
             return;
-        }
 
-        if (!IsItemCrafted)
-        {
-            Debug.Log("必要なアイテムが完成していません！");
-            return;
-        }
-
-        Debug.Log($"ステージ {CurrentStage} クリア！");
-        GameClear();
+        if (CurrentStage == 1)
+            ShowStage1GameClear();
+        else
+            GameClear();
     }
 
     // =======================
-    // ゲームクリア処理
+    // Stage1 Game Clear
     // =======================
-    public void GameClear()
+    private void ShowStage1GameClear()
+    {
+        DisableInput();
+        StopBgm();
+
+        if (stage1ClearSE != null)
+            AudioSource.PlayClipAtPoint(stage1ClearSE, Vector3.zero);
+
+        StartCoroutine(FadeInCanvas(gameClearCanvasGroup, gameClearFadeTime));
+    }
+
+    public void OnNextStageButton()
+    {
+        ProceedToNextStage();
+    }
+
+    // =======================
+    // 通常 Game Clear
+    // =======================
+    private void GameClear()
     {
         StartCoroutine(GameClearRoutine());
     }
 
     private IEnumerator GameClearRoutine()
     {
-        Debug.Log("クリア演出開始");
-
-        // 操作停止（必要なら）
-        if (InputHandler.Instance != null)
-            InputHandler.Instance.enabled = false;
-
-        // UIフェードやSEなどを挟むならここ
-        yield return new WaitForSeconds(1.0f);
-
-        // 次ステージへ
+        DisableInput();
+        yield return new WaitForSeconds(1f);
         ProceedToNextStage();
     }
 
     // =======================
-    // 次のステージへ進む
+    // Game Over
     // =======================
-    public void ProceedToNextStage()
+    public void GameOver()
+    {
+        DisableInput();
+        StopBgm();
+
+        if (gameOverSE != null)
+            AudioSource.PlayClipAtPoint(gameOverSE, Vector3.zero);
+
+        StartCoroutine(GameOverBgmRoutine());
+        StartCoroutine(FadeInCanvas(gameOverCanvasGroup, gameOverFadeTime));
+    }
+
+    private IEnumerator GameOverBgmRoutine()
+    {
+        yield return new WaitForSeconds(silenceDurationBeforeGameOverBgm);
+
+        if (bgmSource == null || gameOverBGM == null)
+            yield break;
+
+        bgmSource.clip = gameOverBGM;
+        bgmSource.loop = true;
+        bgmSource.volume = 0f;
+        bgmSource.Play();
+
+        float t = 0f;
+        while (t < gameOverBgmFadeInTime)
+        {
+            t += Time.deltaTime;
+            bgmSource.volume = Mathf.Lerp(0f, gameOverBgmTargetVolume, t / gameOverBgmFadeInTime);
+            yield return null;
+        }
+
+        bgmSource.volume = gameOverBgmTargetVolume;
+    }
+
+    public void OnRetryButton()
+    {
+        StopBgm();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void OnReturnToTitle()
+    {
+        StopBgm();
+        SceneManager.LoadScene("TitleScene");
+    }
+
+    // =======================
+    // ステージ遷移
+    // =======================
+    private void ProceedToNextStage()
     {
         CurrentStage++;
 
-        if (CurrentStage > MaxStage)
-        {
-            Debug.Log("全ステージクリア！");
-            SceneManager.LoadScene("GameCompleteScene");
-            return;
-        }
-
-        // 条件リセット
         IsBossDefeated = false;
         IsItemCrafted = false;
 
-        if (CurrentStage == 4)
+        if (CurrentStage > MaxStage)
         {
-            // 最終ステージは単独マップ
-            Debug.Log("最終ステージへ移行");
+            SceneManager.LoadScene("GameCompleteScene");
+        }
+        else if (CurrentStage == 4)
+        {
             SceneManager.LoadScene("FinalStage");
         }
         else
         {
-            // 次のステージの Safe / Danger を選択
-            Debug.Log($"ステージ{CurrentStage}へ → ルート選択へ戻る");
             SceneManager.LoadScene("Scene_Select");
         }
     }
 
     // =======================
-    // プレイヤー生成関係
+    // 共通処理
+    // =======================
+    private void DisableInput()
+    {
+        if (InputHandler.Instance != null)
+            InputHandler.Instance.enabled = false;
+    }
+
+    private void StopBgm()
+    {
+        if (bgmSource != null)
+            bgmSource.Stop();
+    }
+
+    private IEnumerator FadeInCanvas(CanvasGroup cg, float duration)
+    {
+        if (cg == null) yield break;
+
+        cg.gameObject.SetActive(true);
+        cg.alpha = 0f;
+
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            cg.alpha = Mathf.Lerp(0f, 1f, t / duration);
+            yield return null;
+        }
+
+        cg.alpha = 1f;
+        cg.interactable = true;
+        cg.blocksRaycasts = true;
+    }
+
+    // =======================
+    // プレイヤー生成
     // =======================
     private IEnumerator SpawnPlayerAfterGenerate()
     {
-        // ElementGeneratorが入口を生成するまで待つ
-        yield return new WaitUntil(() => ElementGeneratorFinished());
-
-        if (eg != null && eg.EntranceFound)
-        {
-            StartCoroutine(SpawnPlayerLater(eg.EntranceWorldPos));
-        }
-    }
-
-    private bool ElementGeneratorFinished()
-    {
-        return (eg != null && eg.EntranceFound);
-    }
-
-    private IEnumerator SpawnPlayerLater(Vector3 worldPos)
-    {
-        SpawnPlayer(worldPos);
-
-        // GridBlock.Start()が走るまで1フレーム待つ
-        yield return null;
-
-        if (InputHandler.Instance != null)
-            InputHandler.Instance.ClearHighlight();
+        yield return new WaitUntil(() => eg != null && eg.EntranceFound);
+        SpawnPlayer(eg.EntranceWorldPos);
     }
 
     private void SpawnPlayer(Vector3 worldPos)
