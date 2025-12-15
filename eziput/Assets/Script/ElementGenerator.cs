@@ -13,6 +13,7 @@ public class ElementGenerator : MonoBehaviour
     public float ceilingHeight = 2.5f; // 壁が2mなので自然な高さ
     public GameObject enemyPrefab;
     public GameObject treasurePrefab;
+    public int treasureRandomCount = 0;
     public GameObject trapPrefab;
     public GameObject entrancePrefab;
     public GameObject exitPrefab;
@@ -534,7 +535,6 @@ public class ElementGenerator : MonoBehaviour
 
         Debug.Log("[ElementGenerator] Start Random Treasure Placement");
 
-        int treasureRandomCount = 5;
         IReadOnlyList<Vector2Int> safeFloorList = floorList;
 
         if (safeFloorList == null || safeFloorList.Count == 0)
