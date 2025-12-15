@@ -18,11 +18,19 @@ public class InputHandler : MonoBehaviour
     }
     private void Update()
     {
+
         if (TurnManager.Instance.currentTeam != Unit.Team.Player) return;
         if (currentPlayerUnit == null) return;
 
         var player = currentPlayerUnit as PlayerUnit;
         if (player == null) return;
+        bool isBusy =
+        player.isMoving ||
+        player.animationController.animationState.isAttacking ||
+        player.animationController.animationState.isBuffing ||
+        player.animationController.animationState.isDebuffing ||
+        player.animationController.animationState.isHiling ||
+        player.isEvent;
 
         // === 移動・攻撃中は方向転換禁止 ===
         // === 攻撃・移動中は方向転換だけ禁止 ===
@@ -63,7 +71,7 @@ public class InputHandler : MonoBehaviour
 
 
         // === スキル選択 ===
-        if (player.attackSkills != null)
+        if (!isBusy && player.attackSkills != null)
         {
             foreach (var skill in player.attackSkills)
             {
@@ -88,7 +96,8 @@ public class InputHandler : MonoBehaviour
     }
 
     private void HandleDirectionChange(PlayerUnit player)
-    {
+    {   
+        st = true;
         bool dirChanged = false;
         if (Input.GetKeyDown(KeyCode.W)) { player.facingDir = Vector2Int.up; dirChanged = true; }
         if (Input.GetKeyDown(KeyCode.S)) { player.facingDir = Vector2Int.down; dirChanged = true; }
@@ -103,7 +112,6 @@ public class InputHandler : MonoBehaviour
 
         if (player.isShowingAttackRange)
             player.ShowAttackRange();
-        st = true;
     }
 
     private void DoMove(PlayerUnit player)
