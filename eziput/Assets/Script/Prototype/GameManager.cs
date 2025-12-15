@@ -276,12 +276,41 @@ public class GameManager : MonoBehaviour
         SpawnPlayer(eg.EntranceWorldPos);
     }
 
-    private void SpawnPlayer(Vector3 pos)
+    private void SpawnPlayer(Vector3 worldPos)
     {
-        GameObject player = Instantiate(playerPrefab, pos, Quaternion.identity);
-        OnPlayerSpawned?.Invoke(player);
+        if (playerPrefab == null)
+        {
+            Debug.LogError("Player Prefab が設定されていません！");
+            return;
+        }
 
+        GameObject playerObj = Instantiate(playerPrefab, worldPos, Quaternion.identity);
+        OnPlayerSpawned?.Invoke(playerObj);
+
+        Unit unit = playerObj.GetComponent<Unit>();
+        if (unit != null)
+        {
+            unit.hpSlider = hpSlider;
+            unit.hptext = hptext;
+            unit.gridPos = new Vector2Int(
+                Mathf.RoundToInt(worldPos.x / 2),
+                Mathf.RoundToInt(worldPos.z / 2)
+            );
+
+            var block = GridManager.Instance.GetBlock(unit.gridPos);
+            if (block != null)
+                block.occupantUnit = unit;
+
+            if (!TurnManager.Instance.allUnits.Contains(unit))
+                TurnManager.Instance.allUnits.Insert(0, unit);
+        }
+
+        // カメラのターゲットに設定
         if (CameraFollowAdvanced.Instance != null)
-            CameraFollowAdvanced.Instance.SetTarget(player.transform);
+        {
+            CameraFollowAdvanced.Instance.SetTarget(playerObj.transform);
+        }
+
+        Debug.Log("Player Spawned at Entrance");
     }
 }
