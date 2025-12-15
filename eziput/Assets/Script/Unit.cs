@@ -637,4 +637,16 @@ public class Unit : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        if (team == Team.Player)
+        {
+            Debug.Log("プレイヤーが破壊されました");
+
+            // ここに呼びたい処理を書く
+            GameManager.Instance.GameOver();
+        }
+
+    }
+
 }

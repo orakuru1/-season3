@@ -173,6 +173,11 @@ public class GameManager : MonoBehaviour
         StartCoroutine(FadeInCanvas(gameOverCanvasGroup, gameOverFadeTime));
     }
 
+    public void GameOvedUI()
+    {
+        gameOverCanvasGroup.alpha = 0f;
+    }
+
     private IEnumerator GameOverBgmRoutine()
     {
         yield return new WaitForSeconds(silenceDurationBeforeGameOverBgm);
