@@ -323,8 +323,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1735061914}
   m_HandleRect: {fileID: 1735061913}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.61
+  m_Value: 0.99999976
+  m_Size: 0.6099999
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6597,7 +6597,7 @@ MonoBehaviour:
   midBossPrefab: {fileID: 5865391548986886641, guid: 2a7077ed9a5046a4293d86c373e79360,
     type: 3}
   midBossSearchRadius: 3
-  safeFloorMaterial: {fileID: 2100000, guid: e11dad0122b63c84796d9d5c12fdd34e, type: 2}
+  safeFloorMaterial: {fileID: 2100000, guid: b65054acf5a913d4f94f22ba8e2ea1be, type: 2}
   dangerFloorMaterial: {fileID: 2100000, guid: d356a0f5d859dd0469fd9b912fd3bbc5, type: 2}
   safeWallMaterial: {fileID: 2100000, guid: c1b38175ba6db9b4893d472ddd8b8400, type: 2}
   dangerWallMaterial: {fileID: 2100000, guid: 33bda1d413d273349a1429be650bc793, type: 2}
@@ -9544,7 +9544,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1155407059}
   m_Direction: 2
   m_Value: 0.99999976
-  m_Size: 0.61
+  m_Size: 0.60999995
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -11061,8 +11061,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 755402277}
   m_HandleRect: {fileID: 755402276}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.61
+  m_Value: 0.99999976
+  m_Size: 0.6099999
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
