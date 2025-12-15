@@ -34,8 +34,6 @@ public class ElementGenerator : MonoBehaviour
     public Material dangerFloorMaterial;
     public Material safeWallMaterial;
     public Material dangerWallMaterial;
-    public Material safePillarMaterial;
-    public Material dangerPillarMaterial;
     public Material safeCeilingMaterial;
     public Material dangerCeilingMaterial;
 
