@@ -308,13 +308,11 @@ public class ElementGenerator : MonoBehaviour
         {
             Vector3 exitPos = exitObject.transform.position;
 
-            // 出口のセル座標
             int exitX = Mathf.RoundToInt(exitPos.x / cellSize);
             int exitY = Mathf.RoundToInt(exitPos.z / cellSize);
 
             List<Vector2Int> candidates = new List<Vector2Int>();
 
-            // 出口周囲を探索
             for (int dy = -midBossSearchRadius; dy <= midBossSearchRadius; dy++)
             {
                 for (int dx = -midBossSearchRadius; dx <= midBossSearchRadius; dx++)
@@ -322,66 +320,38 @@ public class ElementGenerator : MonoBehaviour
                     int x = exitX + dx;
                     int y = exitY + dy;
 
-                    // 範囲外
                     if (x < 0 || x >= mapWidth || y < 0 || y >= mapHeight)
                         continue;
 
-                    // 出口セルそのものは除外
+                    // 出口そのものは除外
                     if (x == exitX && y == exitY)
                         continue;
 
-                    // 床タイルのみ
+                    // 床のみ
                     if (mapData[y, x] == 0)
                         candidates.Add(new Vector2Int(x, y));
                 }
             }
 
-            if (candidates.Count > 0)
-            {
-                // ランダムで1マス選択
-                Vector2Int spawnCell = candidates[Random.Range(0, candidates.Count)];
-
-                // 上空から Raycast
-                Vector3 rayStart = new Vector3(
-                    spawnCell.x * cellSize + cellSize * 0.5f,
-                    10f,
-                    spawnCell.y * cellSize + cellSize * 0.5f
-                );
-
-                if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, 30f))
-                {
-                    // いったん床ヒット位置に生成
-                    GameObject boss = Instantiate(midBossPrefab, hit.point, Quaternion.identity, elementParent);
-                    //グリッドポスを入れる処理がない。っていうかここら辺の生成したときにやらないといけないことはわからない。/////////////////////////
-                    boss.name = "MidBoss";
-                    spawned.Add(boss);
-
-                    // ★ Collider の「最下点」を床に完全一致させる
-                    Collider col = boss.GetComponentInChildren<Collider>();
-                    if (col != null)
-                    {
-                        float bottomY = col.bounds.min.y;      // コライダーのワールド最下点
-                        float diff = hit.point.y - bottomY;    // 床との差
-
-                        boss.transform.position += new Vector3(0f, diff, 0f);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("MidBoss に Collider が見つかりません");
-                    }
-
-                    Debug.Log($"[MidBoss] Spawned at {spawnCell}");
-                }
-                else
-                {
-                    Debug.LogWarning("中ボス配置位置で床が見つかりませんでした");
-                }
-            }
-            else
+            if (candidates.Count == 0)
             {
                 Debug.LogWarning("中ボス配置候補が見つかりませんでした");
+                return;
             }
+
+            Vector2Int spawnCell = candidates[Random.Range(0, candidates.Count)];
+
+            // SpawnFeature を使う
+            SpawnFeature(
+                midBossPrefab,
+                spawnCell.x,
+                spawnCell.y,
+                "MidBoss"
+            );
+
+            Debug.Log($"[MidBoss] Spawned at {spawnCell}");
         }
+
 
         // Place features per room (use settings if available)
         if (rooms != null && rooms.Count > 0)
