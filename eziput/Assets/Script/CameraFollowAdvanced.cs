@@ -6,7 +6,7 @@ public class CameraFollowAdvanced : MonoBehaviour
     public Transform target;
 
     [Header("View Settings")]
-    public float angle = 45f;
+    [Tooltip("カメラ距離")]
     public float distance = 8f;
     public float minDistance = 4f;
     public float maxDistance = 15f;
@@ -24,18 +24,19 @@ public class CameraFollowAdvanced : MonoBehaviour
     public float collisionBuffer = 0.3f;
 
     private float currentDistance;
+
+    // ★ 常に90度固定
+    private const float FIXED_ANGLE = 90f;
+
     public static CameraFollowAdvanced Instance;
+
     void Awake()
     {
         Instance = this;
     }
 
-    //----------------------------------------
-    // ★ Start時にプレイヤーを探してセット
-    //----------------------------------------
     void Start()
     {
-        // target が未設定ならシーン内の Player を探す
         if (target == null)
         {
             GameObject p = GameObject.FindWithTag("Player");
@@ -50,56 +51,31 @@ public class CameraFollowAdvanced : MonoBehaviour
         }
         else
         {
-            // Inspectorで設定済みなら即セット
             SetTarget(target);
         }
     }
 
-    //----------------------------------------
-    // ★ ターゲット設定用メソッド（重要）
-    //----------------------------------------
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
-
-        // 初期距離セット
         currentDistance = distance;
         currentYaw = 0f;
 
-        // 初期位置計算して“瞬間的に”移動
-        Quaternion rot = Quaternion.Euler(angle, currentYaw, 0);
+        Quaternion rot = Quaternion.Euler(FIXED_ANGLE, currentYaw, 0);
         Vector3 startPos = target.position - rot * Vector3.forward * currentDistance;
 
         transform.position = startPos;
-        transform.LookAt(target.position);
+        transform.rotation = rot;
     }
 
-    //----------------------------------------
-    // ★ 毎フレームの追従処理
-    //----------------------------------------
     void LateUpdate()
     {
         if (target == null) return;
 
-        // 右ドラッグで回転
-        if (Input.GetMouseButton(1))
-        {
-            float mouseX = Input.GetAxis("Mouse X");
-            currentYaw += mouseX * rotationSpeed * Time.deltaTime;
-        }
-
-        // マウスホイールでズーム
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll != 0)
-        {
-            distance -= scroll * zoomSpeed;
-            distance = Mathf.Clamp(distance, minDistance, maxDistance);
-        }
-
         currentDistance = Mathf.Lerp(currentDistance, distance, Time.deltaTime * 5f);
 
-        // 理想位置
-        Quaternion rot = Quaternion.Euler(angle, currentYaw, 0);
+        // ★ 必ずここで宣言する（超重要）
+        Quaternion rot = Quaternion.Euler(90f, currentYaw, 0f);
         Vector3 desiredPos = target.position - rot * Vector3.forward * currentDistance;
 
         // 障害物補正
@@ -111,10 +87,14 @@ public class CameraFollowAdvanced : MonoBehaviour
             desiredPos = hit.point - dir.normalized * collisionBuffer;
         }
 
-        // スムーズ追従
-        transform.position = Vector3.Lerp(transform.position, desiredPos, followSmoothness * Time.deltaTime);
+        // 追従
+        transform.position = Vector3.Lerp(
+            transform.position,
+            desiredPos,
+            followSmoothness * Time.deltaTime
+        );
 
-        // 注視
-        transform.LookAt(target.position);
+        // ★ 角度は常に固定
+        transform.rotation = rot;
     }
 }
