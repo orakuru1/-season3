@@ -147,7 +147,8 @@ public class GodManeger : MonoBehaviour
     public IEnumerator AttackAbility(GodAbility ability, GameObject user, List<Unit> target)
     {
         ability.isActive = true;
-        AnimationController animationController = user.GetComponent<AnimationController>();//ここら辺の処理は、attack等にそれぞれでまとめる。
+        Unit unit = user.GetComponent<Unit>();//ここら辺の処理は、attack等にそれぞれでまとめる。
+        AnimationController animationController = unit.animationController;
         animationController.Initialize(target, ability.power, ability.DethAnimationID);
         animationController.AttackAnimation(ability.GodAnimationID);//いずれ、神のアニメーションとアニメーション番号を作る（最初１，１個習合２，みたいな感じ）
         ///////////////////////////////////////////////////

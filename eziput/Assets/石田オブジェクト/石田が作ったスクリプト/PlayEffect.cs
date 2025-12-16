@@ -9,6 +9,12 @@ public class PlayEffect : MonoBehaviour
         EffectManager.Instance.PlayAttackEffect(transform.position, transform, id);
     }
 
+    public void BluckImpact(int id)
+    {
+        Transform correctParent = GetComponentInParent<Unit>().transform;
+        EffectManager.Instance.PlayAttackEffect(correctParent.position, transform, id);
+    }
+
     public void GodSicleEffect(int id)
     {
         EffectManager.Instance.PlayAttackEffect(transform.position, transform, id);

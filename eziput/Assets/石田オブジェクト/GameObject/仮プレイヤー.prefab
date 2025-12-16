@@ -3444,13 +3444,13 @@ MonoBehaviour:
   - skillName: "\u4E0A\u6BB5"
     triggerKey: 114
     attackPattern: {fileID: 11400000, guid: 925180d414007eb44a283484cf34e509, type: 2}
-    power: 10
+    power: 20
     animationID: 1
     DethAnimationID: 200
   - skillName: "\u9B54\u6CD5\u65AC\u6483"
     triggerKey: 116
     attackPattern: {fileID: 11400000, guid: cde4c948a286cda45bc792f656e021f7, type: 2}
-    power: 20
+    power: 10
     animationID: 2
     DethAnimationID: 201
   anim: {fileID: 0}
