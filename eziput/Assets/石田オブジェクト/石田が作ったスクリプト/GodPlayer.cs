@@ -33,13 +33,15 @@ public class GodPlayer : MonoBehaviour
                     }
 
                 }
-                ownedGods.Add(fusedGod);
+                ownedGods.Add(fusedGod);///////////////////////////////神の力をゲットしたときに取得する神の力のリセットをしようと思ったら、マイナスになってしまう。
+                fusedGod.abilities.ResetCooldown();
             }));
             yield return StartCoroutine(HandleGodLimit());
         }
         else
         {
             ownedGods.Add(newGod);
+            newGod.abilities.ResetCooldown();
             Debug.Log($"{newGod.godName}を所有しました。");  
             yield return StartCoroutine(HandleGodLimit());
         }

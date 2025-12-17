@@ -41,6 +41,7 @@ public class GodManeger : MonoBehaviour
         foreach(var god in allgods)//いずれは、セーブして戻った時に、trueにしてないといけない時もある。でも、新しいステージに行ったとき等にfalseにするかも。それか、全部読み込んだあとに、ロードするか。
         {
             if (god.abilities != null) god.abilities.isActive = false;
+            god.abilities.ResetCooldown();
         }
     }
 

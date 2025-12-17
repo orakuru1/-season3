@@ -74,7 +74,19 @@ MonoBehaviour:
   isShowingAttackRange: 0
   isEvent: 0
   facingDir: {x: 0, y: 0}
-  attackSkills: []
+  attackSkills:
+  - skillName: 
+    triggerKey: 103
+    attackPattern: {fileID: 11400000, guid: cde4c948a286cda45bc792f656e021f7, type: 2}
+    power: 1000
+    animationID: 2
+    DethAnimationID: 201
+  - skillName: 
+    triggerKey: 104
+    attackPattern: {fileID: 11400000, guid: 925180d414007eb44a283484cf34e509, type: 2}
+    power: 1000
+    animationID: 5
+    DethAnimationID: 201
   anim: {fileID: 5054976073800454518}
   animationController: {fileID: 1678844705201221688}
   equidpAttackBonus: 0
@@ -229,6 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Im: {fileID: 1678844704895397180}
   Target: []
   damage: 0
   attacker: {fileID: 0}
@@ -279,52 +292,52 @@ PrefabInstance:
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: -0.10999996
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.3
+      value: 1.89
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.21999979
+      value: 0.4400003
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9832175
+      value: 0.99485064
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.18222862
+      value: 0.100548156
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.008580339
+      value: 0.010677938
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0015902721
+      value: 0.006943555
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 21
+      value: 11.532
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -1
+      value: 1.324
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
+      value: 0.933
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7e6f90709c981f4798a3acfb926f8b0, type: 3}

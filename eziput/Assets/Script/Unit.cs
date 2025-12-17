@@ -447,10 +447,9 @@ public class Unit : MonoBehaviour
             animationController.attacker.animationState.isHitAnimation = true;
             animationController.attacker.AnimationEnd();
         }
-
         if (godPlayer != null && godPlayer.ownedGods.Count > 0)
         {
-            var killerPlayer = killer?.GetComponent<GodPlayer>();
+            var killerPlayer = killer.godPlayer;
                 
             if (killerPlayer != null)
             {

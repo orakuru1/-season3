@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimationController : MonoBehaviour
 {
-    private Unit Im;
+    public Unit Im;
 
     public List<Unit> Target = new List<Unit>(); // 攻撃する先
     public int damage;
@@ -20,7 +20,7 @@ public class AnimationController : MonoBehaviour
 
     void Start()
     {
-        Im = GetComponent<Unit>();
+        if(Im == null) Im = GetComponent<Unit>();
         if(anim == null) anim = GetComponent<Animator>();
         
     }

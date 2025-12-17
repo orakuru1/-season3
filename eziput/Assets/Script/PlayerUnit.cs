@@ -169,6 +169,7 @@ public class PlayerUnit : Unit
 
         // Unit の初期化が終わった後にやりたい処理
         UpdateGodUI();
+        GodUIManager.Instance.UpdateGodIcons(godPlayer.ownedGods);
     }
 
     public void Update()

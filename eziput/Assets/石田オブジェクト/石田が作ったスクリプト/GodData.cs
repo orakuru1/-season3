@@ -26,6 +26,11 @@ public class GodAbility
     public AbilityType type;       // 力の種類（攻撃・回復・強化など）
     public GodAttackPattern attackPattern; // 攻撃パターン（攻撃タイプの場合）
 
+    public void ResetCooldown()
+    {
+        floatcurrentCooldown = 0f;
+    }
+
     [Header("発動管理")]
     public int cooldown;         // クールダウン時間
     public float floatcurrentCooldown; // 現在のクールダウン時間
