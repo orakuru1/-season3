@@ -145,6 +145,12 @@ public class EnemyAI : MonoBehaviour
             .FirstOrDefault();
 
         float distance = Vector2Int.Distance(unit.gridPos, target.gridPos);
+        Vector2Int dir = target.gridPos - unit.gridPos;
+
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+            unit.facingDir = new Vector2Int((int)Mathf.Sign(dir.x), 0);
+        else
+            unit.facingDir = new Vector2Int(0, (int)Mathf.Sign(dir.y));
 
         // 🔹 まず通常攻撃範囲内にいる場合
         if (distance <= unit.status.attackRange)

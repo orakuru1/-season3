@@ -6697,7 +6697,7 @@ MonoBehaviour:
   enemyPrefab: {fileID: 1425393199}
   treasurePrefab: {fileID: 7447380110618312217, guid: 036a70210fa8adb41ae74cbae0809ce9,
     type: 3}
-  treasureRandomCount: 0
+  treasureRandomCount: 50
   trapPrefab: {fileID: 5129356280029976249, guid: ec57c6c212b584e40a548a0e8330ce4d,
     type: 3}
   entrancePrefab: {fileID: 4824910474507427059, guid: 4f202e6cba3a38940a98692388db2fd8,
