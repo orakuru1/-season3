@@ -280,6 +280,9 @@ public class ElementGenerator : MonoBehaviour
             // For each room, place features in random interior positions
             foreach (var r in rooms)
             {
+                if (startRoom != null && r == startRoom)
+                    continue;
+
                 // ensure interior bounds
                 int minX = r.x + 1;
                 int maxX = r.x + r.width - 2;
