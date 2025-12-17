@@ -7,7 +7,7 @@ public class CameraFollowAdvanced : MonoBehaviour
 
     [Header("View Settings")]
     [Tooltip("カメラ距離")]
-    public float distance = 8f;
+    public float distance = 3f;
     public float minDistance = 4f;
     public float maxDistance = 15f;
     public float zoomSpeed = 3f;
@@ -65,7 +65,7 @@ public class CameraFollowAdvanced : MonoBehaviour
         Vector3 startPos = target.position - rot * Vector3.forward * currentDistance;
 
         transform.position = startPos;
-        transform.rotation = rot;
+        //transform.rotation = rot;
     }
 
     void LateUpdate()
@@ -95,6 +95,6 @@ public class CameraFollowAdvanced : MonoBehaviour
         );
 
         // ★ 角度は常に固定
-        transform.rotation = rot;
+        //transform.rotation = rot;
     }
 }

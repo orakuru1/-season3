@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+//using System.Diagnostics;
 
 public class PlayerUnit : Unit
 {
@@ -128,4 +129,51 @@ public class PlayerUnit : Unit
 
         yield return null; // 即時終了、同時に再生される
     }
+
+    public void UpdateGodUI()
+    {
+        if(godPlayer != null)
+        {
+            foreach(var god in godPlayer.ownedGods)
+            {
+                if(god.abilities != null && god.abilities.floatcurrentCooldown > 0f)
+                {
+                    if(god.abilities.floatcurrentCooldown < 0f)
+                    {
+                        god.abilities.floatcurrentCooldown = 0f;
+                    }
+                }
+            }
+
+            if (GodUIManager.Instance != null)
+            {
+                GodUIManager.Instance.UpdateCooldownUI(godPlayer.ownedGods);
+            } 
+            
+        }
+    }
+
+    void OnEnable()
+    {
+        GodManeger.CooldownCountAction += UpdateGodUI;
+    }
+
+    void OnDisable()
+    {
+        GodManeger.CooldownCountAction -= UpdateGodUI;
+    }
+
+    protected override void Start()
+    {
+        base.Start(); // ← ここで Unit.Start() が先に実行される
+
+        // Unit の初期化が終わった後にやりたい処理
+        UpdateGodUI();
+    }
+
+    public void Update()
+    {
+
+    }
+
 }

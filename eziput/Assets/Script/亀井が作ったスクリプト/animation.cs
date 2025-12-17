@@ -31,7 +31,6 @@ public class animation : MonoBehaviour
         itemType = itemTypeList[randomIndex];
         Debug.Log($"宝箱の中身は：{itemName}({itemType})");
         itemObject = this.gameObject;
-        OnEnable();
         //audio = GetComponent<AudioSource>(); //SE追加
     }
 
@@ -117,6 +116,5 @@ public class animation : MonoBehaviour
     {
         player = p.transform;
         Debug.Log("宝箱にプレイヤー設定完了");
-        OnDisable();
     }
 }

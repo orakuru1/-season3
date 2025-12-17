@@ -90,7 +90,13 @@ MonoBehaviour:
   isShowingAttackRange: 0
   isEvent: 0
   facingDir: {x: 0, y: 0}
-  attackSkills: []
+  attackSkills:
+  - skillName: "\u95C7\u306E\u6CE2\u52D5"
+    triggerKey: 0
+    attackPattern: {fileID: 11400000, guid: 925180d414007eb44a283484cf34e509, type: 2}
+    power: 10
+    animationID: 5
+    DethAnimationID: 201
   anim: {fileID: 3548262269595652}
   animationController: {fileID: 5865391548788385566}
   equidpAttackBonus: 0

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
@@ -7,8 +8,9 @@ using UnityEngine;
 public class GodManeger : MonoBehaviour
 {
     public static GodManeger Instance { get; private set; }
-    public List<GodData> allgods = new List<GodData>();
-    private List<GodData> addgods = new List<GodData>();
+    public static event Action CooldownCountAction;
+    public List<GodData> allgods = new List<GodData>();//GODデータの初期化をしたほうが良い部分があるので、そこの初期化の処理を作ろう。
+    public List<GodData> addgods = new List<GodData>();
 
     //クールダウンに入った時に送り込む辞書
     private Dictionary<GodAbility, int> cooldownTimers = new Dictionary<GodAbility, int>();
@@ -201,7 +203,8 @@ public class GodManeger : MonoBehaviour
 
         //バフのアニメーション
         yield return null;
-        AnimationController animationController = user.GetComponent<AnimationController>();
+        Unit unit = user.GetComponent<Unit>();//ここら辺の処理は、attack等にそれぞれでまとめる。
+        AnimationController animationController = unit.animationController;
         animationController.InitializeBuff(user.GetComponent<Unit>(), ability.power);
         animationController.BuffAnimation(ability.GodAnimationID);
 
@@ -408,5 +411,7 @@ public class GodManeger : MonoBehaviour
                 ability.isActive = false;
             }
         }
+        CooldownCountAction?.Invoke();
+
     }
 }

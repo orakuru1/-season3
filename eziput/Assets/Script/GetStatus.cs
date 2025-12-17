@@ -30,7 +30,6 @@ public class GetStatus : MonoBehaviour
             //いずれ消せ。統合用では用済み・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
             playerUnit = FindObjectsOfType<Unit>()?.FirstOrDefault(u => u.team == Unit.Team.Player);
         }
-        OnEnable();
         UpdateStatus();
     }
 
@@ -71,6 +70,5 @@ public class GetStatus : MonoBehaviour
     public void SetPlayer(GameObject playerObj)
     {
         playerUnit = playerObj.GetComponent<Unit>();
-        OnDisable();
     }
 }

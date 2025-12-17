@@ -45,9 +45,13 @@ public class GodPlayer : MonoBehaviour
         }
 
         //yield return StartCoroutine(HandleGodLimit());
-        GodUIManager.Instance.UpdateGodIcons(ownedGods);
-        GodUIManager ui = FindObjectOfType<GodUIManager>();
-        ui.UpdateGodIcons(ownedGods);
+        if (GodUIManager.Instance != null)
+        {
+            GodUIManager.Instance.UpdateGodIcons(ownedGods);
+            GodUIManager ui = FindObjectOfType<GodUIManager>();
+            ui.UpdateGodIcons(ownedGods);
+        }
+
 
     }
 
@@ -98,7 +102,7 @@ public class GodPlayer : MonoBehaviour
     void Start()
     {
         u = this.GetComponent<Unit>();
-        GodUIManager.Instance.UpdateGodIcons(ownedGods);
+        //GodUIManager.Instance.UpdateGodIcons(ownedGods);
         //AddRandomGod();
         //GodManeger.Instance.descriptionGod(ownedGods[0]);
         //GodManeger.Instance.UseGodAbility(ownedGods[0].abilities, this.gameObject, this.gameObject);
@@ -108,26 +112,6 @@ public class GodPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.G))
-        {
-            //GodManeger.Instance.UseGodAbility(ownedGods[0].abilities, this.gameObject, this.gameObject);
-        }
-        if(u.team == Unit.Team.Player)
-        {
-            foreach(var god in ownedGods)
-            {
-                if(god.abilities != null && god.abilities.floatcurrentCooldown > 0f)
-                {
-                    if(god.abilities.floatcurrentCooldown < 0f)
-                    {
-                        god.abilities.floatcurrentCooldown = 0f;
-                    }
-                }
-            }
-
-            GodUIManager.Instance.UpdateCooldownUI(ownedGods);
-        }
-
 
     }
 }

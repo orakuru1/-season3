@@ -88,7 +88,7 @@ public class Unit : MonoBehaviour
         }
     }
 
-    private void Start()
+    protected virtual void Start()
     {
         gridManager = FindObjectOfType<GridManager>();
 
