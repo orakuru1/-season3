@@ -7958,6 +7958,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1558751990}
   m_CullTransparentMesh: 1
+--- !u!1 &1561999272 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3639784934842469624, guid: 036a70210fa8adb41ae74cbae0809ce9,
+    type: 3}
+  m_PrefabInstance: {fileID: 987466000}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1561999277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561999272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3048072f39b3352419339f6f90024c33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1580666231
 GameObject:
   m_ObjectHideFlags: 0
@@ -10418,7 +10436,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 19
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -11194,7 +11212,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 26
+    m_FontSize: 20
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 10
@@ -11330,6 +11348,7 @@ MonoBehaviour:
     isBuffing: 0
     isDebuffing: 0
     isHiling: 0
+  anim: {fileID: 0}
 --- !u!114 &2136582328
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11346,7 +11365,7 @@ MonoBehaviour:
   hpSlider: {fileID: 2144641084}
   hptext: {fileID: 69119920}
   status:
-    unitName: a
+    unitName: "\u30C4\u30BF\u30F3\u30AB\u30FC\u30E1\u30F3"
     exp: 0
     level: 1
     maxHP: 137
