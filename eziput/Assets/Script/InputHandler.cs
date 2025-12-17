@@ -100,9 +100,31 @@ public class InputHandler : MonoBehaviour
         st = true;
         bool dirChanged = false;
         if (Input.GetKeyDown(KeyCode.W)) { player.facingDir = Vector2Int.up; dirChanged = true; }
-        if (Input.GetKeyDown(KeyCode.S)) { player.facingDir = Vector2Int.down; dirChanged = true; }
-        if (Input.GetKeyDown(KeyCode.A)) { player.facingDir = Vector2Int.left; dirChanged = true; }
-        if (Input.GetKeyDown(KeyCode.D)) { player.facingDir = Vector2Int.right; dirChanged = true; }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            // 180度反転
+            player.facingDir = -player.facingDir;
+            dirChanged = true;
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            // 左回転（90度）
+            player.facingDir = new Vector2Int(
+                -player.facingDir.y,
+                player.facingDir.x
+            );
+            dirChanged = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            // 右回転（90度）
+            player.facingDir = new Vector2Int(
+                player.facingDir.y,
+                -player.facingDir.x
+            );
+            dirChanged = true;
+        }
 
         if (!dirChanged) return;
 
