@@ -5342,14 +5342,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 7ed2ce4eafbc2344e83e9cfc1930d92e, type: 3}
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 1
   m_FillAmount: 1
   m_FillClockwise: 1
-  m_FillOrigin: 0
+  m_FillOrigin: 1
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
 --- !u!222 &829789459
@@ -8167,11 +8167,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f60e8942ee6ada4aa9f50bbbfeb123e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 6277409031460633215, guid: 057a04a0ce9dc54498d7e9800ddb6949,
+  playerPrefab: {fileID: 1678844704895397170, guid: 83eb9bac6b68a6845a55b8d7328c5fe9,
     type: 3}
   eg: {fileID: 1096882721}
   hpSlider: {fileID: 1636714324}
   hptext: {fileID: 880869431}
+  SeSlider: {fileID: 852601728}
+  BgmSlider: {fileID: 1319407165}
+  seMuteButton: {fileID: 392820800}
+  bgmMuteButton: {fileID: 697428401}
   gameClearCanvasGroup: {fileID: 0}
   gameClearFadeTime: 1.5
   stage1ClearSE: {fileID: 8300000, guid: 188becc03917b7b4588668c18fa2c36c, type: 3}
@@ -9035,7 +9039,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &1332256411
 AudioListener:
   m_ObjectHideFlags: 0
@@ -9723,6 +9727,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allgods: []
+  addgods: []
   isGodDescrip: 0
   enemyPosition: []
   fusionRecipes:
@@ -10925,6 +10930,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Im: {fileID: 0}
   Target: []
   damage: 0
   attacker: {fileID: 0}
@@ -13178,6 +13184,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c30864b3ac6d9914a9b175798489ae59, type: 2}
   - {fileID: 11400000, guid: 6401fbede8109404d8daed8815c67ba8, type: 2}
   - {fileID: 11400000, guid: b51592a1a4159b847ada55857cf4ff7e, type: 2}
+  - {fileID: 11400000, guid: 7e98bfa99a6d1174492dcb3330f627e4, type: 2}
   hitEffects:
   - {fileID: 11400000, guid: 8edbdd7b608a14c4f83cd7c1abb0cbb7, type: 2}
   healEffects:
@@ -14305,14 +14312,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 7ed2ce4eafbc2344e83e9cfc1930d92e, type: 3}
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 1
   m_FillAmount: 1
   m_FillClockwise: 1
-  m_FillOrigin: 0
+  m_FillOrigin: 1
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
 --- !u!222 &2005596268

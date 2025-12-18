@@ -24,7 +24,7 @@ public class DamageTextManager : MonoBehaviour
             yOffset = renderer.bounds.size.y;        
         }
 
-        Vector3 spawnPos = point.position + new Vector3(0, yOffset + 0.2f, 0);
+        Vector3 spawnPos = point.position + new Vector3(0, yOffset, 0);
         var obj = Instantiate(damagePrefab, spawnPos, damagePrefab.transform.rotation, damageTextCanvas);
         obj.GetComponentInChildren<Text>().text = damage.ToString();
         Destroy(obj, 0.7f); // 1秒後に削除

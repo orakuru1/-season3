@@ -8,7 +8,8 @@ using UnityEngine;
 public class GodManeger : MonoBehaviour
 {
     public static GodManeger Instance { get; private set; }
-    public static event Action CooldownCountAction;
+    public static event Action CooldownCountAction;// クールダウンカウントが変わったときに呼ぶ
+    public static Action OnGodAbilityUsed;// 神の力が使われたときに呼ぶ
     public List<GodData> allgods = new List<GodData>();//GODデータの初期化をしたほうが良い部分があるので、そこの初期化の処理を作ろう。
     public List<GodData> addgods = new List<GodData>();
 
@@ -141,6 +142,8 @@ public class GodManeger : MonoBehaviour
         }
 
         Debug.Log("神の力の発動処理終了");
+
+        OnGodAbilityUsed?.Invoke();
 
     }
 #endregion

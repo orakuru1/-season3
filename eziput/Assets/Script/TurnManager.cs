@@ -38,6 +38,7 @@ public class TurnManager : MonoBehaviour
     public void StartNextTurn()
     {
         if (allUnits.Count == 0) return;
+
         currentIndex = currentIndex % allUnits.Count;
         var unit = allUnits[currentIndex];
         currentTeam = unit.team;  //  現在のチームを記録
@@ -111,6 +112,8 @@ public class TurnManager : MonoBehaviour
     {
         Debug.Log("Player Turn End → Enemy Turn Start");
         currentIndex++;
+                //神の力のクールダウンを減らす
+        GodManeger.Instance.CooldownCount();
         StartNextTurn();
     }
 
@@ -118,8 +121,6 @@ public class TurnManager : MonoBehaviour
     {
         currentIndex = 0; // プレイヤーに戻す
         StartNextTurn();
-        //神の力のクールダウンを減らす
-        GodManeger.Instance.CooldownCount();
     }
     // SRPG互換: 次のユニットへ
     public void NextTurn()

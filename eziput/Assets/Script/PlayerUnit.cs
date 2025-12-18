@@ -155,11 +155,13 @@ public class PlayerUnit : Unit
 
     void OnEnable()
     {
+        GodManeger.OnGodAbilityUsed += UpdateGodUI;
         GodManeger.CooldownCountAction += UpdateGodUI;
     }
 
     void OnDisable()
     {
+        GodManeger.OnGodAbilityUsed -= UpdateGodUI;
         GodManeger.CooldownCountAction -= UpdateGodUI;
     }
 

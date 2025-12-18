@@ -34,24 +34,21 @@ public class GodUIManager : MonoBehaviour
 
     public void UpdateCooldownUI(List<GodData> ownedGods)
     {
-        for(int i = 0; i < cooldownMasks.Length; i++)
+        for (int i = 0; i < cooldownMasks.Length; i++)
         {
-            if(i < ownedGods.Count)
+            if (i < ownedGods.Count)
             {
-                GodData god = ownedGods[i];
+                var ability = ownedGods[i].abilities;
+                float rate = Mathf.Clamp01(
+                    ability.floatcurrentCooldown / ability.cooldown
+                );
 
-                if(god.abilities.floatcurrentCooldown > 0)
-                {
-                    cooldownMasks[i].gameObject.SetActive(true);
-                    cooldownMasks[i].fillAmount = god.abilities.floatcurrentCooldown / god.abilities.cooldown;
-                }
-                else
-                {
-                    cooldownMasks[i].gameObject.SetActive(false);
-                }  
+                cooldownMasks[i].gameObject.SetActive(rate > 0f);
+                cooldownMasks[i].fillAmount = rate;
             }
             else
             {
+                Debug.Log("クールダウンマスク非表示");
                 cooldownMasks[i].gameObject.SetActive(false);
             }
         }

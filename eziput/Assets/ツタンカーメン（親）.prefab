@@ -50,7 +50,7 @@ MonoBehaviour:
   hpSlider: {fileID: 0}
   hptext: {fileID: 0}
   status:
-    unitName: Unit
+    unitName: "\u30C4\u30BF\u30F3\u30AB\u30FC\u30E1\u30F3"
     exp: 0
     level: 1
     maxHP: 20
@@ -78,15 +78,15 @@ MonoBehaviour:
   - skillName: 
     triggerKey: 103
     attackPattern: {fileID: 11400000, guid: cde4c948a286cda45bc792f656e021f7, type: 2}
-    power: 1000
+    power: 10
     animationID: 2
     DethAnimationID: 201
   - skillName: 
     triggerKey: 104
-    attackPattern: {fileID: 11400000, guid: 925180d414007eb44a283484cf34e509, type: 2}
-    power: 1000
-    animationID: 5
-    DethAnimationID: 201
+    attackPattern: {fileID: 11400000, guid: 0e4aead31d1722145a7af508dac7826a, type: 2}
+    power: 20
+    animationID: 1
+    DethAnimationID: 200
   anim: {fileID: 5054976073800454518}
   animationController: {fileID: 1678844705201221688}
   equidpAttackBonus: 0

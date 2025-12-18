@@ -64,6 +64,14 @@ public class BGMSE : MonoBehaviour
         UpdateMuteIcons();
     }
 
+    public void InitializeSettings(Slider SS, Slider BS, Button sb, Button bb)
+    {
+        this.seSlider = SS;
+        this.bgmSlider = BS;
+        this.seMuteButton = sb;
+        this.bgmMuteButton = bb;
+    }
+
     void ApplyVolume(string parameterName, float value)
     {
         value = Mathf.Clamp01(value);

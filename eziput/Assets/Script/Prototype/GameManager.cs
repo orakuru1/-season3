@@ -35,6 +35,15 @@ public class GameManager : MonoBehaviour
     public Text hptext;
 
     // =======================
+    // BGM・SE
+    // =======================
+    [Header("BGM・SE")]
+    public Slider SeSlider;
+    public Slider BgmSlider;
+    public Button seMuteButton;
+    public Button bgmMuteButton;
+
+    // =======================
     // Game Clear UI（Stage1）
     // =======================
     [Header("Game Clear UI")]
@@ -291,6 +300,8 @@ public class GameManager : MonoBehaviour
 
         GameObject playerObj = Instantiate(playerPrefab, worldPos, Quaternion.identity);
         OnPlayerSpawned?.Invoke(playerObj);
+
+        if(SeSlider != null) playerObj.GetComponentInChildren<BGMSE>()?.InitializeSettings(SeSlider, BgmSlider, seMuteButton, bgmMuteButton);
 
         Unit unit = playerObj.GetComponent<Unit>();
         if (unit != null)

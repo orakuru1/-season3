@@ -34,14 +34,16 @@ public class GodPlayer : MonoBehaviour
 
                 }
                 ownedGods.Add(fusedGod);///////////////////////////////神の力をゲットしたときに取得する神の力のリセットをしようと思ったら、マイナスになってしまう。
-                fusedGod.abilities.ResetCooldown();
+                ///ゲットしたら、すぐに神の力が使えるようになったほうが良いのかな？
+                ///なったほうが良いのなら、クールダウンリセットとGodManegerを呼んで、リセットされたデータを渡して、クールダウン中の辞書から外してあげよう
+                //fusedGod.abilities.ResetCooldown();
             }));
             yield return StartCoroutine(HandleGodLimit());
         }
         else
         {
             ownedGods.Add(newGod);
-            newGod.abilities.ResetCooldown();
+            //newGod.abilities.ResetCooldown();
             Debug.Log($"{newGod.godName}を所有しました。");  
             yield return StartCoroutine(HandleGodLimit());
         }

@@ -345,6 +345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Im: {fileID: 569499968592141144}
   Target: []
   damage: 0
   attacker: {fileID: 0}
