@@ -99,6 +99,7 @@ public class PlayerUnit : Unit
 
     public void Heal(int amount)
     {
+        Debug.Log($"[Heal] {gameObject.name}");
         //Hpが満タンかチェック
         if(status.currentHP >= status.maxHP)
         {
@@ -110,8 +111,22 @@ public class PlayerUnit : Unit
         status.currentHP = Mathf.Min(status.currentHP + amount, status.maxHP); //maxを超えない
 
         int healedAmount = status.currentHP - oldHP;  //実際に回復した量
+        UpdateHPBar(status.currentHP);
         Debug.Log($"{status.unitName}のHPが{amount}回復！");
 
+    }
+
+    void UpdateHPBar(float currentHP)
+    {
+        if(hpSlider != null)
+        {
+            hpSlider.value = (float)status.currentHP / status.maxHP;
+        }
+
+        if(hptext != null)
+        {
+            hptext.text = Mathf.CeilToInt(status.currentHP) + "/" + Mathf.CeilToInt(status.maxHP);
+        }
     }
 
     // 敵ヒット用コルーチン

@@ -46,6 +46,7 @@ public class GetStatus : MonoBehaviour
     public void UpdateStatus()
     {
         if(playerUnit == null || playerUnit.status == null) return;
+        Debug.Log($"[StatusUI] {playerUnit.gameObject.name}");
 
         nameText.text = playerUnit.status.unitName;
         levelText.text = $"Lv. {playerUnit.status.level}";

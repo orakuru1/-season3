@@ -499,27 +499,27 @@ public class ItemUIManager : MonoBehaviour
         {
             case "水":
                 if (player.status.currentHP >= player.status.maxHP) return false;
-                player.Heal(5);
+                player.Heal(40);
                 return true;
             
             case "薬草":
                 if (player.status.currentHP >= player.status.maxHP) return false;
-                player.Heal(20);
+                player.Heal(40);
                 return true;
 
             case "パン":
                 if (player.status.currentHP >= player.status.maxHP) return false;
-                player.Heal(10);
+                player.Heal(40);
                 return true;
             
             case "トースト":
                 if(player.status.currentHP >= player.status.maxHP) return false;
-                player.Heal(30);
+                player.Heal(40);
                 return true;
             
             case "砂包帯":
                 if(player.status.currentHP >= player.status.maxHP) return false;
-                player.Heal(5);
+                player.Heal(40);
                 player.equipDefenseBonus += 3;
                 return true;
             

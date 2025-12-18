@@ -377,6 +377,7 @@ public class Unit : MonoBehaviour
 
     public void Heal(int amount)
     {
+        Debug.Log($"[Heal] {gameObject.name}");
         status.currentHP += amount;
         if (status.currentHP > status.maxHP)
             status.currentHP = status.maxHP;
@@ -415,7 +416,7 @@ public class Unit : MonoBehaviour
     {
         if(hpSlider != null)
         {
-            hpSlider.value = (float)status.currentHP / (float)status.maxHP;
+            hpSlider.value = (float)status.currentHP / status.maxHP;
         }
 
         if(hptext != null)
