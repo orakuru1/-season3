@@ -438,7 +438,7 @@ public class ElementGenerator : MonoBehaviour
     {
         return new Vector3(
             cell.x * cellSize + cellSize * 0.5f,
-            0,
+            0.2f,
             cell.y * cellSize + cellSize * 0.5f
         );
     }

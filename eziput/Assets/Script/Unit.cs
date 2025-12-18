@@ -99,7 +99,7 @@ public class Unit : MonoBehaviour
         if (block != null)
         {
             block.occupantUnit = this;
-            transform.position = block.transform.position + Vector3.up * 1f;
+            transform.position = block.transform.position + Vector3.up * 0.2f;
         }
 
         UpdateHPBar(status.currentHP);
