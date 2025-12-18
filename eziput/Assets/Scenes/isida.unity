@@ -1175,6 +1175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Im: {fileID: 0}
   Target: []
   damage: 0
   attacker: {fileID: 0}
@@ -23722,6 +23723,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Im: {fileID: 0}
   Target: []
   damage: 0
   attacker: {fileID: 0}
@@ -23827,6 +23829,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Im: {fileID: 0}
   Target: []
   damage: 0
   attacker: {fileID: 0}
@@ -45264,6 +45267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Im: {fileID: 0}
   Target: []
   damage: 0
   attacker: {fileID: 0}
@@ -50461,6 +50465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Im: {fileID: 0}
   Target: []
   damage: 0
   attacker: {fileID: 0}
@@ -50488,6 +50493,8 @@ MonoBehaviour:
   ownedGods:
   - {fileID: 11400000, guid: befeb862df9bc7f41b4ac3be606d23a0, type: 2}
   - {fileID: 11400000, guid: 20f86d9fa3618c843a92e0df3eecda1f, type: 2}
+  - {fileID: 11400000, guid: 519cdc27d1bc86c489f629a0b9ddb16f, type: 2}
+  - {fileID: 11400000, guid: d254365884542a6468d5db65d75524ce, type: 2}
 --- !u!114 &1870630958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50507,8 +50514,8 @@ MonoBehaviour:
     unitName: Unit
     exp: 0
     level: 1
-    maxHP: 40
-    currentHP: 40
+    maxHP: 80
+    currentHP: 80
     attack: 5
     defense: 3
     moveRange: 3
@@ -50532,13 +50539,13 @@ MonoBehaviour:
   - skillName: "\u4E0A\u6BB5"
     triggerKey: 114
     attackPattern: {fileID: 11400000, guid: 0e4aead31d1722145a7af508dac7826a, type: 2}
-    power: 10
+    power: 20
     animationID: 1
     DethAnimationID: 200
   - skillName: "\u9B54\u6CD5\u65AC\u6483"
     triggerKey: 116
     attackPattern: {fileID: 11400000, guid: cde4c948a286cda45bc792f656e021f7, type: 2}
-    power: 20
+    power: 10
     animationID: 2
     DethAnimationID: 201
   - skillName: fdsafds
@@ -52047,6 +52054,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 569499968592141144, guid: 2a7077ed9a5046a4293d86c373e79360,
+        type: 3}
+      propertyPath: status.maxHP
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 569499968592141144, guid: 2a7077ed9a5046a4293d86c373e79360,
+        type: 3}
+      propertyPath: status.currentHP
+      value: 21
+      objectReference: {fileID: 0}
     - target: {fileID: 5865391548986886641, guid: 2a7077ed9a5046a4293d86c373e79360,
         type: 3}
       propertyPath: m_Name
@@ -52070,7 +52087,7 @@ PrefabInstance:
     - target: {fileID: 5865391548986886647, guid: 2a7077ed9a5046a4293d86c373e79360,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5865391548986886647, guid: 2a7077ed9a5046a4293d86c373e79360,
         type: 3}

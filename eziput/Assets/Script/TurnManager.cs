@@ -112,13 +112,13 @@ public class TurnManager : MonoBehaviour
     {
         Debug.Log("Player Turn End → Enemy Turn Start");
         currentIndex++;
-                //神の力のクールダウンを減らす
-        GodManeger.Instance.CooldownCount();
         StartNextTurn();
     }
 
     private void EndEnemyTurn()
     {
+        //神の力のクールダウンを減らす
+        GodManeger.Instance.CooldownCount();
         currentIndex = 0; // プレイヤーに戻す
         StartNextTurn();
     }

@@ -52,8 +52,6 @@ public class GodPlayer : MonoBehaviour
         if (GodUIManager.Instance != null)
         {
             GodUIManager.Instance.UpdateGodIcons(ownedGods);
-            GodUIManager ui = FindObjectOfType<GodUIManager>();
-            ui.UpdateGodIcons(ownedGods);
         }
 
 

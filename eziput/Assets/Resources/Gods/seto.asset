@@ -20,12 +20,12 @@ MonoBehaviour:
   abilities:
     abilityName: 
     description: 
-    power: 0
+    power: 1
     trigger: 3
     type: 0
     attackPattern: 4
     cooldown: 4
-    floatcurrentCooldown: 0
-    isActive: 0
+    floatcurrentCooldown: 4
+    isActive: 1
     GodAnimationID: 1001
     DethAnimationID: 200
