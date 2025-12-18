@@ -53,7 +53,7 @@ MonoBehaviour:
     unitName: "\u30C4\u30BF\u30F3\u30AB\u30FC\u30E1\u30F3"
     exp: 0
     level: 1
-    maxHP: 20
+    maxHP: 67
     currentHP: 20
     attack: 100
     defense: 3
