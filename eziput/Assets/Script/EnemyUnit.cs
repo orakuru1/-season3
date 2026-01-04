@@ -36,7 +36,7 @@ public class EnemyUnit : Unit
             foreach (var pos in attackPositions)
             {
                 var block = gm.GetBlock(pos);
-                if (block != null && block.occupantUnit != null && block.occupantUnit.team == Team.Player)
+                if (block != null && block.occupantUnit != null && block.occupantUnit.team == Team.Player && HasLineOfSight(gridPos, pos))
                 {
                     selectedSkill = skill;
                     Debug.Log($"{name} がスキル {skill.skillName} を選択しました。");
@@ -113,6 +113,26 @@ public class EnemyUnit : Unit
         animationController.animationState.isAttacking = false;
         isUsingSkill = false;
         selectedSkill = null;
+    }
+
+    bool HasLineOfSight(Vector2Int from, Vector2Int to)
+    {
+        var line = GridLineUtility.GetLine(from, to);
+
+        foreach (var pos in line)
+        {
+            // 到達点（プレイヤー位置）は許可
+            if (pos == to)
+                return true;
+
+            var block = GridManager.Instance.GetBlock(pos);
+
+            // 壁 or マップ外があれば遮断
+            if (block == null || !block.isWalkable)
+                return false;
+        }
+
+        return true;
     }
 
 }
