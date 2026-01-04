@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1678844704895397171}
   m_Layer: 0
   m_Name: "\u30C4\u30BF\u30F3\u30AB\u30FC\u30E1\u30F3\uFF08\u89AA\uFF09"
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -75,31 +75,56 @@ MonoBehaviour:
   isEvent: 0
   facingDir: {x: 0, y: 0}
   attackSkills:
-  - skillName: 
-    triggerKey: 103
-    attackPattern: {fileID: 11400000, guid: cde4c948a286cda45bc792f656e021f7, type: 2}
-    power: 10
-    animationID: 2
-    DethAnimationID: 201
-  - skillName: 
-    triggerKey: 104
-    attackPattern: {fileID: 11400000, guid: 0e4aead31d1722145a7af508dac7826a, type: 2}
-    power: 20
-    animationID: 1
-    DethAnimationID: 200
+  - {fileID: 11400000, guid: 5739d8f57a39c924eb2ffbe61e37e0d2, type: 2}
+  weaponSkillLoadouts:
+  - weaponType: 0
+    skills: []
+  - weaponType: 1
+    skills: []
+  - weaponType: 2
+    skills: []
+  - weaponType: 3
+    skills: []
+  - weaponType: 4
+    skills:
+    - {fileID: 11400000, guid: 5739d8f57a39c924eb2ffbe61e37e0d2, type: 2}
+  - weaponType: 5
+    skills: []
   anim: {fileID: 5054976073800454518}
   animationController: {fileID: 1678844705201221688}
   equidpAttackBonus: 0
   equipDefenseBonus: 0
   godPlayer: {fileID: 0}
-  selectedSkill:
-    skillName: 
-    triggerKey: 0
-    attackPattern: {fileID: 0}
-    power: 10
-    animationID: 1
-    DethAnimationID: 2
+  equippedWeaponType: 5
+  selectedSkill: {fileID: 0}
   isUsingSkill: 0
+  weaponMasterySet:
+    sword:
+      level: 0
+      exp: 0
+      ExpToNextLevel: 5
+    axe:
+      level: 0
+      exp: 0
+      ExpToNextLevel: 5
+    spear:
+      level: 0
+      exp: 0
+      ExpToNextLevel: 5
+    bow:
+      level: 0
+      exp: 0
+      ExpToNextLevel: 5
+    staff:
+      level: 0
+      exp: 0
+      ExpToNextLevel: 5
+    none:
+      level: 0
+      exp: 0
+      ExpToNextLevel: 5
+  durabilityexp: 5
+  allSkillsDatabase: {fileID: 11400000, guid: 3abe65081aecb724792e8e5e91afb531, type: 2}
 --- !u!114 &1678844704895397171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,6 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ownedGods:
   - {fileID: 11400000, guid: d254365884542a6468d5db65d75524ce, type: 2}
+  - {fileID: 11400000, guid: 519cdc27d1bc86c489f629a0b9ddb16f, type: 2}
 --- !u!1001 &1678844704172092647
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -195,6 +221,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Tutanka-men
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3183619c879b306418c6450650b736f1,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 3183619c879b306418c6450650b736f1,
         type: 3}
@@ -297,37 +328,37 @@ PrefabInstance:
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.89
+      value: 3.91
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.4400003
+      value: -0.4400003
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9949405
+      value: 0.9728497
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.10046587
+      value: 0.23143792
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 11.532
+      value: 26.763
       objectReference: {fileID: 0}
     - target: {fileID: 4053846772858739975, guid: e7e6f90709c981f4798a3acfb926f8b0,
         type: 3}

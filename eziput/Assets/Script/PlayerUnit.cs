@@ -6,11 +6,18 @@ using System.Linq;
 
 public class PlayerUnit : Unit
 {
-    public AttackSkill selectedSkill = null; // InputHandlerから指定
-    public bool isUsingSkill = false; // スキル実行中フラグ        
+    public SkillData selectedSkill = null; // InputHandlerから指定
+    public bool isUsingSkill = false; // スキル実行中フラグ       
+
+    public WeaponMasterySet weaponMasterySet = new WeaponMasterySet(); 
+    public int durabilityexp = 5;
+
+    private bool leveledUp = false;
+
+    public SkillDatabase allSkillsDatabase; // 全スキルデータベース参照
     
     // スキル使用
-    public IEnumerator UseSkill(AttackSkill skill)
+    public IEnumerator UseSkill(SkillData skill)
     {
         if (isUsingSkill) yield break; // 二重起動防止
         isUsingSkill = true;
@@ -47,6 +54,21 @@ public class PlayerUnit : Unit
             ClearAttackRange();
             yield break;
         }
+/*
+        if(skill.weaponType == equippedWeaponType)
+        {
+            Debug.Log("適切な武器でスキルを使用しました。");
+        }
+        else
+        {
+            Debug.Log("警告：適切な武器でスキルを使用していません！");
+            animationController.animationState.isAttacking = false;
+            selectedSkill = null;
+            isUsingSkill = false; // 終了時に解除
+            ClearAttackRange();
+            yield break;
+        }
+*/
 
         Debug.Log($"{status.unitName} が {skill.skillName} を使用！ 対象数: {targets.Count}");
 
@@ -54,15 +76,33 @@ public class PlayerUnit : Unit
         {
             if (targets.Count == 1)
             {
-                animationController.Initialize(targets[0], skill.power, skill.DethAnimationID);
+                animationController.Initialize(targets[0], skill.power, skill.deathAnimationID);
                 animationController.AttackAnimation(skill.animationID);
+                leveledUp = weaponMasterySet.Get(equippedWeaponType).AddExp(durabilityexp); // 単一対象なら熟練度を5増加
             }
             else
             {
-                animationController.Initialize(targets, skill.power, skill.DethAnimationID);
+                animationController.Initialize(targets, skill.power, skill.deathAnimationID);
                 animationController.AttackAnimation(skill.animationID);
+                leveledUp = weaponMasterySet.Get(equippedWeaponType).AddExp(durabilityexp / 2); // 複数対象なら熟練度を半分増加
             }
 
+        }
+
+        if (leveledUp)
+        {
+            //ここで、新しい技を習得を呼ぶ。
+            var Poola = allSkillsDatabase.normalSkills.Get(equippedWeaponType);
+
+            foreach (var ss in Poola)
+            {
+                if (ss.requiredMastery == weaponMasterySet.Get(equippedWeaponType).level)
+                {
+                    LearnSkill(ss);
+                    //attackSkills.Add(ss);
+                }
+            }
+            Debug.Log($"{status.unitName} の {equippedWeaponType} 熟練度がレベルアップ！ 現在のレベル: {weaponMasterySet.Get(equippedWeaponType).level}");
         }
 
         ClearAttackRange();
@@ -165,6 +205,37 @@ public class PlayerUnit : Unit
                 GodUIManager.Instance.UpdateCooldownUI(godPlayer.ownedGods);
             } 
             
+        }
+    }
+//全部のレベル０とレベル１の技を用意する。
+//始まった時に、プレイヤーが何を装備しているから、この技構成を出す。という仕組みを作る。
+//武器の装備を変えた時に、技を変えるようにする。（↓の奴を呼ぶ）
+    public void RefreshAttackSkills()
+    {
+        attackSkills.Clear();
+
+        var loadout = weaponSkillLoadouts
+            .Find(l => l.weaponType == equippedWeaponType);
+
+        if (loadout == null) return;
+
+        attackSkills.AddRange(loadout.skills);
+    }
+
+    public void LearnSkill(SkillData skill)
+    {
+        var loadout = weaponSkillLoadouts
+            .Find(l => l.weaponType == skill.weaponType);
+
+        if (!loadout.skills.Contains(skill))
+        {
+            loadout.skills.Add(skill);
+        }
+
+        // 今その武器を装備していたらUI更新
+        if (skill.weaponType == equippedWeaponType)
+        {
+            RefreshAttackSkills();
         }
     }
 

@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyUnit : Unit
 {
-    private AttackSkill selectedSkill;
+    private SkillData selectedSkill;
     public bool isUsingSkill = false;
+
+    private BossScript bossScript;
+    //近づいたら、Word Spaceで表示させるようにしたい。(雑魚的)
+    //ボスは、Screen Space - Cameraで表示させる。
 
     /// <summary>
     /// 攻撃範囲内にプレイヤーがいるスキルを自動選択
@@ -109,4 +114,5 @@ public class EnemyUnit : Unit
         isUsingSkill = false;
         selectedSkill = null;
     }
+
 }

@@ -187,7 +187,8 @@ public class GodManeger : MonoBehaviour
 
         //ヒールのアニメーション
         yield return null;
-        AnimationController animationController = user.GetComponent<AnimationController>();
+        Unit unit = user.GetComponent<Unit>();//ここら辺の処理は、attack等にそれぞれでまとめる。
+        AnimationController animationController = unit.animationController;
         animationController.InitializeHill(user.GetComponent<Unit>(), ability.power);
         animationController.HillAnimation(ability.GodAnimationID);
 

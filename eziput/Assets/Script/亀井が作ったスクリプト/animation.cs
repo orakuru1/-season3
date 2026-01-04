@@ -69,9 +69,9 @@ public class animation : MonoBehaviour
 
             //ポップアップ表示用のスプライト取得
             Sprite icon = null;
-            if(ItemUIManager.instance.itemSpriteDict.ContainsKey(itemName))
+            if(ItemUIManager.instance.itemDataDict.ContainsKey(itemName))
             {
-                icon = ItemUIManager.instance.itemSpriteDict[itemName];
+                icon = ItemUIManager.instance.itemDataDict[itemName].icon;
             }
 
             //取得ポップアップ表示

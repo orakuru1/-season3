@@ -29,26 +29,6 @@ public class ItemUIManager : MonoBehaviour
     [SerializeField] private Image weaponStatusImage;
     [SerializeField] private Image armorStatusImage;
 
-    [Header("アイテム画像登録用")]
-    public Sprite potionSprite;
-    public Sprite kosinunoSprite;
-    public Sprite tateSprite;
-    public Sprite panSprite;
-    public Sprite kinobouSprite;
-    public Sprite tetuSprite;
-    public Sprite isihen;
-    public Sprite isiduti;
-    public Sprite nuno;
-    public Sprite suna;
-    public Sprite sunanuno;
-    public Sprite taimatu;
-    public Sprite tosuto;
-    public Sprite doromizu;
-    public Sprite mizu;
-    public Sprite hone;
-    public Sprite himo;
-    public Sprite honenaihu;
-
     [Header("合成スロットUI")]
     [SerializeField] private List<Image> craftSlots = new List<Image>();
 
@@ -66,9 +46,11 @@ public class ItemUIManager : MonoBehaviour
     private Dictionary<string, (int count, GameObject button)> itemDict = new();
     private Dictionary<string, (int count, GameObject button)> weaponDict = new();
     private Dictionary<string, (int count, GameObject button)> armorDict = new();
-
-    // アイテム名と画像の対応
-    public Dictionary<string, Sprite> itemSpriteDict = new();
+    
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public List<ItemData> allItemData;
+    public Dictionary<string, ItemData> itemDataDict;
+/// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //合成レシピ
     private Dictionary<string, List<(string itemName, int count)>> resipeDict = new Dictionary<string, List<(string itemName, int count)>>();
@@ -94,27 +76,13 @@ public class ItemUIManager : MonoBehaviour
     {
         instance = this;
 
-        // 名前と画像を辞書に登録
-        itemSpriteDict["薬草"] = potionSprite;
-        itemSpriteDict["木棒"] = kinobouSprite;
-        itemSpriteDict["神の腰布"] = kosinunoSprite;
-        itemSpriteDict["鋼鉄"] = tateSprite;
-        itemSpriteDict["パン"] = panSprite;
-        itemSpriteDict["鉄"] = tetuSprite;
-        itemSpriteDict["石片"] = isihen;
-        itemSpriteDict["石槌"] = isiduti;
-        itemSpriteDict["布"] = nuno;
-        itemSpriteDict["砂"] = suna;
-        itemSpriteDict["砂包帯"] = sunanuno;
-        itemSpriteDict["松明"] = taimatu;
-        itemSpriteDict["トースト"] = tosuto;
-        itemSpriteDict["濁った水"] = doromizu;
-        itemSpriteDict["水"] = mizu;
-        itemSpriteDict["骨"] = hone;
-        itemSpriteDict["紐"] = himo;
-        itemSpriteDict["骨ナイフ"] = honenaihu;
-
         RegisterRecipes();
+
+        itemDataDict = new Dictionary<string, ItemData>();
+        foreach (var itemData in allItemData)
+        {
+            itemDataDict[itemData.itemName] = itemData;
+        }
     }
 
     private void Start()
@@ -271,8 +239,8 @@ public class ItemUIManager : MonoBehaviour
 
         // 画像設定
         Image icon = newButton.GetComponentInChildren<Image>();
-        if (icon != null && itemSpriteDict.ContainsKey(itemName))
-            icon.sprite = itemSpriteDict[itemName];
+        if (icon != null && itemDataDict.ContainsKey(itemName))
+            icon.sprite = itemDataDict[itemName].icon;
         else
             Debug.LogWarning($"画像が登録されていないアイテム: {itemName}");
 
@@ -479,7 +447,7 @@ public class ItemUIManager : MonoBehaviour
         craftItems.Add(itemName);
 
         //UI反映
-        craftSlots[craftItems.Count - 1].sprite = itemSpriteDict[itemName];
+        craftSlots[craftItems.Count - 1].sprite = itemDataDict[itemName].icon; 
         craftSlots[craftItems.Count - 1].color = Color.white;
     }
 #region アイテムの使用・装備効果
@@ -576,16 +544,17 @@ public class ItemUIManager : MonoBehaviour
             if (icon != null && weaponStatusImage != null)
                 weaponStatusImage.sprite = icon.sprite;
 
-            int atkBonus = selectedItemName switch
-            {
-                "木棒" => 3,
-                "石槌" => 5,
-                "骨"   => 2,
-                "骨ナイフ" => 7,
-                _ => 0
-            };
 
-            player.equidpAttackBonus = atkBonus;
+            if(itemDataDict[selectedItemName] is WeaponData weapon)//?
+            {
+                Debug.Log($"装備した武器の攻撃ボーナス: {weapon.attackBonus}");
+                player.equidpAttackBonus = weapon.attackBonus;
+                //武器の種類を送る。
+                player.durabilityexp = weapon.durability;
+                //上昇する武器の種類を送る。
+                player.equippedWeaponType = weapon.weaponType;
+            }
+
 
             GetStatus statusUI = FindObjectOfType<GetStatus>();
             if (statusUI != null)
@@ -594,7 +563,7 @@ public class ItemUIManager : MonoBehaviour
                 statusUI.UpdateStatus();
             }
 
-            Debug.Log($"{selectedItemName}を装備！（攻撃 +{atkBonus}）");
+            //Debug.Log($"{selectedItemName}を装備！（攻撃 +{atkBonus}）");
         }
 
         // 防具装備
@@ -656,6 +625,8 @@ public class ItemUIManager : MonoBehaviour
 
             //ステータスを元に戻す
             player.equidpAttackBonus = 0;
+            player.equippedWeaponType = WeaponType.None;
+            player.durabilityexp = 5;
 
             //装備解除
             equippedWeaponButton = null;

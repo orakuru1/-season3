@@ -33,18 +33,6 @@ public class Unit : MonoBehaviour
         //public List<Vector2Int> GetAttackRange(Vector2Int currentPos) => attackPattern != null ? attackPattern.GetPattern(currentPos,facingDir) : new List<Vector2Int>();
     }
 
-    [System.Serializable]
-    public class AttackSkill
-    {
-        public string skillName;
-        public KeyCode triggerKey; // プレイヤー用（敵AIでは無視してOK）
-        public AttackPatternBase attackPattern;
-        public int power = 10;
-        public int animationID = 1;
-        public int DethAnimationID = 2;
-
-    }
-
     public UnitStatus status = new UnitStatus();
     public enum Team { Player, Enemy }
     public Team team;
@@ -56,7 +44,8 @@ public class Unit : MonoBehaviour
     public bool isEvent;
 
     public Vector2Int facingDir;
-    public List<AttackSkill> attackSkills;
+    public List<SkillData> attackSkills;
+    public List<WeaponSkillLoadout> weaponSkillLoadouts;
 
     private Vector3 originalPosition;
     public Animator anim;
@@ -73,6 +62,8 @@ public class Unit : MonoBehaviour
 
 
     public GodPlayer godPlayer;//神の力を持つプレイヤー
+
+    public WeaponType equippedWeaponType = WeaponType.None;//現在装備している武器の種類
 
     private void Awake()
     {
