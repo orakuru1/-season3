@@ -113,7 +113,11 @@ public class ItemUIManager : MonoBehaviour
         {"bou", "item"},
         {"鋼鉄", "armor"},
         {"トースト", "item"},
-        {"松明", "item"}
+        {"松明", "item"},
+        {"真実の羽", "item"},
+        {"心臓", "item"},
+        {"アヌビスの仮面", "item"},
+        {"アヌビスの通行証", "item"}
     };
 
     //合成レシピ
@@ -154,6 +158,13 @@ public class ItemUIManager : MonoBehaviour
         {
             ("紐", 1),
             ("骨", 1)
+        };
+
+        resipeDict["アヌビスの通行証"] = new List<(string, int)>()
+        {
+            ("真実の羽", 1),
+            ("心臓", 1),
+            ("アヌビスの仮面", 1)
         };
     }
 #endregion

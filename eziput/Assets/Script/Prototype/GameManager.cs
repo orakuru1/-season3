@@ -71,6 +71,10 @@ public class GameManager : MonoBehaviour
     public float gameOverBgmFadeInTime = 2.0f;
     public float silenceDurationBeforeGameOverBgm = 0.5f;
 
+    [Header("確定アイテム管理")]
+    public bool guaranteedItemAlreadyDropped = false;
+    private animation guaranteedChest = null;
+
     // =======================
     // 初期化
     // =======================
@@ -97,6 +101,15 @@ public class GameManager : MonoBehaviour
         cg.interactable = false;
         cg.blocksRaycasts = false;
         cg.gameObject.SetActive(false);
+    }
+
+    public bool TryAssignGuaranteedChest(animation chest)
+    {
+        if(guaranteedChest != null)
+           return false;
+
+        guaranteedChest = chest;
+        return true;
     }
 
     // =======================
