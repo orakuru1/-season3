@@ -477,3 +477,4 @@ MonoBehaviour:
   damagePrefab: {fileID: 5944296335598458652, guid: 5d6e0e7a48fd16d40b862e1fe5427acb,
     type: 3}
   damageTextCanvas: {fileID: 2352389628715560479}
+  camera: {fileID: 0}
