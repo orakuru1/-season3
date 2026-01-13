@@ -65,7 +65,7 @@ public class Unit : MonoBehaviour
 
     public WeaponType equippedWeaponType = WeaponType.None;//現在装備している武器の種類
 
-    private void Awake()
+    protected virtual void Awake()
     {
         gridManager = GridManager.Instance;
         gridManager = FindObjectOfType<GridManager>();
@@ -449,7 +449,8 @@ public class Unit : MonoBehaviour
             }
             
         }
-        if (GetComponent<Animator>() == null)
+
+        if (anim == null)
         {
             Destroy(gameObject);
         }
@@ -457,8 +458,18 @@ public class Unit : MonoBehaviour
     }
     public void AnimationDeth()
     {
-         // このユニットを削除
-        Destroy(gameObject);
+        // このユニットを削除
+        if(team == Team.Player)
+        {
+            SaveLoad.instance.CreateSaveData(this as PlayerUnit, godPlayer);
+            TurnManager.Instance.OnPlayerDied();
+            GameManager.Instance.GameOver();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
     }
 
     // AI用ヘルパー
@@ -626,18 +637,6 @@ public class Unit : MonoBehaviour
             // 任意のイベント呼び出し
             yield return StartCoroutine(EventManager.Instance.TriggerEvent(block.eventID, this));
         }
-    }
-
-    private void OnDestroy()
-    {
-        if (team == Team.Player)
-        {
-            Debug.Log("プレイヤーが破壊されました");
-
-            // ここに呼びたい処理を書く
-            GameManager.Instance.GameOver();
-        }
-
     }
 
 }

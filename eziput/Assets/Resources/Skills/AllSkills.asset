@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: AllSkills
   m_EditorClassIdentifier: 
   normalSkills:
-    sword:
-    - {fileID: 11400000, guid: 5739d8f57a39c924eb2ffbe61e37e0d2, type: 2}
+    sword: []
     axe: []
     spear: []
     bow: []
     staff: []
     none:
     - {fileID: 11400000, guid: d98dff570ecb34e428a52d031e58d78e, type: 2}
+    - {fileID: 11400000, guid: 5739d8f57a39c924eb2ffbe61e37e0d2, type: 2}
   rareSkills: []

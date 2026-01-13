@@ -29,7 +29,7 @@ public class animation : MonoBehaviour
         int randomIndex = Random.Range(0, itemList.Count);
         itemName = itemList[randomIndex];
         itemType = itemTypeList[randomIndex];
-        Debug.Log($"宝箱の中身は：{itemName}({itemType})");
+        //Debug.Log($"宝箱の中身は：{itemName}({itemType})");
         itemObject = this.gameObject;
         //audio = GetComponent<AudioSource>(); //SE追加
     }
@@ -115,6 +115,6 @@ public class animation : MonoBehaviour
     public void setPlayer(GameObject p)
     {
         player = p.transform;
-        Debug.Log("宝箱にプレイヤー設定完了");
+        //Debug.Log("宝箱にプレイヤー設定完了");
     }
 }

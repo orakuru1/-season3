@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "skill", menuName = "skils")]
 public class SkillData : ScriptableObject
 {
+    public int skillID;
     public string skillName;
 
     [Header("Unlock")]
@@ -75,6 +76,27 @@ public class WeaponMasterySet
     public WeaponMasteryProgress bow;
     public WeaponMasteryProgress staff;
     public WeaponMasteryProgress none;//素手用
+
+    public void CopyFrom(WeaponMasterySet other)
+    {
+        sword.level = other.sword.level;
+        sword.exp   = other.sword.exp;
+
+        axe.level   = other.axe.level;
+        axe.exp     = other.axe.exp;
+
+        spear.level = other.spear.level;
+        spear.exp   = other.spear.exp;
+
+        bow.level   = other.bow.level;
+        bow.exp     = other.bow.exp;
+
+        staff.level = other.staff.level;
+        staff.exp   = other.staff.exp;
+
+        none.level  = other.none.level;
+        none.exp    = other.none.exp;
+    }
 
     public WeaponMasteryProgress Get(WeaponType type)
     {

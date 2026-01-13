@@ -8,12 +8,21 @@ public class DamageTextManager : MonoBehaviour
     public static DamageTextManager Instance { get; private set; }
     public GameObject damagePrefab;
     public Transform damageTextCanvas;
-    private Camera camera;
+    public Camera camera;
 
     void Awake()
     {
         if (Instance == null) Instance = this; else Destroy(gameObject);
-        camera = Camera.main;
+    }
+
+    public void SetCamera(Camera cam)
+    {
+        camera = cam;
+    }
+
+    public void SetTransform(Transform camTransform)
+    {
+        damageTextCanvas = camTransform;
     }
 
     public void ShowDamage(int damage, Transform point)

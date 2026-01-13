@@ -553,6 +553,7 @@ public class ItemUIManager : MonoBehaviour
                 player.durabilityexp = weapon.durability;
                 //上昇する武器の種類を送る。
                 player.equippedWeaponType = weapon.weaponType;
+                player.RefreshAttackSkills();
             }
 
 
@@ -627,6 +628,7 @@ public class ItemUIManager : MonoBehaviour
             player.equidpAttackBonus = 0;
             player.equippedWeaponType = WeaponType.None;
             player.durabilityexp = 5;
+            player.RefreshAttackSkills();
 
             //装備解除
             equippedWeaponButton = null;

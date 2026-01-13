@@ -54,7 +54,7 @@ MonoBehaviour:
     exp: 0
     level: 1
     maxHP: 67
-    currentHP: 20
+    currentHP: 5
     attack: 100
     defense: 3
     moveRange: 3
@@ -86,10 +86,10 @@ MonoBehaviour:
   - weaponType: 3
     skills: []
   - weaponType: 4
-    skills:
-    - {fileID: 11400000, guid: 5739d8f57a39c924eb2ffbe61e37e0d2, type: 2}
-  - weaponType: 5
     skills: []
+  - weaponType: 5
+    skills:
+    - {fileID: 11400000, guid: d98dff570ecb34e428a52d031e58d78e, type: 2}
   anim: {fileID: 5054976073800454518}
   animationController: {fileID: 1678844705201221688}
   equidpAttackBonus: 0
@@ -138,8 +138,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ownedGods:
+  - {fileID: 11400000, guid: befeb862df9bc7f41b4ac3be606d23a0, type: 2}
   - {fileID: 11400000, guid: d254365884542a6468d5db65d75524ce, type: 2}
-  - {fileID: 11400000, guid: 519cdc27d1bc86c489f629a0b9ddb16f, type: 2}
 --- !u!1001 &1678844704172092647
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -370,5 +370,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 4053846772858740027, guid: e7e6f90709c981f4798a3acfb926f8b0,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4053846772658234834, guid: e7e6f90709c981f4798a3acfb926f8b0, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e7e6f90709c981f4798a3acfb926f8b0, type: 3}

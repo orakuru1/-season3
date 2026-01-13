@@ -15,7 +15,6 @@ public class AnimationController : MonoBehaviour
 
     public Animator anim;
 
-
     public System.Action onAnimationEnd;// アニメーション終了時に呼ばれるイベント
 
     void Start()
@@ -294,6 +293,18 @@ public class AnimationController : MonoBehaviour
         anim.SetInteger("Hill", 0);
         animationState.isHiling = false;
         
+    }
+
+    public void AnimationDeth()
+    {
+        Im.AnimationDeth();
+        
+    }
+
+    //死んだときのアニメーションを終わらせる
+    public void AnimationReset()
+    {
+        anim.SetInteger("Hit", 0);
     }
 
 
