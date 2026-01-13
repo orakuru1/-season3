@@ -711,7 +711,7 @@ RectTransform:
   m_GameObject: {fileID: 81987939}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.20000005, y: 0.4, z: 0.4}
+  m_LocalScale: {x: 0.20000005, y: 0.2809602, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 214718091}
@@ -720,7 +720,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 50.100006, y: 32.699993}
+  m_AnchoredPosition: {x: 0.3, y: -17.6}
   m_SizeDelta: {x: 20, y: 183}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &81987941
@@ -2108,24 +2108,6 @@ MonoBehaviour:
   armorSlotParent: {fileID: 2097413996}
   weaponStatusImage: {fileID: 1612465170}
   armorStatusImage: {fileID: 2097413997}
-  potionSprite: {fileID: 21300000, guid: 67a3484c343ba5947980c1206ad619b2, type: 3}
-  kosinunoSprite: {fileID: 21300000, guid: 84fc6b2179083d74cbd6283e02e10f20, type: 3}
-  tateSprite: {fileID: 21300000, guid: 50772398c37fcf64ab80df3d592ea4ee, type: 3}
-  panSprite: {fileID: 21300000, guid: 72f0ca4380528414bb3272e4441f1561, type: 3}
-  kinobouSprite: {fileID: 21300000, guid: 9606ace8c621f9d4cb19297a87906b11, type: 3}
-  tetuSprite: {fileID: 21300000, guid: b1d08de60d5545e4083389175c5ac63e, type: 3}
-  isihen: {fileID: 21300000, guid: b54f46cffc7bdbb42b9e31db13753c86, type: 3}
-  isiduti: {fileID: 21300000, guid: f6b42d02f13c235438695f90b5e76d6a, type: 3}
-  nuno: {fileID: 21300000, guid: 8d16c499816726e4591643479afd8078, type: 3}
-  suna: {fileID: 21300000, guid: c45cb9f7f82a6fc4eb7cbd1501a14f79, type: 3}
-  sunanuno: {fileID: 21300000, guid: 24911690daa280246b4cfe61d4307a61, type: 3}
-  taimatu: {fileID: 21300000, guid: 9fd5617d2fff6ec42ab2d1407553ec1a, type: 3}
-  tosuto: {fileID: 21300000, guid: 90db8962849d56243ba53a2a667f2c11, type: 3}
-  doromizu: {fileID: 21300000, guid: e5804cdbca7df9e4bb8763156ea44635, type: 3}
-  mizu: {fileID: 21300000, guid: 2eb57954a7edd104da6b8111cd45d6cc, type: 3}
-  hone: {fileID: 21300000, guid: de7aebe864f1cc04c8d34cd03fe5f5c6, type: 3}
-  himo: {fileID: 21300000, guid: e689cf38ef2857546a2cc127e5804baa, type: 3}
-  honenaihu: {fileID: 21300000, guid: 1ee927392604386469056d35285f0f83, type: 3}
   craftSlots:
   - {fileID: 1800570248}
   - {fileID: 33934187}
@@ -2134,6 +2116,29 @@ MonoBehaviour:
   craftResultText: {fileID: 1792539172}
   messageDuration: 1
   craftExecuteButton: {fileID: 984708922}
+  allItemData:
+  - {fileID: 11400000, guid: 5d0b38e08c1bfbb44a0a642f2d214e13, type: 2}
+  - {fileID: 11400000, guid: 0f886721dbbb4f34a9eea6aae88bb95a, type: 2}
+  - {fileID: 11400000, guid: 5ec592bc05994ea4da81cbb28ca32226, type: 2}
+  - {fileID: 11400000, guid: 23c9bfe9f60b7f4409a89091157b02b3, type: 2}
+  - {fileID: 11400000, guid: 2da7bdbac42dd5747b5fb65910e0853d, type: 2}
+  - {fileID: 11400000, guid: 152629b9e38e99f46b7e1d3905305d2c, type: 2}
+  - {fileID: 11400000, guid: 0c6e38cd11524af4aa90dbfc4fe6f43a, type: 2}
+  - {fileID: 11400000, guid: e46647cd83a28054b96d126442687aab, type: 2}
+  - {fileID: 11400000, guid: b414930c71e3b934bb480abe76e4b50b, type: 2}
+  - {fileID: 11400000, guid: a2e75f36f45544748ac33c1869c74fbc, type: 2}
+  - {fileID: 11400000, guid: 844efd56907840941862be74a781ef58, type: 2}
+  - {fileID: 11400000, guid: c941c9495b635674cbf38180724b3b8f, type: 2}
+  - {fileID: 11400000, guid: 5326775d9bfc8c048aba1d48b4534764, type: 2}
+  - {fileID: 11400000, guid: 2cb127ccc03b50647a8e7653a17a6e77, type: 2}
+  - {fileID: 11400000, guid: 77538ad2ede73f6489de1d1690ba05a4, type: 2}
+  - {fileID: 11400000, guid: 26327c6ba7cb84b4d936123422b15c4a, type: 2}
+  - {fileID: 11400000, guid: 3ec8c5dfe422c4b4aadccc328db95f9b, type: 2}
+  - {fileID: 11400000, guid: e385e7e4412cf7b42968800a6efb1c29, type: 2}
+  - {fileID: 11400000, guid: 7037e4f513d41ee448ddb03d2dec1c9b, type: 2}
+  - {fileID: 11400000, guid: a5bcb29b7623ec74e99e610fdcc361e9, type: 2}
+  - {fileID: 11400000, guid: 1699d8c535485be428efadb09785641d, type: 2}
+  - {fileID: 11400000, guid: 2ed7bb6352df0de4c9bf0cd3aa67684f, type: 2}
 --- !u!1 &272905233
 GameObject:
   m_ObjectHideFlags: 0
@@ -2779,6 +2784,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allgods: []
+  addgods: []
   isGodDescrip: 0
   enemyPosition: []
   fusionRecipes: []
@@ -5065,7 +5071,7 @@ PrefabInstance:
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
       propertyPath: itemList.Array.size
-      value: 12
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
@@ -5114,8 +5120,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
+      propertyPath: itemList.Array.data[12]
+      value: "\u771F\u5B9F\u306E\u7FBD"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
+        type: 3}
+      propertyPath: itemList.Array.data[13]
+      value: "\u5FC3\u81D3"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
+        type: 3}
+      propertyPath: itemList.Array.data[14]
+      value: "\u30A2\u30CC\u30D3\u30B9\u306E\u4EEE\u9762"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
+        type: 3}
       propertyPath: itemTypeList.Array.size
-      value: 12
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7753792357311442138, guid: 036a70210fa8adb41ae74cbae0809ce9,
         type: 3}
@@ -5434,8 +5455,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 2f89367f8ef704a4d8debf07af85a60a, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -11337,6 +11358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd5330fe2df9c7d4e830d8d0fd433437, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Im: {fileID: 0}
   Target: []
   damage: 0
   attacker: {fileID: 0}
@@ -11390,19 +11412,42 @@ MonoBehaviour:
   isEvent: 0
   facingDir: {x: 0, y: 0}
   attackSkills: []
+  weaponSkillLoadouts: []
   anim: {fileID: 0}
   animationController: {fileID: 0}
   equidpAttackBonus: 0
   equipDefenseBonus: 0
   godPlayer: {fileID: 0}
-  selectedSkill:
-    skillName: 
-    triggerKey: 0
-    attackPattern: {fileID: 0}
-    power: 10
-    animationID: 1
-    DethAnimationID: 2
+  equippedWeaponType: 5
+  selectedSkill: {fileID: 0}
   isUsingSkill: 0
+  weaponMasterySet:
+    sword:
+      level: 0
+      exp: 0
+      ExpToNextLevel: 5
+    axe:
+      level: 0
+      exp: 0
+      ExpToNextLevel: 5
+    spear:
+      level: 0
+      exp: 0
+      ExpToNextLevel: 5
+    bow:
+      level: 0
+      exp: 0
+      ExpToNextLevel: 5
+    staff:
+      level: 0
+      exp: 0
+      ExpToNextLevel: 5
+    none:
+      level: 0
+      exp: 0
+      ExpToNextLevel: 5
+  durabilityexp: 5
+  allSkillsDatabase: {fileID: 0}
 --- !u!114 &2136582329
 MonoBehaviour:
   m_ObjectHideFlags: 0

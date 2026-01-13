@@ -10,12 +10,19 @@ public class animation : MonoBehaviour
     public GameObject itemObject;
     public float itemGetDelay = 1.5f; //アニメーション終了から取得するまでの時間
 
+    [Header("確定アイテム設定")]
+    public bool hasGuarateedItem = true; //確定アイテムを入れるか
+    public List<string> guaranteedItemName = new List<string>();    //確定アイテム名
+    public List<ItemType> guaranteedItemType = new List<ItemType>();  //確定アイテムタイプ
+    
+
     [Header("ランダムアイテム設定")]
     public List<string> itemList = new List<string>(){"薬草", "パン", "木の枝", "神の腰布"};
     public List<ItemType> itemTypeList = new List<ItemType>(){ItemType.Item, ItemType.Item, ItemType.Weapon, ItemType.Armor};
 
-    private string itemName; //選ばれたアイテム名
-    private ItemType itemType; //選ばれたタイプ
+    private bool isGuaranteedChest = false;
+    private string dropItemName;
+    private ItemType dropItemType;
 
     public enum ItemType{Item, Weapon, Armor}
 
@@ -25,12 +32,14 @@ public class animation : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //開始時に中身をランダム決定
-        int randomIndex = Random.Range(0, itemList.Count);
-        itemName = itemList[randomIndex];
-        itemType = itemTypeList[randomIndex];
-        //Debug.Log($"宝箱の中身は：{itemName}({itemType})");
-        itemObject = this.gameObject;
+       itemObject = this.gameObject;
+
+       //ステージでまだ確定宝箱が決まっていない場合だけ抽選
+       if(hasGuarateedItem && GameManager.Instance.TryAssignGuaranteedChest(this))
+       {
+        isGuaranteedChest = true;
+        Debug.Log("この宝箱は[確定宝箱]です");
+       }
         //audio = GetComponent<AudioSource>(); //SE追加
     }
 
@@ -44,9 +53,36 @@ public class animation : MonoBehaviour
             animator.SetTrigger("open");
             isOpened = true;
 
+            DecideItem();
+
             //一定時間後にアイテム取得
             StartCoroutine(GetItemAfterDelay());
         }
+    }
+
+    void DecideItem()
+    {
+        //確定アイテム
+       if (isGuaranteedChest)
+       {
+            int gIndex = Random.Range(0, guaranteedItemName.Count);
+            dropItemName = guaranteedItemName[gIndex];
+            dropItemType = guaranteedItemType[gIndex];
+
+            Debug.Log($"確定アイテム{dropItemName}");
+       }
+       else
+       {
+            //ランダムアイテム
+            int randomIndex = Random.Range(0, itemList.Count);
+            dropItemName = itemList[randomIndex];
+            dropItemType = itemTypeList[randomIndex];
+
+            Debug.Log($"ランダムアイテム：{itemList[randomIndex]}({itemTypeList[randomIndex]})");
+            Debug.Log("確定アイテムではない");
+       }
+
+
     }
 
     //プレイヤーが近くにいるかチェック（簡易的な距離判定）
@@ -63,46 +99,38 @@ public class animation : MonoBehaviour
     {
         yield return new WaitForSeconds(itemGetDelay); //アニメーション終了待ち
 
-        if(ItemUIManager.instance != null)
+        if(ItemUIManager.instance == null)
         {
-            Debug.Log($"{itemName}を取得しました");
-
-            //ポップアップ表示用のスプライト取得
-            Sprite icon = null;
-            if(ItemUIManager.instance.itemDataDict.ContainsKey(itemName))
-            {
-                icon = ItemUIManager.instance.itemDataDict[itemName].icon;
-            }
-
-            //取得ポップアップ表示
-            if(GetItemPopUi.instance != null)
-            {
-                GetItemPopUi.instance.Show(itemName, icon);
-            }
-            
-            switch (itemType)
-            {
-                case ItemType.Item:
-                    ItemUIManager.instance.AddItem(itemName);
-                    break;
-                case ItemType.Weapon:
-                    ItemUIManager.instance.AddWeapon(itemName);
-                    break;
-                case ItemType.Armor:
-                    ItemUIManager.instance.AddArmor(itemName);
-                    break;
-            }
-        }
-        else
-        {
-            Debug.Log("ItemUImanagerがシーン内に見つかりません!");
+            Debug.Log("ItemUIManagerが見つかりません");
+            yield break;
         }
 
-        //アイテムオブジェクトを消す
-        if(itemObject != null)
+        Sprite icon = null;
+        if (ItemUIManager.instance.itemDataDict.ContainsKey(dropItemName))
         {
-            itemObject.SetActive(false);
+            icon = ItemUIManager.instance.itemDataDict[dropItemName].icon;
         }
+
+        if (GetItemPopUi.instance != null)
+        {
+            GetItemPopUi.instance.Show(dropItemName, icon);
+        }
+
+        switch (dropItemType)
+        {
+            case ItemType.Item:
+                ItemUIManager.instance.AddItem(dropItemName);
+                Debug.Log("Itemに追加");
+                break;
+            case ItemType.Weapon:
+                ItemUIManager.instance.AddWeapon(dropItemName);
+                break;
+            case ItemType.Armor:
+                ItemUIManager.instance.AddArmor(dropItemName);
+                break;
+        }
+
+        itemObject.SetActive(false);
     }
     private void OnEnable()
     {

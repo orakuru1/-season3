@@ -383,6 +383,10 @@ MonoBehaviour:
   player: {fileID: 0}
   itemObject: {fileID: 0}
   itemGetDelay: 1.5
+  hasGuarateedItem: 1
+  guaranteedItemName:
+  - "\u771F\u5B9F\u306E\u7FBD"
+  guaranteedItemType: 00000000
   itemList:
   - "\u85AC\u8349"
   - "\u30D1\u30F3"
