@@ -76,7 +76,7 @@ public class PlayerUnit : Unit
         {
             if (targets.Count == 1)
             {
-                animationController.Initialize(targets[0], skill.power, skill.deathAnimationID);
+                animationController.Initialize(targets[0], skill.power + TotalAttack, skill.deathAnimationID);
                 animationController.AttackAnimation(skill.animationID);
                 leveledUp = weaponMasterySet.Get(equippedWeaponType).AddExp(durabilityexp); // 単一対象なら熟練度を5増加
             }

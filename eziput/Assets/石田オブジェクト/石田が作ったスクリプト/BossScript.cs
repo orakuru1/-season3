@@ -38,4 +38,9 @@ public class BossScript : MonoBehaviour
         unit.hpSlider = BossSliderInstance;
     }
 
+    void OnDestrooy()
+    {
+        Destroy(BossSliderInstance.gameObject);
+    }
+
 }

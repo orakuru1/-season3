@@ -450,22 +450,24 @@ public class Unit : MonoBehaviour
             
         }
 
-        if (anim == null)
-        {
-            Destroy(gameObject);
-        }
-
-    }
-    public void AnimationDeth()
-    {
-        // このユニットを削除
-        if(team == Team.Player)
+        if (team == Team.Player)
         {
             SaveLoad.instance.CreateSaveData(this as PlayerUnit, godPlayer);
             TurnManager.Instance.OnPlayerDied();
             GameManager.Instance.GameOver();
         }
-        else
+
+        if (anim == null)
+        {
+            Destroy(gameObject);
+        }
+        
+
+    }
+    public void AnimationDeth()
+    {
+        // このユニットを削除
+        if(team == Team.Enemy)
         {
             Destroy(gameObject);
         }
