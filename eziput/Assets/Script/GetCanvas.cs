@@ -20,6 +20,7 @@ public class GetCanvas : MonoBehaviour
 
     [Header("神の力表示Panel")]
     public GameObject kamipanel;
+    public GameObject kamipanelsutatus;
 
     [Header("プレイヤー操作スクリプト（PlayerMoveなど）")]
     public MonoBehaviour[] playerControllers; // ← 複数登録できるように変更！
@@ -51,6 +52,7 @@ public class GetCanvas : MonoBehaviour
         setteiImage.SetActive(newState);
         itempanel.SetActive(newState);
         kamipanel.SetActive(State);
+        kamipanelsutatus.SetActive(newState);
 
         if (newState)
         {
@@ -75,6 +77,7 @@ public class GetCanvas : MonoBehaviour
         if(setteiImage) setteiImage.SetActive(false);
         if(itempanel) itempanel.SetActive(false);
         if(craftArea) craftArea.SetActive(false);
+        if(kamipanelsutatus) kamipanelsutatus.SetActive(false);
     }
 
     public void ShowStatusOnly()  //ステータスimageだけ表示
@@ -131,6 +134,14 @@ public class GetCanvas : MonoBehaviour
     public void CloseInventry()
     {
         ShowStatusOnly();
+    }
+
+    public void kamisutatussyow()
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if(kyarastatusImage) kyarastatusImage.SetActive(true);
+        if(kamipanelsutatus) kamipanelsutatus.SetActive(true);
     }
 
     public void BGMButton()

@@ -449,7 +449,10 @@ public class Unit : MonoBehaviour
             }
             
         }
-        if (GetComponent<Animator>() == null)
+
+        GetComponent<BossScript>()?.enemyDie();
+        
+        if (GetComponent<Animator>() == null && GetComponent<BossScript>() == null)
         {
             Destroy(gameObject);
         }

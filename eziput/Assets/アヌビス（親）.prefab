@@ -94,11 +94,13 @@ MonoBehaviour:
   isEvent: 0
   facingDir: {x: 0, y: 0}
   attackSkills: []
+  weaponSkillLoadouts: []
   anim: {fileID: 3548262269595652}
   animationController: {fileID: 5865391548788385566}
   equidpAttackBonus: 0
   equipDefenseBonus: 0
   godPlayer: {fileID: 0}
+  equippedWeaponType: 5
   isUsingSkill: 0
 --- !u!114 &8992817457766031524
 MonoBehaviour:
@@ -126,6 +128,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 602e2af5ff4689d46bc25dee5f304662, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dropItemName: "\u30A2\u30CC\u30D3\u30B9\u306E\u4EEE\u9762"
+  dropItemType: 0
+  dropDelay: 0.3
 --- !u!135 &7389774570907031562
 SphereCollider:
   m_ObjectHideFlags: 0
