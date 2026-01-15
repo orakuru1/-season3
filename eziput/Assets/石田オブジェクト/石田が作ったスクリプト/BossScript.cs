@@ -42,8 +42,7 @@ public class BossScript : MonoBehaviour
     private void Start()
     {
         unit = GetComponent<Unit>();
-        
-        BossSliderInstance = BossUIManeger.Instance.Initialize(GetComponent<Unit>());
+        if(BossUIManeger.Instance != null) BossSliderInstance = BossUIManeger.Instance.Initialize(GetComponent<Unit>());
         unit.hpSlider = BossSliderInstance;
         Debug.Log($"ドロップアイテム:{dropItemName}");
     }

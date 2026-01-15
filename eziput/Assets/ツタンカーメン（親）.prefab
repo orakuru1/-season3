@@ -69,6 +69,7 @@ GameObject:
   - component: {fileID: 1678844704895397181}
   - component: {fileID: 1678844704895397180}
   - component: {fileID: 1678844704895397171}
+  - component: {fileID: 5396755866519141707}
   m_Layer: 0
   m_Name: "\u30C4\u30BF\u30F3\u30AB\u30FC\u30E1\u30F3\uFF08\u89AA\uFF09"
   m_TagString: Player
@@ -153,6 +154,7 @@ MonoBehaviour:
   animationController: {fileID: 1678844705201221688}
   equidpAttackBonus: 0
   equipDefenseBonus: 0
+  equipVarianceBonus: 0
   godPlayer: {fileID: 0}
   equippedWeaponType: 5
   selectedSkill: {fileID: 0}
@@ -199,6 +201,23 @@ MonoBehaviour:
   ownedGods:
   - {fileID: 11400000, guid: befeb862df9bc7f41b4ac3be606d23a0, type: 2}
   - {fileID: 11400000, guid: d254365884542a6468d5db65d75524ce, type: 2}
+--- !u!114 &5396755866519141707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678844704895397170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6103ff01260eeb340b256007ee8e5543, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCamera: {fileID: 1910230320215423148}
+  interactDistance: 2
+  wallHintLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1001 &936085028607744469
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -270,6 +289,11 @@ PrefabInstance:
         type: 3}
       propertyPath: LightsModule.rangeCurve.scalar
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9071669280126302808, guid: 060552f3d48d84b42844a49fd2a0bc53,
+        type: 3}
+      propertyPath: LightsModule.intensityCurve.scalar
+      value: 0.01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 060552f3d48d84b42844a49fd2a0bc53, type: 3}
@@ -517,6 +541,12 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 4053846772658234834, guid: e7e6f90709c981f4798a3acfb926f8b0, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e7e6f90709c981f4798a3acfb926f8b0, type: 3}
+--- !u!20 &1910230320215423148 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 4053846772858739974, guid: e7e6f90709c981f4798a3acfb926f8b0,
+    type: 3}
+  m_PrefabInstance: {fileID: 2504186607335450026}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3150690246052808841
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -799,6 +829,11 @@ PrefabInstance:
       propertyPath: LightsModule.rangeCurve.scalar
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9071669280126302808, guid: 060552f3d48d84b42844a49fd2a0bc53,
+        type: 3}
+      propertyPath: LightsModule.intensityCurve.scalar
+      value: 0.01
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 060552f3d48d84b42844a49fd2a0bc53, type: 3}
 --- !u!4 &3566047062372536754 stripped
@@ -879,6 +914,11 @@ PrefabInstance:
       propertyPath: LightsModule.rangeCurve.scalar
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9071669280126302808, guid: 060552f3d48d84b42844a49fd2a0bc53,
+        type: 3}
+      propertyPath: LightsModule.intensityCurve.scalar
+      value: 0.01
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 060552f3d48d84b42844a49fd2a0bc53, type: 3}
 --- !u!4 &3600223894553248581 stripped
@@ -958,6 +998,11 @@ PrefabInstance:
         type: 3}
       propertyPath: LightsModule.rangeCurve.scalar
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9071669280126302808, guid: 060552f3d48d84b42844a49fd2a0bc53,
+        type: 3}
+      propertyPath: LightsModule.intensityCurve.scalar
+      value: 0.01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 060552f3d48d84b42844a49fd2a0bc53, type: 3}

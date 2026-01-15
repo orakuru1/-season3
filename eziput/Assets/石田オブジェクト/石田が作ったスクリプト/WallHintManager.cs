@@ -5,7 +5,7 @@ public class WallHintManager : MonoBehaviour
 {
     public static WallHintManager Instance { get; private set; }
 
-    List<WallHint> hints = new List<WallHint>();
+    public List<WallHint> hints = new List<WallHint>();
 
     void Awake()
     {
@@ -22,5 +22,15 @@ public class WallHintManager : MonoBehaviour
     {
         foreach (var h in hints)
             h.SetVisible(visible);
+    }
+
+    public void Reset()
+    {
+        hints.Clear();
+    }
+
+    public void RemoveHint(WallHint wl)
+    {
+        hints.Remove(wl);
     }
 }

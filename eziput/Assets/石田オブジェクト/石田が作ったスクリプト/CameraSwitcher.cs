@@ -34,8 +34,12 @@ public class CameraSwitcher : MonoBehaviour
 
     public void SetView(bool top)
     {
-        DamageTextManager.Instance.SetCamera(top ? topCamera : playerCamera);
-        DamageTextManager.Instance.SetTransform(top ? TopViewPoint : PlayerViewPoint);
+        if(DamageTextManager.Instance != null)
+        {
+            DamageTextManager.Instance.SetCamera(top ? topCamera : playerCamera);
+            DamageTextManager.Instance.SetTransform(top ? TopViewPoint : PlayerViewPoint);
+        }
+
         playerCamera.gameObject.SetActive(!top);
         topCamera.gameObject.SetActive(top);
 

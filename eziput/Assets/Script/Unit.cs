@@ -439,7 +439,7 @@ public class Unit : MonoBehaviour
     {
         status.currentHP -= damage;
         UpdateHPBar(status.currentHP);
-        DamageTextManager.Instance.ShowDamage(damage, this.transform);
+        if(DamageTextManager.Instance != null) DamageTextManager.Instance.ShowDamage(damage, this.transform);
         if (status.currentHP <= 0) Die(attacker);
     }
 
@@ -492,8 +492,9 @@ public class Unit : MonoBehaviour
 
         if (team == Team.Player)
         {
-            SaveLoad.instance.CreateSaveData(this as PlayerUnit, godPlayer);
+            if(SaveLoad.instance != null) SaveLoad.instance.CreateSaveData(this as PlayerUnit, godPlayer);
             TurnManager.Instance.OnPlayerDied();
+            if(WallHintManager.Instance != null) WallHintManager.Instance.Reset(); 
             GameManager.Instance.GameOver();
         }
 
