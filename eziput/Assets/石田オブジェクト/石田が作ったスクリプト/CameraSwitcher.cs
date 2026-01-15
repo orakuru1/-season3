@@ -38,6 +38,13 @@ public class CameraSwitcher : MonoBehaviour
         DamageTextManager.Instance.SetTransform(top ? TopViewPoint : PlayerViewPoint);
         playerCamera.gameObject.SetActive(!top);
         topCamera.gameObject.SetActive(top);
+
+        if (WallHintManager.Instance != null)
+        {
+            WallHintManager.Instance.SetAllVisible(!top);
+            // top = 俯瞰 → 非表示
+            // !top = 一人称 → 表示
+        }
     }
 
     public void OnEnable()

@@ -313,7 +313,6 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        Debug.LogError("あああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
         //本当は、ダンジョン再生成の時にEventで呼ぼうと思ってたが、namespaceの関係でうまくいかなかったので、GameManager側で呼ぶことにした。
         //だから、ここで色々やっておく。
         GameObject playerObj = Instantiate(playerPrefab, worldPos, Quaternion.identity);

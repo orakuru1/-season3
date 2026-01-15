@@ -99,6 +99,7 @@ MonoBehaviour:
   animationController: {fileID: 5865391548788385566}
   equidpAttackBonus: 0
   equipDefenseBonus: 0
+  equipVarianceBonus: 0
   godPlayer: {fileID: 0}
   equippedWeaponType: 5
   isUsingSkill: 0

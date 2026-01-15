@@ -74,15 +74,17 @@ public class PlayerUnit : Unit
 
         if (anim != null)
         {
+            int TA = CalculateDamage(status.attack, equippedWeaponType);
+            int TrueAttack = TA + skill.power + equidpAttackBonus;
             if (targets.Count == 1)
             {
-                animationController.Initialize(targets[0], skill.power + TotalAttack, skill.deathAnimationID);
+                animationController.Initialize(targets[0], TrueAttack, skill.deathAnimationID);
                 animationController.AttackAnimation(skill.animationID);
                 leveledUp = weaponMasterySet.Get(equippedWeaponType).AddExp(durabilityexp); // 単一対象なら熟練度を5増加
             }
             else
             {
-                animationController.Initialize(targets, skill.power, skill.deathAnimationID);
+                animationController.Initialize(targets, TrueAttack, skill.deathAnimationID);
                 animationController.AttackAnimation(skill.animationID);
                 leveledUp = weaponMasterySet.Get(equippedWeaponType).AddExp(durabilityexp / 2); // 複数対象なら熟練度を半分増加
             }

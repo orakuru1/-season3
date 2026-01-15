@@ -20,6 +20,11 @@ public class ElementGenerator : MonoBehaviour
     public GameObject entrancePrefab;
     public GameObject exitPrefab;
 
+    [Header("壁の違和感演出")]
+    public GameObject wallHintPrefab;
+    [Range(0f, 1f)]
+    public float wallHintChance = 0.15f;
+
     // ← ここにワーププレファブを追加
     [Header("ワープ(ミニゲームへ遷移)")]
     public GameObject warpPrefab;        // インスペクターでワーププレファブを設定
@@ -123,6 +128,8 @@ public class ElementGenerator : MonoBehaviour
                 }
             }
         }
+        //違和感生成
+        PlaceWallHints(mapData);
 
         // =====================================================================
         // 天井生成（固定高さ・自動計算なし）
@@ -483,4 +490,71 @@ public class ElementGenerator : MonoBehaviour
         }
         spawned.Clear();
     }
+
+    //壁チェック関数
+    bool HasAdjacentFloor(int[,] map, int x, int y)
+    {
+        int h = map.GetLength(0);
+        int w = map.GetLength(1);
+
+        Vector2Int[] dirs =
+        {
+            Vector2Int.up,
+            Vector2Int.down,
+            Vector2Int.left,
+            Vector2Int.right
+        };
+
+        foreach (var d in dirs)
+        {
+            int nx = x + d.x;
+            int ny = y + d.y;
+            if (nx < 0 || nx >= w || ny < 0 || ny >= h)
+                continue;
+
+            if (map[ny, nx] == 0)
+                return true;
+        }
+        return false;
+    }
+
+    //違和感配置処理
+    void PlaceWallHints(int[,] mapData)
+    {
+        if (wallHintPrefab == null) return;
+
+        foreach (var go in spawned)
+        {
+            if (!go.name.StartsWith("Wall")) continue;
+
+            GridBlock block = go.GetComponent<GridBlock>();
+            if (block == null) continue;
+
+            int x = block.gridPos.x;
+            int y = block.gridPos.y;
+            if (!HasAdjacentFloor(mapData, x, y))
+                continue;
+            if (Random.value > wallHintChance)
+                continue;
+
+            Vector3 pos = go.transform.position;
+            pos.y += 1.2f; // 壁中央あたり
+            GameObject hint = Instantiate(
+                wallHintPrefab,
+                pos,
+                Quaternion.identity,
+                go.transform // ← 壁の子にする
+            );
+
+            hint.name = "WallHint";
+
+            WallHint wh = hint.GetComponent<WallHint>();
+            if (wh != null && WallHintManager.Instance != null)
+            {
+                WallHintManager.Instance.Register(wh);
+            }
+        }
+    }
+
+
 }

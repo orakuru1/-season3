@@ -56,6 +56,9 @@ public class Unit : MonoBehaviour
     public int equidpAttackBonus = 0;
     public int equipDefenseBonus = 0;
 
+    //武器のブレ幅
+    public int equipVarianceBonus = 0;
+
     //現在の総合ステータス計算
     public int TotalAttack => status.attack + equidpAttackBonus;
     public int Totaldefense => status.defense + equipDefenseBonus;
@@ -365,6 +368,43 @@ public class Unit : MonoBehaviour
 
     }
     */
+
+//武器の最終合計攻撃力を出す
+    public int CalculateDamage(int attack, WeaponType weaponType)
+    {
+        float varianceRate = GetVarianceRate(weaponType) + equipVarianceBonus;
+
+        float variance = attack * varianceRate;
+        float min = attack - variance;
+        float max = attack + variance;
+
+        return Mathf.RoundToInt(Random.Range(min, max));
+    }
+
+//武器の種類によるブレ幅の割合を返す
+    public float GetVarianceRate(WeaponType type)
+    {
+        switch (type)
+        {
+            case WeaponType.Sword:
+                return 0.05f;
+
+            case WeaponType.Spear:
+                return 0.08f;
+
+            case WeaponType.Axe:
+                return 0.20f;
+
+            case WeaponType.Bow:
+                return 0.15f;
+
+            case WeaponType.Staff:
+                return 0.25f;
+
+            default:
+                return 0.1f;
+        }
+    }
 
     public void Heal(int amount)
     {
