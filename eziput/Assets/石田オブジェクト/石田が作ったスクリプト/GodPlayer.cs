@@ -46,15 +46,24 @@ public class GodPlayer : MonoBehaviour
             //newGod.abilities.ResetCooldown();
             Debug.Log($"{newGod.godName}を所有しました。");  
             yield return StartCoroutine(HandleGodLimit());
+            RefreshGodUI();
         }
 
         //yield return StartCoroutine(HandleGodLimit());
+
+    }
+
+    public void RefreshGodUI()
+    {
         if (GodUIManager.Instance != null)
         {
             GodUIManager.Instance.UpdateGodIcons(ownedGods);
         }
 
-
+        if(GodInventoryUI.Instance != null)
+        {
+            GodInventoryUI.Instance.UpdateInventoryGodIcons(ownedGods);
+        }
     }
 
     public IEnumerator HandleGodLimit()

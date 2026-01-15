@@ -386,7 +386,8 @@ MonoBehaviour:
   hasGuarateedItem: 1
   guaranteedItemName:
   - "\u771F\u5B9F\u306E\u7FBD"
-  guaranteedItemType: 00000000
+  - "\u5FC3\u81D3"
+  guaranteedItemType: 0000000000000000
   itemList:
   - "\u85AC\u8349"
   - "\u30D1\u30F3"

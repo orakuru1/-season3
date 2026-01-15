@@ -786,7 +786,7 @@ public class ItemUIManager : MonoBehaviour
     //=============================
     // カテゴリ取得
     //=============================
-    private string GetItemCategory(string itemName)
+    public string GetItemCategory(string itemName)
     {
         if (itemDict.ContainsKey(itemName)) return "item";
         if (weaponDict.ContainsKey(itemName)) return "weapon";

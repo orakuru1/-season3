@@ -263,6 +263,7 @@ public class PlayerUnit : Unit
         SaveLoad.instance.Load(this, godPlayer);
         UpdateGodUI();
         GodUIManager.Instance.UpdateGodIcons(godPlayer.ownedGods);
+        GodInventoryUI.Instance.UpdateInventoryGodIcons(godPlayer.ownedGods);
         RefreshAttackSkills();//最初の技構成をセットする
         
     }
