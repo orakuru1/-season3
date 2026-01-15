@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82375e399513afe459a48a7938d82627, type: 3}
-  m_Name: "\u304A\u8A66\u3057"
+  m_Name: "\u8D85\u69CD\u653B\u6483"
   m_EditorClassIdentifier: 
-  skillName: "\u524D\u5207\u308A"
-  weaponType: 5
-  requiredMastery: 0
-  triggerKey: 106
-  attackPattern: {fileID: 11400000, guid: 0e4aead31d1722145a7af508dac7826a, type: 2}
+  skillID: 1
+  skillName: "\u8D85\u69CD\u653B\u6483"
+  weaponType: 2
+  requiredMastery: 30
+  triggerKey: 0
+  attackPattern: {fileID: 11400000, guid: 925180d414007eb44a283484cf34e509, type: 2}
   power: 10
-  animationID: 2
+  animationID: 5
   deathAnimationID: 201

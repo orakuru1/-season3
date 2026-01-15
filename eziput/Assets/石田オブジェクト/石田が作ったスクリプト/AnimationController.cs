@@ -135,6 +135,7 @@ public class AnimationController : MonoBehaviour
             remaininghits = Target.Count;
             foreach (var ttt in Target)
             {
+                if(ttt.status.currentHP <= 0) continue; 
                 AnimationController tgt = ttt.animationController;
                 Debug.Log("ヒットアニメーション開始");
                 tgt.attacker = this;
@@ -170,6 +171,7 @@ public class AnimationController : MonoBehaviour
         }
         else
         {
+            if(Target[0].status.currentHP <= 0) return; 
             Debug.Log("シングルターゲットヒットアニメーション開始");
             remaininghits = 1;
             AnimationController tgt = Target[0].animationController;

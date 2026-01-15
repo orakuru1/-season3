@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82375e399513afe459a48a7938d82627, type: 3}
+  m_Name: "\u524D\u5207\u308A"
+  m_EditorClassIdentifier: 
+  skillID: 3
+  skillName: "\u524D\u5207\u308A"
+  weaponType: 0
+  requiredMastery: 0
+  triggerKey: 109
+  attackPattern: {fileID: 11400000, guid: 0e4aead31d1722145a7af508dac7826a, type: 2}
+  power: 4
+  animationID: 1
+  deathAnimationID: 201

@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
     public void SelectSafeRoute()
     {
         CurrentRoute = RouteType.Safe;
-        SceneManager.LoadScene("Tougou2");
+        SceneManager.LoadScene("石田の実験場");
     }
 
     public void SelectDangerRoute()

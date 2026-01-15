@@ -46,25 +46,41 @@ public enum WeaponType
 [System.Serializable]
 public class WeaponMasteryProgress
 {
-    public int level;
-    public int exp;
-    public int ExpToNextLevel = 5;
+    public int level = 1;
+    public int exp = 0;
 
+    [SerializeField]
+    private int baseExp = 10;      // Lv1→2に必要な量
+    [SerializeField]
+    private float growthRate = 1.5f; // 成長倍率
 
+    public int ExpToNextLevel
+    {
+        get
+        {
+            return Mathf.CeilToInt(baseExp * Mathf.Pow(growthRate, level - 1));
+        }
+    }
+
+    /// <summary>
+    /// 経験値を加算。レベルアップしたら true
+    /// </summary>
     public bool AddExp(int amount)
     {
         exp += amount;
+        bool leveledUp = false;
 
-        if (exp >= ExpToNextLevel)
+        while (exp >= ExpToNextLevel)
         {
             exp -= ExpToNextLevel;
             level++;
-            return true; // レベルアップした
+            leveledUp = true;
         }
 
-        return false;
+        return leveledUp;
     }
 }
+
 
 //武器種ごとにつける熟練度
 [System.Serializable]

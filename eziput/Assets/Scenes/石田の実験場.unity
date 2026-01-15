@@ -4714,13 +4714,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1699d8c535485be428efadb09785641d, type: 2}
   - {fileID: 11400000, guid: 2ed7bb6352df0de4c9bf0cd3aa67684f, type: 2}
   - {fileID: 11400000, guid: e46647cd83a28054b96d126442687aab, type: 2}
-  fistIcon: {fileID: 0}
-  SwordIcon: {fileID: 0}
-  AxeIcon: {fileID: 0}
-  BowIcon: {fileID: 0}
-  SpearIcon: {fileID: 0}
-  StaffIcon: {fileID: 0}
-  weponSlotImage: {fileID: 0}
+  fistIcon: {fileID: 21300000, guid: 13d4ca067c0bbda449d3c0a7f55699cf, type: 3}
+  SwordIcon: {fileID: 21300000, guid: 0b8c4027815d4ef498e583ca28fe5575, type: 3}
+  AxeIcon: {fileID: 21300000, guid: 234c9ffaaa9fcb6458d0ff9f9b050559, type: 3}
+  BowIcon: {fileID: 21300000, guid: 6bf83c4d841964841bdd68e8424710e6, type: 3}
+  SpearIcon: {fileID: 21300000, guid: dcec13dece6e9b7428161ec7d886011e, type: 3}
+  StaffIcon: {fileID: 21300000, guid: 030b55169dc4a3144a6763a3d784248f, type: 3}
+  weponSlotImage: {fileID: 1876251656}
 --- !u!114 &588280355
 MonoBehaviour:
   m_ObjectHideFlags: 0

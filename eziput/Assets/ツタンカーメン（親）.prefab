@@ -113,9 +113,9 @@ MonoBehaviour:
     unitName: "\u30C4\u30BF\u30F3\u30AB\u30FC\u30E1\u30F3"
     exp: 0
     level: 1
-    maxHP: 67
-    currentHP: 5
-    attack: 100
+    maxHP: 20
+    currentHP: 20
+    attack: 5
     defense: 3
     moveRange: 3
     attackRange: 1
@@ -163,27 +163,33 @@ MonoBehaviour:
     sword:
       level: 0
       exp: 0
-      ExpToNextLevel: 5
+      baseExp: 10
+      growthRate: 1.5
     axe:
       level: 0
       exp: 0
-      ExpToNextLevel: 5
+      baseExp: 10
+      growthRate: 1.5
     spear:
       level: 0
       exp: 0
-      ExpToNextLevel: 5
+      baseExp: 10
+      growthRate: 1.5
     bow:
       level: 0
       exp: 0
-      ExpToNextLevel: 5
+      baseExp: 10
+      growthRate: 1.5
     staff:
       level: 0
       exp: 0
-      ExpToNextLevel: 5
+      baseExp: 10
+      growthRate: 1.5
     none:
       level: 0
       exp: 0
-      ExpToNextLevel: 5
+      baseExp: 10
+      growthRate: 1.5
   durabilityexp: 5
   allSkillsDatabase: {fileID: 11400000, guid: 3abe65081aecb724792e8e5e91afb531, type: 2}
 --- !u!114 &1678844704895397171
