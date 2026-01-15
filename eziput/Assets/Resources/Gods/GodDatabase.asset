@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c80dd7f0df05cb44829a54fda9a5f6b, type: 3}
+  m_Name: GodDatabase
+  m_EditorClassIdentifier: 
+  gods:
+  - {fileID: 11400000, guid: d254365884542a6468d5db65d75524ce, type: 2}
+  - {fileID: 11400000, guid: 20f86d9fa3618c843a92e0df3eecda1f, type: 2}
+  - {fileID: 11400000, guid: 519cdc27d1bc86c489f629a0b9ddb16f, type: 2}
+  - {fileID: 11400000, guid: 4b9157fa1c6922348bb53f53fb3c341e, type: 2}
+  - {fileID: 11400000, guid: befeb862df9bc7f41b4ac3be606d23a0, type: 2}
+  - {fileID: 11400000, guid: 749237f4e20fdde4ea9dfdd59f84c0b9, type: 2}
+  - {fileID: 11400000, guid: a0e0b4169e21bd7418aa22226e6ef1fd, type: 2}

@@ -6,6 +6,13 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
+    public enum GameState
+    {
+        Playing,
+        GameOver,
+        Respawning
+    }
+
     public static TurnManager Instance { get; private set; }
     public Unit.Team currentTeam { get; private set; }  // 現在行動中のチーム
 
@@ -16,6 +23,8 @@ public class TurnManager : MonoBehaviour
     private int currentIndex = 0;
 
     public Unit CurrentUnit => allUnits.Count > 0 ? allUnits[currentIndex] : null;
+
+    public GameState gameState { get; private set; } = GameState.Playing;
 
     private void Awake()
     {
@@ -37,6 +46,8 @@ public class TurnManager : MonoBehaviour
 
     public void StartNextTurn()
     {
+        if (gameState != GameState.Playing) return;
+
         if (allUnits.Count == 0) return;
 
         currentIndex = currentIndex % allUnits.Count;
@@ -142,6 +153,23 @@ public class TurnManager : MonoBehaviour
     public List<Unit> GetAllUnits()
     {
         return allUnits;
+    }
+
+    public void OnPlayerDied()
+    {
+        Debug.Log("Game Over");
+
+        gameState = GameState.GameOver;
+
+        //StopAllCoroutines();
+    }
+
+    public void OnPlayerRevive()
+    {
+        gameState = GameState.Playing;
+        StartNextTurn();
+
+        //StopAllCoroutines();
     }
 
 }

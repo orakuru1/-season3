@@ -804,8 +804,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 0}
   eg: {fileID: 0}
+  cameraSwitcher: {fileID: 0}
   hpSlider: {fileID: 0}
   hptext: {fileID: 0}
+  SeSlider: {fileID: 0}
+  BgmSlider: {fileID: 0}
+  seMuteButton: {fileID: 0}
+  bgmMuteButton: {fileID: 0}
   gameClearCanvasGroup: {fileID: 0}
   gameClearFadeTime: 1.5
   stage1ClearSE: {fileID: 0}
@@ -817,6 +822,7 @@ MonoBehaviour:
   gameOverBgmTargetVolume: 0.4
   gameOverBgmFadeInTime: 2
   silenceDurationBeforeGameOverBgm: 0.5
+  guaranteedItemAlreadyDropped: 0
 --- !u!4 &974589530
 Transform:
   m_ObjectHideFlags: 0

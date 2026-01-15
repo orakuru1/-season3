@@ -26,7 +26,9 @@ public class GameManager : MonoBehaviour
     // プレイヤー生成
     // =======================
     public GameObject playerPrefab;
+    private GameObject playerInstance;
     public ElementGenerator eg;
+    public CameraSwitcher cameraSwitcher;
 
     // =======================
     // HP UI
@@ -124,7 +126,7 @@ public class GameManager : MonoBehaviour
     public void SelectDangerRoute()
     {
         CurrentRoute = RouteType.Danger;
-        SceneManager.LoadScene("Tougou2");
+        SceneManager.LoadScene("2石田の実験場");
     }
 
     public void LoadSelectScene()
@@ -311,8 +313,18 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        Debug.LogError("あああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
+        //本当は、ダンジョン再生成の時にEventで呼ぼうと思ってたが、namespaceの関係でうまくいかなかったので、GameManager側で呼ぶことにした。
+        //だから、ここで色々やっておく。
         GameObject playerObj = Instantiate(playerPrefab, worldPos, Quaternion.identity);
+        if (playerInstance != null)
+        {
+            Destroy(playerInstance);
+        }
+        playerInstance = playerObj;
         OnPlayerSpawned?.Invoke(playerObj);
+        TurnManager.Instance.OnPlayerRevive();
+        InitCanvasGroup(gameOverCanvasGroup);
 
         if(SeSlider != null) playerObj.GetComponentInChildren<BGMSE>()?.InitializeSettings(SeSlider, BgmSlider, seMuteButton, bgmMuteButton);
 

@@ -10,7 +10,7 @@ public class GodManeger : MonoBehaviour
     public static GodManeger Instance { get; private set; }
     public static event Action CooldownCountAction;// クールダウンカウントが変わったときに呼ぶ
     public static Action OnGodAbilityUsed;// 神の力が使われたときに呼ぶ
-    public List<GodData> allgods = new List<GodData>();//GODデータの初期化をしたほうが良い部分があるので、そこの初期化の処理を作ろう。
+    public GodDatabase godDatabase;
     public List<GodData> addgods = new List<GodData>();
 
     //クールダウンに入った時に送り込む辞書
@@ -28,18 +28,19 @@ public class GodManeger : MonoBehaviour
     void Awake()
     {
         if (Instance == null) Instance = this; else Destroy(gameObject);
+        godDatabase.BuildDictionary();
+    }
+
+    void Start()
+    {
         LoadAllGods();
     }
 
     //最初にリソースフォルダの神データを全部読み込む
     private void LoadAllGods()
     {
-        allgods.Clear();
-        GodData[] loadedGods = Resources.LoadAll<GodData>("Gods");
-        allgods.AddRange(loadedGods);
-        Debug.Log($"Loaded {allgods.Count} gods.");
 
-        foreach(var god in allgods)//いずれは、セーブして戻った時に、trueにしてないといけない時もある。でも、新しいステージに行ったとき等にfalseにするかも。それか、全部読み込んだあとに、ロードするか。
+        foreach(var god in godDatabase.gods)//いずれは、セーブして戻った時に、trueにしてないといけない時もある。でも、新しいステージに行ったとき等にfalseにするかも。それか、全部読み込んだあとに、ロードするか。
         {
             if (god.abilities != null) god.abilities.isActive = false;
             god.abilities.ResetCooldown();

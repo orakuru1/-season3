@@ -50,6 +50,16 @@ public class ItemUIManager : MonoBehaviour
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
     public List<ItemData> allItemData;
     public Dictionary<string, ItemData> itemDataDict;
+
+    // アイコン参照用
+    public Sprite fistIcon;
+    public Sprite SwordIcon;
+    public Sprite AxeIcon;
+    public Sprite BowIcon;
+    public Sprite SpearIcon;
+    public Sprite StaffIcon;
+
+    public Image weponSlotImage;
 /// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //合成レシピ
@@ -564,6 +574,30 @@ public class ItemUIManager : MonoBehaviour
                 player.durabilityexp = weapon.durability;
                 //上昇する武器の種類を送る。
                 player.equippedWeaponType = weapon.weaponType;
+                player.RefreshAttackSkills();
+
+                //装備した武器の種類によるアイコン変更
+                switch (weapon.weaponType)
+                {
+                    case WeaponType.Sword:
+                        weponSlotImage.sprite = SwordIcon;
+                        break;
+                    case WeaponType.Axe:
+                        weponSlotImage.sprite = AxeIcon;
+                        break;
+                    case WeaponType.Bow:
+                        weponSlotImage.sprite = BowIcon;
+                        break;
+                    case WeaponType.Spear:
+                        weponSlotImage.sprite = SpearIcon;
+                        break;
+                    case WeaponType.Staff:
+                        weponSlotImage.sprite = StaffIcon;
+                        break;
+                    case WeaponType.None:
+                        weponSlotImage.sprite = fistIcon;
+                        break;
+                }
             }
 
 
@@ -638,6 +672,8 @@ public class ItemUIManager : MonoBehaviour
             player.equidpAttackBonus = 0;
             player.equippedWeaponType = WeaponType.None;
             player.durabilityexp = 5;
+            player.RefreshAttackSkills();
+            weponSlotImage.sprite = fistIcon;
 
             //装備解除
             equippedWeaponButton = null;

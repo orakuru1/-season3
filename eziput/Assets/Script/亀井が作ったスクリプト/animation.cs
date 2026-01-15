@@ -143,6 +143,6 @@ public class animation : MonoBehaviour
     public void setPlayer(GameObject p)
     {
         player = p.transform;
-        Debug.Log("宝箱にプレイヤー設定完了");
+        //Debug.Log("宝箱にプレイヤー設定完了");
     }
 }

@@ -76,7 +76,7 @@ public class PlayerUnit : Unit
         {
             if (targets.Count == 1)
             {
-                animationController.Initialize(targets[0], skill.power, skill.deathAnimationID);
+                animationController.Initialize(targets[0], skill.power + TotalAttack, skill.deathAnimationID);
                 animationController.AttackAnimation(skill.animationID);
                 leveledUp = weaponMasterySet.Get(equippedWeaponType).AddExp(durabilityexp); // 単一対象なら熟練度を5増加
             }
@@ -220,6 +220,7 @@ public class PlayerUnit : Unit
         if (loadout == null) return;
 
         attackSkills.AddRange(loadout.skills);
+        SkillSlotUiManeger.instance.CreateSkillSlotUi(attackSkills);
     }
 
     public void LearnSkill(SkillData skill)
@@ -256,9 +257,19 @@ public class PlayerUnit : Unit
         base.Start(); // ← ここで Unit.Start() が先に実行される
 
         // Unit の初期化が終わった後にやりたい処理
+        //一番最初にロードを入れる
+        SaveLoad.instance.Load(this, godPlayer);
         UpdateGodUI();
         GodUIManager.Instance.UpdateGodIcons(godPlayer.ownedGods);
         GodInventoryUI.Instance.UpdateInventoryGodIcons(godPlayer.ownedGods);
+        RefreshAttackSkills();//最初の技構成をセットする
+        
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        allSkillsDatabase.BuildDictionary();
     }
 
     public void Update()
