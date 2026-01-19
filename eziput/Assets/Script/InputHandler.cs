@@ -100,6 +100,12 @@ public class InputHandler : MonoBehaviour
         st = true;
         bool dirChanged = false;
         if (Input.GetKeyDown(KeyCode.W)) { player.facingDir = Vector2Int.up; dirChanged = true; }
+        //if (Input.GetKeyDown(KeyCode.A)) { player.facingDir = Vector2Int.left; dirChanged = true; }
+        //if (Input.GetKeyDown(KeyCode.S)) { player.facingDir = Vector2Int.down; dirChanged = true; }
+        //if (Input.GetKeyDown(KeyCode.D)) { player.facingDir = Vector2Int.right; dirChanged = true; }
+
+        //１人称の時と天カメの時で操作方法を変えたほうが良いかもしれない。めっちゃやりにくい。
+        
         if (Input.GetKeyDown(KeyCode.S))
         {
             // 180度反転
@@ -125,6 +131,7 @@ public class InputHandler : MonoBehaviour
             );
             dirChanged = true;
         }
+        
 
         if (!dirChanged) return;
 

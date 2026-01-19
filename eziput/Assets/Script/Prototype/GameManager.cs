@@ -149,7 +149,7 @@ public class GameManager : MonoBehaviour
     public void SelectSafeRoute()
     {
         CurrentRoute = RouteType.Safe;
-        SceneManager.LoadScene("Tougou2");
+        SceneManager.LoadScene("石田の実験場");
     }
 
     public void SelectDangerRoute()
@@ -342,7 +342,6 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        Debug.LogError("あああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ");
         //本当は、ダンジョン再生成の時にEventで呼ぼうと思ってたが、namespaceの関係でうまくいかなかったので、GameManager側で呼ぶことにした。
         //だから、ここで色々やっておく。
         GameObject playerObj = Instantiate(playerPrefab, worldPos, Quaternion.identity);

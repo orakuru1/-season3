@@ -93,12 +93,14 @@ MonoBehaviour:
   isShowingAttackRange: 0
   isEvent: 0
   facingDir: {x: 0, y: 0}
-  attackSkills: []
+  attackSkills:
+  - {fileID: 11400000, guid: 5739d8f57a39c924eb2ffbe61e37e0d2, type: 2}
   weaponSkillLoadouts: []
   anim: {fileID: 3548262269595652}
   animationController: {fileID: 5865391548788385566}
   equidpAttackBonus: 0
   equipDefenseBonus: 0
+  equipVarianceBonus: 0
   godPlayer: {fileID: 0}
   equippedWeaponType: 5
   isUsingSkill: 0

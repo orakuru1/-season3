@@ -575,6 +575,7 @@ public class ItemUIManager : MonoBehaviour
                 //上昇する武器の種類を送る。
                 player.equippedWeaponType = weapon.weaponType;
                 player.RefreshAttackSkills();
+                player.equipVarianceBonus = weapon.varianceBonus;
 
                 //装備した武器の種類によるアイコン変更
                 switch (weapon.weaponType)

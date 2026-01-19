@@ -20,6 +20,11 @@ public class ElementGenerator : MonoBehaviour
     public GameObject entrancePrefab;
     public GameObject exitPrefab;
 
+    [Header("壁の違和感演出")]
+    public GameObject wallHintPrefab;
+    [Range(0f, 1f)]
+    public float wallHintChance = 0.15f;
+
     // ← ここにワーププレファブを追加
     [Header("ワープ(ミニゲームへ遷移)")]
     public GameObject warpPrefab;        // インスペクターでワーププレファブを設定
@@ -123,6 +128,8 @@ public class ElementGenerator : MonoBehaviour
                 }
             }
         }
+        //違和感生成
+        PlaceWallHints(mapData);
 
         // =====================================================================
         // 天井生成（固定高さ・自動計算なし）
@@ -483,4 +490,136 @@ public class ElementGenerator : MonoBehaviour
         }
         spawned.Clear();
     }
+
+    //壁チェック関数
+    bool HasAdjacentFloor(int[,] map, int x, int y)
+    {
+        int h = map.GetLength(0);
+        int w = map.GetLength(1);
+
+        Vector2Int[] dirs =
+        {
+            Vector2Int.up,
+            Vector2Int.down,
+            Vector2Int.left,
+            Vector2Int.right
+        };
+
+        foreach (var d in dirs)
+        {
+            int nx = x + d.x;
+            int ny = y + d.y;
+            if (nx < 0 || nx >= w || ny < 0 || ny >= h)
+                continue;
+
+            if (map[ny, nx] == 0)
+                return true;
+        }
+        return false;
+    }
+
+    //違和感配置処理
+    void PlaceWallHints(int[,] mapData)
+    {
+        if (wallHintPrefab == null) return;
+
+        List<(GameObject wall, Vector3 dir)> candidates = new();
+
+        foreach (var go in spawned)
+        {
+            if (!go.name.StartsWith("Wall")) continue;
+
+            GridBlock block = go.GetComponent<GridBlock>();
+            if (block == null) continue;
+
+            int x = block.gridPos.x;
+            int y = block.gridPos.y;
+
+            // ★ ここでは floorDirTmp にする
+            if (!TryGetAdjacentFloorDir(mapData, x, y, out Vector3 floorDirTmp))
+                continue;
+
+            if (Random.value > wallHintChance)
+                continue;
+
+            candidates.Add((go, floorDirTmp));
+        }
+
+        if (candidates.Count == 0)
+            return;
+
+        var chosen = candidates[Random.Range(0, candidates.Count)];
+        GameObject wallObj = chosen.wall;
+        Vector3 floorDir = chosen.dir;
+
+        Vector3 pos = wallObj.transform.position;
+        pos += floorDir * (CellSize * 0.5f + 0.01f);
+        pos.y = 1f;
+        pos -= floorDir * 0.05f;
+
+        Quaternion rot = Quaternion.LookRotation(-floorDir);
+
+        GameObject hint = Instantiate(
+            wallHintPrefab,
+            pos,
+            rot,
+            wallObj.transform
+        );
+
+        hint.name = "WallHint";
+
+        WallHint wh = hint.GetComponent<WallHint>();
+        if (wh != null && WallHintManager.Instance != null)
+        {
+            WallHintManager.Instance.Register(wh);
+        }
+    }
+
+
+
+    bool TryGetAdjacentFloorDir(int[,] mapData, int x, int y, out Vector3 dir)
+    {
+        dir = Vector3.zero;
+
+        // 上
+        if (IsFloor(mapData, x, y + 1))
+        {
+            dir = Vector3.forward;
+            return true;
+        }
+        // 下
+        if (IsFloor(mapData, x, y - 1))
+        {
+            dir = Vector3.back;
+            return true;
+        }
+        // 右
+        if (IsFloor(mapData, x + 1, y))
+        {
+            dir = Vector3.right;
+            return true;
+        }
+        // 左
+        if (IsFloor(mapData, x - 1, y))
+        {
+            dir = Vector3.left;
+            return true;
+        }
+
+        return false;
+    }
+
+    bool IsFloor(int[,] mapData, int x, int y)
+    {
+        if (x < 0 || y < 0 ||
+            y >= mapData.GetLength(0) ||
+            x >= mapData.GetLength(1))
+            return false;
+
+        return mapData[y, x] == 0;
+    }
+
+
+
+
 }

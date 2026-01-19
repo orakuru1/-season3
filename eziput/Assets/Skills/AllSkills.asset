@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd1d54df394ddab44a39313cdade622c, type: 3}
+  m_Name: AllSkills
+  m_EditorClassIdentifier: 
+  normalSkills:
+    sword:
+    - {fileID: 11400000, guid: 69a836a390dc5154695b7059bd31a689, type: 2}
+    axe: []
+    spear: []
+    bow: []
+    staff:
+    - {fileID: 11400000, guid: d98dff570ecb34e428a52d031e58d78e, type: 2}
+    none:
+    - {fileID: 11400000, guid: 7ec4473f122633e46bf7dd0b585351f6, type: 2}
+    - {fileID: 11400000, guid: e685d4843f98c7440ae9bffe19f9526f, type: 2}
+  rareSkills: []

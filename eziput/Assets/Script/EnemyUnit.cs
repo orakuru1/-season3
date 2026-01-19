@@ -95,15 +95,18 @@ public class EnemyUnit : Unit
         // 攻撃アニメーション開始（簡易例）
         animationController.animationState.isAttacking = true;
 
+        int TA = CalculateDamage(status.attack, equippedWeaponType);
+        int TrueAttack = TA + selectedSkill.power + equidpAttackBonus;
+
         // 単体 or 複数ターゲット対応
         if (targets.Count == 1)
         {
-            animationController.Initialize(targets[0], selectedSkill.power);
+            animationController.Initialize(targets[0], TrueAttack);
             animationController.AttackAnimation(selectedSkill.animationID);
         }
         else
         {
-            animationController.Initialize(targets, selectedSkill.power);
+            animationController.Initialize(targets, TrueAttack);
             animationController.AttackAnimation(selectedSkill.animationID);
         }
 
