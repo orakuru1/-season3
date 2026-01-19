@@ -114,7 +114,7 @@ MonoBehaviour:
     level: 1
     maxHP: 67
     currentHP: 5
-    attack: 100
+    attack: 5
     defense: 3
     moveRange: 3
     attackRange: 1

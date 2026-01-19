@@ -450,6 +450,8 @@ public class Unit : MonoBehaviour
             
         }
 
+        GetComponent<BossScript>()?.enemyDie();
+
         if (team == Team.Player)
         {
             SaveLoad.instance.CreateSaveData(this as PlayerUnit, godPlayer);
@@ -457,7 +459,7 @@ public class Unit : MonoBehaviour
             GameManager.Instance.GameOver();
         }
 
-        if (anim == null)
+        if (anim == null && GetComponent<BossScript>() == null)
         {
             Destroy(gameObject);
         }
