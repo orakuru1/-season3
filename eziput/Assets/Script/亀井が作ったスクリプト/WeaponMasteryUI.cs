@@ -12,11 +12,25 @@ public class WeaponMasteryUI : MonoBehaviour
     public Text swordExp;
     public Text swordExpToNextLevel;
 
-    //[Header("Spear")]
-    //public Text spearLvText;
+    [Header("Axe")]
+    public Text axeLvText;
+    public Text axeExp;
+    public Text axeExpToNextLevel;
 
-    //[Header("Bow")]
-    //public Text BowLvText;
+    [Header("Spear")]
+    public Text spearLvText;
+    public Text spearExp;
+    public Text spearExpToNextLevel;
+
+    [Header("Bow")]
+    public Text bowLvText;
+    public Text bowExp;
+    public Text bowExpToNextLevel;
+
+    [Header("Staff")]
+    public Text staffLvText;
+    public Text staffExp;
+    public Text staffExpToNextLevel;
 
     [Header("Fist")]
     public Text fistLvText;
@@ -52,15 +66,45 @@ public class WeaponMasteryUI : MonoBehaviour
         if(player == null) return;
 
         WeaponMasteryProgress sword = player.weaponMasterySet.Get(WeaponType.Sword);
+        WeaponMasteryProgress axe = player.weaponMasterySet.Get(WeaponType.Axe);
+        WeaponMasteryProgress spear = player.weaponMasterySet.Get(WeaponType.Spear);
+        WeaponMasteryProgress bow = player.weaponMasterySet.Get(WeaponType.Bow);
+        WeaponMasteryProgress staff = player.weaponMasterySet.Get(WeaponType.Staff);
         WeaponMasteryProgress fist = player.weaponMasterySet.Get(WeaponType.None);
 
         int swordremainExp = sword.ExpToNextLevel - sword.exp;
+        int axeremainExp = axe.ExpToNextLevel - axe.exp;
+        int spearremainExp = spear.ExpToNextLevel - spear.exp;
+        int bowremainExp = bow.ExpToNextLevel - bow.exp;
+        int staffremainExp = staff.ExpToNextLevel - staff.exp;
         int fistremainExp = fist.ExpToNextLevel - fist.exp;
 
+        //SwordType
         swordLvText.text = "Lv:" + sword.level;
         swordExp.text = "Exp:" + sword.exp;
         swordExpToNextLevel.text = "次のレベルまで:" + swordremainExp;
 
+        //AxeType
+        axeLvText.text = "Lv:" + axe.level;
+        axeExp.text = "Exp:" + axe.exp;
+        axeExpToNextLevel.text = "次のレベルまで:" + axeremainExp;
+
+        //SpearType
+        spearLvText.text = "Lv:" + spear.level;
+        spearExp.text = "Exp:" + spear.exp;
+        spearExpToNextLevel.text = "次のレベルまで:" + spearremainExp;
+
+        //BowType
+        bowLvText.text = "Lv:" + bow.level;
+        bowExp.text = "Exp:" + bow.exp;
+        bowExpToNextLevel.text = "次のレベルまで:" + swordremainExp;
+
+        //StaffType
+        staffLvText.text = "Lv:" + staff.level;
+        staffExp.text = "Exp:" + staff.exp;
+        staffExpToNextLevel.text = "次のレベルまで:" + staffremainExp;
+
+        //FistType
         fistLvText.text = "Lv:" + fist.level;
         fistExp.text = "Exp:" + fist.exp;
         fistExpToNextLevel.text = "次のレベルまで:" + fistremainExp;
