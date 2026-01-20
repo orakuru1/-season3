@@ -116,3 +116,6 @@ MonoBehaviour:
   isRamp: 0
   hasEvent: 0
   eventID: 
+  trapType: 0
+  trapValue: 0
+  trapConsumed: 0

@@ -167,13 +167,14 @@ public class GodManeger : MonoBehaviour
     public IEnumerator DebuffAbility(GodAbility ability, GameObject user, List<Unit> target)
     {
         ability.isActive = true;
-        AnimationController animationController2 = user.GetComponent<AnimationController>();
-        animationController2.InitializeDebuff(target, ability.power);
-        animationController2.DebuffAnimation(ability.GodAnimationID);
+        Unit unit = user.GetComponent<Unit>();//ここら辺の処理は、attack等にそれぞれでまとめる。
+        AnimationController animationController = unit.animationController;
+        animationController.InitializeDebuff(target, ability.power);
+        animationController.DebuffAnimation(ability.GodAnimationID);
 
         cooldownTimers[ability] = ability.cooldown;
         ability.floatcurrentCooldown = ability.cooldown;
-        yield return new WaitUntil(() => !animationController2.animationState.isDebuffing);
+        yield return new WaitUntil(() => !animationController.animationState.isDebuffing);
         Debug.Log("デバフアニメーション終了");
     }
 //ヒール系のアビリティ

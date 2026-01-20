@@ -353,14 +353,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: f196a7f7ea8051c4d843670c505000d9, type: 2}
-  seAudioSource: {fileID: 2352389628647233273}
-  bgmAudioSource: {fileID: 2352389628647233273}
-  seSlider: {fileID: 0}
   bgmSlider: {fileID: 0}
+  seSlider: {fileID: 0}
   bgmMuteButton: {fileID: 0}
   seMuteButton: {fileID: 0}
   soundOnIcon: {fileID: 21300000, guid: 75501f82429e40949b08d7fa3e33d95f, type: 3}
   soundOffIcon: {fileID: 21300000, guid: 9cf038df15244ee4f94ad13c5e75ea7b, type: 3}
+  bgmSource: {fileID: 0}
+  seSource: {fileID: 0}
 --- !u!1 &2352389628715560478
 GameObject:
   m_ObjectHideFlags: 0
@@ -478,3 +478,4 @@ MonoBehaviour:
     type: 3}
   damageTextCanvas: {fileID: 2352389628715560479}
   camera: {fileID: 0}
+  isView: 0

@@ -21,6 +21,7 @@ public class InputHandler : MonoBehaviour
 
         if (TurnManager.Instance.currentTeam != Unit.Team.Player) return;
         if (currentPlayerUnit == null) return;
+        if (TurnManager.Instance.gameState != TurnManager.GameState.Playing) return;
 
         var player = currentPlayerUnit as PlayerUnit;
         if (player == null) return;
@@ -167,6 +168,12 @@ public class InputHandler : MonoBehaviour
                 block.SetHighlight(Color.blue);
                 highlightedBlock = block;
             }
+
+            if (block != null && block.trapType != TrapType.None && DamageTextManager.Instance.isView == false && LogManager.Instance != null)
+            {
+                LogManager.Instance.AddLog("……床に違和感がある");
+            }
+            
         }
     }
 

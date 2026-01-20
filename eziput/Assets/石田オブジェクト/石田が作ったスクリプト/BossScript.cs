@@ -73,9 +73,9 @@ public class BossScript : MonoBehaviour
         }
 
         //取得UI表示
-        if(GetItemPopUi.instance != null)
+        if(LogManager.Instance != null)
         {
-            GetItemPopUi.instance.Show(dropItemName, icon);
+            LogManager.Instance.AddItemLog($"{LogManager.ColorText(dropItemName, "#4444FF")} を習得した！", icon);
         }
 
         //カテゴリ取得

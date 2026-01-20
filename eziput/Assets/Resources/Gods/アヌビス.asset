@@ -20,7 +20,7 @@ MonoBehaviour:
   abilities:
     abilityName: "\u795E\u57DF\u691C\u7D22"
     description: "\u77E5\u6075\u306E\u5411\u4E0A"
-    power: 0
+    power: 5
     trigger: 3
     type: 0
     attackPattern: 1

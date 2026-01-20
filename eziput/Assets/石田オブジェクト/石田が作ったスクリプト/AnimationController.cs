@@ -135,6 +135,7 @@ public class AnimationController : MonoBehaviour
             remaininghits = Target.Count;
             foreach (var ttt in Target)
             {
+                if (ttt == null) continue;
                 if(ttt.status.currentHP <= 0) continue; 
                 AnimationController tgt = ttt.animationController;
                 Debug.Log("ヒットアニメーション開始");
@@ -171,6 +172,7 @@ public class AnimationController : MonoBehaviour
         }
         else
         {
+            if (Target == null || Target.Count == 0) return;
             if(Target[0].status.currentHP <= 0) return; 
             Debug.Log("シングルターゲットヒットアニメーション開始");
             remaininghits = 1;
@@ -210,7 +212,7 @@ public class AnimationController : MonoBehaviour
     // ヒットアニメーション終了通知（AnimationEventで呼ばれる）
     public void OnHitAnimationEnd()
     {
-
+        // 死亡中ならリセットしない
         anim.SetInteger("Hit", 0);
         Debug.Log("ヒット終わり―");
 
@@ -309,5 +311,8 @@ public class AnimationController : MonoBehaviour
         anim.SetInteger("Hit", 0);
     }
 
-
+    public void TrapDethAnimation()
+    {
+        anim.SetInteger("Hit", 201);
+    }
 }

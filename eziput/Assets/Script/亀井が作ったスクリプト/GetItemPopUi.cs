@@ -8,10 +8,11 @@ public class GetItemPopUi : MonoBehaviour
     public static GetItemPopUi instance;
 
     [SerializeField] private GameObject popupObj;
+    [SerializeField] private GameObject itemLogParent;
     [SerializeField] private Image itemIcon;
     [SerializeField] private Text itemText;
 
-    private void Awake()
+    private void Awake()//これをどこからにおいて、表示するときに、生成をすればいいか。
     {
         instance = this;
         popupObj.SetActive(false);
@@ -26,6 +27,7 @@ public class GetItemPopUi : MonoBehaviour
 
     IEnumerator ShowPopup(string itemName, Sprite icon)
     {
+        GameObject ItemLog = Instantiate(popupObj, transform);
         popupObj.SetActive(true);
         itemIcon.sprite = icon;
         itemText.text = $"{itemName}を手に入れた";

@@ -65,7 +65,7 @@ MonoBehaviour:
   hpSlider: {fileID: 0}
   hptext: {fileID: 0}
   status:
-    unitName: Unit
+    unitName: "\u30DF\u30A4\u30E9"
     exp: 0
     level: 1
     maxHP: 20
@@ -95,6 +95,7 @@ MonoBehaviour:
   animationController: {fileID: 2098735308302146791}
   equidpAttackBonus: 0
   equipDefenseBonus: 0
+  equipVarianceBonus: 0
   godPlayer: {fileID: 0}
   equippedWeaponType: 5
   isUsingSkill: 0
@@ -192,6 +193,18 @@ CapsuleCollider:
   m_Height: 3
   m_Direction: 1
   m_Center: {x: 0, y: 1.42, z: 0}
+--- !u!114 &2098735308302146790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288413727624953019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03a9d47369173dd47aec20710de5e4e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2098735308302146791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,18 +230,6 @@ MonoBehaviour:
     isDebuffing: 0
     isHiling: 0
   anim: {fileID: 0}
---- !u!114 &2098735308302146790
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1288413727624953019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03a9d47369173dd47aec20710de5e4e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1921504158005995009 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 07359b87f81764041b43f15d7069d4ce,

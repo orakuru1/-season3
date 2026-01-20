@@ -77,6 +77,10 @@ public class GameManager : MonoBehaviour
     public bool guaranteedItemAlreadyDropped = false;
     private animation guaranteedChest = null;
 
+
+
+    private TrapPlacer trapPlacer;
+
     // =======================
     // 初期化
     // =======================
@@ -94,6 +98,7 @@ public class GameManager : MonoBehaviour
         InitCanvasGroup(gameOverCanvasGroup);
 
         StartCoroutine(SpawnPlayerAfterGenerate());
+        trapPlacer = GetComponent<TrapPlacer>();
     }
 
     private void InitCanvasGroup(CanvasGroup cg)
@@ -324,6 +329,7 @@ public class GameManager : MonoBehaviour
         OnPlayerSpawned?.Invoke(playerObj);
         TurnManager.Instance.OnPlayerRevive();
         InitCanvasGroup(gameOverCanvasGroup);
+        trapPlacer.PlaceTraps();
 
         if(SeSlider != null) playerObj.GetComponentInChildren<BGMSE>()?.InitializeSettings(SeSlider, BgmSlider, seMuteButton, bgmMuteButton);
 

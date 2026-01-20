@@ -68,6 +68,11 @@ public class Unit : MonoBehaviour
 
     public WeaponType equippedWeaponType = WeaponType.None;//現在装備している武器の種類
 
+    public bool isStunned = false;//罠
+    public int stunTurns = 0;//罠
+
+    public bool isDead = false;
+
     protected virtual void Awake()
     {
         gridManager = GridManager.Instance;
@@ -141,6 +146,7 @@ public class Unit : MonoBehaviour
     public bool TryMove(Vector2Int dir)
     {
         if (isMoving || animationController.animationState.isAttacking || animationController.animationState.isBuffing || animationController.animationState.isDebuffing || animationController.animationState.isHiling || GodManeger.Instance.isGodDescrip) return false; Vector2Int next = gridPos + dir;
+        if (isDead) return false;
         var nextBlock = gridManager.GetBlock(next);
         if (nextBlock == null) return false;
 
@@ -244,6 +250,8 @@ public class Unit : MonoBehaviour
         isMoving = false;
         // --- 移動完了後イベントチェック ---
         yield return StartCoroutine(CheckTileEvent(gridPos));
+
+        if (isDead || TurnManager.Instance.gameState != TurnManager.GameState.Playing) yield break;
 
         // プレイヤーならターン終了通知
         if (team == Team.Player)
@@ -441,6 +449,14 @@ public class Unit : MonoBehaviour
         UpdateHPBar(status.currentHP);
         if(DamageTextManager.Instance != null) DamageTextManager.Instance.ShowDamage(damage, this.transform);
         if (status.currentHP <= 0) Die(attacker);
+        LogManager.Instance.AddLog($"{status.unitName}が{LogManager.ColorText(damage.ToString(), "#FF4444")} ダメージを受けた！");
+    }
+
+    public IEnumerator ApplyStun(int turns)
+    {
+        isStunned = true;
+        stunTurns = turns;
+        yield return null;
     }
 
     void UpdateHPBar(float currentHP)
@@ -466,6 +482,8 @@ public class Unit : MonoBehaviour
 
     public void Die(Unit killer = null)
     {
+        if (isDead) return;
+        isDead = true;
         var block = gridManager.GetBlock(gridPos);
         if (block != null && block.occupantUnit == this) block.occupantUnit = null;
         TurnManager.Instance.RemoveUnit(this);
@@ -479,16 +497,21 @@ public class Unit : MonoBehaviour
             animationController.attacker.animationState.isHitAnimation = true;
             animationController.attacker.AnimationEnd();
         }
-        if (godPlayer != null && godPlayer.ownedGods.Count > 0)
+
+        if(killer != null)
         {
-            var killerPlayer = killer.godPlayer;
-                
-            if (killerPlayer != null)
+            if (godPlayer != null && godPlayer.ownedGods.Count > 0)
             {
-                GodManeger.Instance.addinggods(godPlayer.ownedGods, killerPlayer, true);
+                var killerPlayer = killer.godPlayer;
+                    
+                if (killerPlayer != null)
+                {
+                    GodManeger.Instance.addinggods(godPlayer.ownedGods, killerPlayer, true);
+                }
+                
             }
-            
         }
+
 
         if (team == Team.Player)
         {
@@ -670,16 +693,65 @@ public class Unit : MonoBehaviour
     public IEnumerator CheckTileEvent(Vector2Int pos)
     {
         if (team != Team.Player) yield break;
-        var block = GridManager.Instance.GetBlock(pos);
+
+        var block = gridManager.GetBlock(pos);
         if (block == null) yield break;
 
+        // === 罠 ===
+        if (block.trapType != TrapType.None && !block.trapConsumed)
+        {
+            yield return StartCoroutine(TriggerTrap(block));
+            yield break;
+        }
+
+        // === 通常イベント ===
         if (block.hasEvent)
         {
             Debug.Log($"{name} がイベントマス {block.eventID} に入りました！");
             isEvent = true;
-            // 任意のイベント呼び出し
-            yield return StartCoroutine(EventManager.Instance.TriggerEvent(block.eventID, this));
+            yield return StartCoroutine(
+                EventManager.Instance.TriggerEvent(block.eventID, this)
+            );
         }
     }
+
+    private IEnumerator TriggerTrap(GridBlock block)
+    {
+        block.trapConsumed = true;
+        isEvent = true;
+
+        switch (block.trapType)
+        {
+            case TrapType.Damage:
+                SoundManager.Instance.PlaySE(block.ArrowTrapSE);
+                yield return new WaitForSeconds(1f);//音が鳴ってから爆発するまで
+                EffectManager.Instance.PlayAttackEffect(transform.position, transform, 2003);//罠のエフェクト
+                SoundManager.Instance.PlaySE2("爆発２");
+                LogManager.Instance.AddLog($"{LogManager.ColorText($"{status.unitName}は罠を踏んだ！", "#FF4444")}");
+                yield return new WaitForSeconds(1f);//音が鳴ってから、少ししてダメージ
+                //animationController.Initialize(this, block.trapValue);//専用の死亡アニメーションも入れる。
+                //animationController.TrapAnimation(block.trapType);
+                TakeDamage(block.trapValue);
+                if (status.currentHP <= 0)
+                {
+                    animationController.TrapDethAnimation();
+                }
+                break;
+
+            case TrapType.Stun:
+                //SoundManager.Instance.PlaySE("Trap_Damage");
+                yield return new WaitForSeconds(1f);//音が鳴ってから、少ししてダメージ
+                LogManager.Instance.AddLog(
+                    $"{status.unitName}は足を取られた！"
+                );
+                StartCoroutine(ApplyStun(block.trapValue));
+                break;
+        }
+
+        yield return null;
+        isEvent = false;
+    }
+
+
 
 }

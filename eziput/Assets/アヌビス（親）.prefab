@@ -93,8 +93,7 @@ MonoBehaviour:
   isShowingAttackRange: 0
   isEvent: 0
   facingDir: {x: 0, y: 0}
-  attackSkills:
-  - {fileID: 11400000, guid: 5739d8f57a39c924eb2ffbe61e37e0d2, type: 2}
+  attackSkills: []
   weaponSkillLoadouts: []
   anim: {fileID: 3548262269595652}
   animationController: {fileID: 5865391548788385566}
@@ -103,6 +102,9 @@ MonoBehaviour:
   equipVarianceBonus: 0
   godPlayer: {fileID: 0}
   equippedWeaponType: 5
+  isStunned: 0
+  stunTurns: 0
+  isDead: 0
   isUsingSkill: 0
 --- !u!114 &8992817457766031524
 MonoBehaviour:

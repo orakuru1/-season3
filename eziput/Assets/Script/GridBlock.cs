@@ -13,6 +13,12 @@ public class GridBlock : MonoBehaviour
     private Renderer blockRenderer;
     private Color originalColor;
 
+    // Trap関連
+    public TrapType trapType = TrapType.None;
+    public int trapValue = 0;
+    public bool trapConsumed = false;
+    public AudioClip ArrowTrapSE;
+
     private void Start()
     {
         blockRenderer = GetComponent<Renderer>();
@@ -51,4 +57,14 @@ public class GridBlock : MonoBehaviour
     {
         GetComponent<Renderer>().material.color = originalColor;
     }
+
+    public void OnDrawGizmos()//デバッグ用
+    {
+        if (trapType == TrapType.None) return;
+
+        Gizmos.color = trapType == TrapType.Damage ? Color.red : Color.yellow;
+        Gizmos.DrawWireCube(transform.position, Vector3.one * 0.9f);
+    }
+
+
 }

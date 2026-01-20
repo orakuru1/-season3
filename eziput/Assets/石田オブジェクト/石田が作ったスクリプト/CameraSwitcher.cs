@@ -32,11 +32,11 @@ public class CameraSwitcher : MonoBehaviour
         SetView(false);
     }
 
-    public void SetView(bool top)
+    public void SetView(bool top)//Audio　Listenrはカメラにつけないほうが良いかも。BGMが最初になってしまう。
     {
         if(DamageTextManager.Instance != null)
         {
-            DamageTextManager.Instance.SetCamera(top ? topCamera : playerCamera);
+            DamageTextManager.Instance.SetCamera(top ? topCamera : playerCamera, isTopView);
             DamageTextManager.Instance.SetTransform(top ? TopViewPoint : PlayerViewPoint);
         }
 

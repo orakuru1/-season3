@@ -17,7 +17,7 @@ MonoBehaviour:
   weaponType: 5
   requiredMastery: 2
   triggerKey: 110
-  attackPattern: {fileID: 11400000, guid: cde4c948a286cda45bc792f656e021f7, type: 2}
+  attackPattern: {fileID: 11400000, guid: 0e4aead31d1722145a7af508dac7826a, type: 2}
   power: 2
   animationID: 4
   deathAnimationID: 201

@@ -62,6 +62,17 @@ public class TurnManager : MonoBehaviour
         if (unit.team == Unit.Team.Player)
         {
             var playerUnit = allUnits.FirstOrDefault(u => u.team == Unit.Team.Player);
+            
+            if (playerUnit.isStunned)
+            {
+                playerUnit.stunTurns--;
+                if (playerUnit.stunTurns <= 0)
+                    playerUnit.isStunned = false;
+
+                NextTurn();
+                return;
+            }
+
             if (playerUnit == null) return;
 
             //Debug.Log("Player Turn Start");
