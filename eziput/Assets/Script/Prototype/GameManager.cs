@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -74,8 +75,11 @@ public class GameManager : MonoBehaviour
     public float silenceDurationBeforeGameOverBgm = 0.5f;
 
     [Header("確定アイテム管理")]
-    public bool guaranteedItemAlreadyDropped = false;
-    private animation guaranteedChest = null;
+    [SerializeField] private List<string> guaranteedItemNames;
+    [SerializeField] private List<animation.ItemType> guaranteedItemTypes;
+
+    //確定アイテムを順番管理
+    private Queue<(string name, animation.ItemType type)> guaranteedItemQueue;
 
 
 
@@ -97,6 +101,8 @@ public class GameManager : MonoBehaviour
         InitCanvasGroup(gameClearCanvasGroup);
         InitCanvasGroup(gameOverCanvasGroup);
 
+        InitGuaranteedItems();
+
         StartCoroutine(SpawnPlayerAfterGenerate());
         trapPlacer = GetComponent<TrapPlacer>();
     }
@@ -110,12 +116,35 @@ public class GameManager : MonoBehaviour
         cg.gameObject.SetActive(false);
     }
 
+    private void InitGuaranteedItems()
+    {
+        var list = new List<(string, animation.ItemType)>();
+
+        for(int i = 0; i < guaranteedItemNames.Count; i++)
+        {
+            list.Add((guaranteedItemNames[i], guaranteedItemTypes[i]));
+        }
+
+        Shuffle(list);
+        guaranteedItemQueue = new Queue<(string, animation.ItemType)>(list);
+    }
+
+    private void Shuffle<T>(List<T> list)
+    {
+        for(int i = list.Count - 1; i > 0; i--)
+        {
+            int j = UnityEngine.Random.Range(0, i + 1);
+            (list[i], list[j]) = (list[j], list[i]);
+        }
+    }
+
     public bool TryAssignGuaranteedChest(animation chest)
     {
-        if(guaranteedChest != null)
-           return false;
+        if (guaranteedItemQueue == null || guaranteedItemQueue.Count == 0)
+            return false;
 
-        guaranteedChest = chest;
+        var item = guaranteedItemQueue.Dequeue();
+        chest.SetGuaranteedItem(item.name, item.type);
         return true;
     }
 

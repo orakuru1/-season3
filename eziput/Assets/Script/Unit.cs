@@ -512,6 +512,7 @@ public class Unit : MonoBehaviour
             }
         }
 
+        GetComponent<BossScript>()?.enemyDie();
 
         if (team == Team.Player)
         {
@@ -521,7 +522,7 @@ public class Unit : MonoBehaviour
             GameManager.Instance.GameOver();
         }
 
-        if (anim == null)
+        if (anim == null && GetComponent<BossScript>() == null)
         {
             Destroy(gameObject);
         }

@@ -13,9 +13,12 @@ public class PlayerUnit : Unit
     public int durabilityexp = 5;
 
     private bool leveledUp = false;
+    public System.Action OnWeaponMasteryChanged;
 
     public SkillDatabase allSkillsDatabase; // 全スキルデータベース参照
-    
+
+    public static PlayerUnit Instance{get; private set;}
+
     // スキル使用
     public IEnumerator UseSkill(SkillData skill)
     {
@@ -81,12 +84,14 @@ public class PlayerUnit : Unit
                 animationController.Initialize(targets[0], TrueAttack, skill.deathAnimationID);
                 animationController.AttackAnimation(skill.animationID);
                 leveledUp = weaponMasterySet.Get(equippedWeaponType).AddExp(durabilityexp); // 単一対象なら熟練度を5増加
+                OnWeaponMasteryChanged?.Invoke();
             }
             else
             {
                 animationController.Initialize(targets, TrueAttack, skill.deathAnimationID);
                 animationController.AttackAnimation(skill.animationID);
                 leveledUp = weaponMasterySet.Get(equippedWeaponType).AddExp(durabilityexp / 2); // 複数対象なら熟練度を半分増加
+                OnWeaponMasteryChanged?.Invoke();
             }
 
         }
@@ -271,6 +276,13 @@ public class PlayerUnit : Unit
     protected override void Awake()
     {
         base.Awake();
+        if(Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
         allSkillsDatabase.BuildDictionary();
     }
 

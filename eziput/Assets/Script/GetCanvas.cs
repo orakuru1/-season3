@@ -14,9 +14,13 @@ public class GetCanvas : MonoBehaviour
     public GameObject bukiImage;    //武器image
     public GameObject bouguImage;   //防具image
     public GameObject inventoryImage;  //持ち物image
+    public GameObject jukurendImage;  //熟練度image
     public GameObject setteiImage;  //設定image
     public GameObject itempanel;  //アイテム使いますか？panel
     public GameObject craftArea; 
+    public GameObject SkillSlotUI;
+    public GameObject SwordImage;
+    public GameObject FistImage;
 
     [Header("神の力表示Panel")]
     public GameObject kamipanel;
@@ -47,12 +51,16 @@ public class GetCanvas : MonoBehaviour
         panel.SetActive(newState);
         kyarastatusImage.SetActive(newState);
         inventoryImage.SetActive(newState);
+        jukurendImage.SetActive(newState);
         bukiImage.SetActive(newState);
         bouguImage.SetActive(newState);
         setteiImage.SetActive(newState);
         itempanel.SetActive(newState);
         kamipanel.SetActive(State);
         kamipanelsutatus.SetActive(newState);
+        SkillSlotUI.SetActive(State);
+        SwordImage.SetActive(newState);
+        FistImage.SetActive(newState);
 
         if (newState)
         {
@@ -72,12 +80,15 @@ public class GetCanvas : MonoBehaviour
         if (statusImage) statusImage.SetActive(false);
         if(kyarastatusImage) kyarastatusImage.SetActive(false);
         if (inventoryImage) inventoryImage.SetActive(false);
+        if(jukurendImage) jukurendImage.SetActive(false);
         if (bukiImage) bukiImage.SetActive(false);
         if (bouguImage) bouguImage.SetActive(false);
         if(setteiImage) setteiImage.SetActive(false);
         if(itempanel) itempanel.SetActive(false);
         if(craftArea) craftArea.SetActive(false);
         if(kamipanelsutatus) kamipanelsutatus.SetActive(false);
+        if(SwordImage) SwordImage.SetActive(false);
+        if(FistImage) FistImage.SetActive(false);
     }
 
     public void ShowStatusOnly()  //ステータスimageだけ表示
@@ -103,6 +114,13 @@ public class GetCanvas : MonoBehaviour
            craftArea.SetActive(true);
     }
 
+    public void showjukurend()
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if(jukurendImage) jukurendImage.SetActive(true);
+    }
+
     public void showbuki()  //ステータスimageと武器image表示
     {
         HideAllImages();
@@ -123,6 +141,20 @@ public class GetCanvas : MonoBehaviour
     {
         HideAllImages();
         if(setteiImage) setteiImage.SetActive(true);
+    }
+    
+    public void showSwordimage()
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if(SwordImage) SwordImage.SetActive(true);
+    }
+
+    public void showFistImage()
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if(FistImage) FistImage.SetActive(true);
     }
 
     public void itemsiyou()

@@ -145,4 +145,13 @@ public class animation : MonoBehaviour
         player = p.transform;
         //Debug.Log("宝箱にプレイヤー設定完了");
     }
+
+    public void SetGuaranteedItem(string name, ItemType type)
+    {
+        isGuaranteedChest = true;
+        dropItemName = name;
+        dropItemType = type;
+
+        Debug.Log($"確定宝箱: {name}");
+    }
 }

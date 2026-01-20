@@ -117,6 +117,14 @@ public class ItemUIManager : MonoBehaviour
         {"石槌", "weapon"},
         {"骨", "weapon"},
         {"骨ナイフ", "weapon"},
+        {"錆びた斧", "weapon"},
+        {"斧", "weapon"},
+        {"槍", "weapon"},
+        {"炎の槍", "weapon"},
+        {"杖", "weapon"},
+        {"炎の杖", "weapon"},
+        {"弓", "weapon"},
+        {"鉄の弓", "weapon"},
         {"神の腰布", "armor"},
         {"石片", "item"},
         {"鉄", "item"},
@@ -168,6 +176,24 @@ public class ItemUIManager : MonoBehaviour
         {
             ("紐", 1),
             ("骨", 1)
+        };
+
+        resipeDict["炎の槍"] = new List<(string, int)>()
+        {
+            ("松明", 1),
+            ("槍", 1)
+        };
+
+        resipeDict["炎の杖"] = new List<(string, int)>()
+        {
+            ("松明", 1),
+            ("杖", 1)
+        };
+
+        resipeDict["鉄の弓"] = new List<(string, int)>()
+        {
+            ("鉄", 1),
+            ("弓", 1)
         };
 
         resipeDict["アヌビスの通行証"] = new List<(string, int)>()

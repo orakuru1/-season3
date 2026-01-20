@@ -26,6 +26,7 @@ public class craftmode : MonoBehaviour
     public float contentHeight = 1000;  //一番長いときに合わせたたかさ　
 
     public GameObject kyarastatusImage; //キャラのステータスimage
+    public GameObject SkillSlotUI;  //武器熟練度image
 
     public bool isCraftMode = false;
 
@@ -44,7 +45,7 @@ public class craftmode : MonoBehaviour
 
     void ToggleCraftMode()
     {
-        if(!kyarastatusImage.activeSelf)
+        if(!kyarastatusImage.activeSelf && !SkillSlotUI.activeSelf)
         {
            if(isCraftMode)
         {
