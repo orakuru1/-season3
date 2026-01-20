@@ -20,6 +20,7 @@ public class GetCanvas : MonoBehaviour
     public GameObject craftArea; 
     public GameObject SkillSlotUI;
     public GameObject SwordImage;
+    public GameObject FistImage;
 
     [Header("神の力表示Panel")]
     public GameObject kamipanel;
@@ -59,6 +60,7 @@ public class GetCanvas : MonoBehaviour
         kamipanelsutatus.SetActive(newState);
         SkillSlotUI.SetActive(State);
         SwordImage.SetActive(newState);
+        FistImage.SetActive(newState);
 
         if (newState)
         {
@@ -86,6 +88,7 @@ public class GetCanvas : MonoBehaviour
         if(craftArea) craftArea.SetActive(false);
         if(kamipanelsutatus) kamipanelsutatus.SetActive(false);
         if(SwordImage) SwordImage.SetActive(false);
+        if(FistImage) FistImage.SetActive(false);
     }
 
     public void ShowStatusOnly()  //ステータスimageだけ表示
@@ -145,6 +148,13 @@ public class GetCanvas : MonoBehaviour
         HideAllImages();
         if(statusImage) statusImage.SetActive(true);
         if(SwordImage) SwordImage.SetActive(true);
+    }
+
+    public void showFistImage()
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if(FistImage) FistImage.SetActive(true);
     }
 
     public void itemsiyou()
