@@ -105,7 +105,11 @@ public class ElementGenerator : MonoBehaviour
                     {
                         block.gridPos = new Vector2Int(x, y);
                         block.isWalkable = (mapData[y, x] == 0); // 0=床、1=壁
-
+                        if(endRoom.Center.x == x && endRoom.Center.y == y)
+                        {
+                            block.hasEvent = true;
+                            block.eventID = "Next";
+                        }
                         // GridManager に登録
                         if (GridManager.Instance != null)
                         {
@@ -453,6 +457,7 @@ public class ElementGenerator : MonoBehaviour
     private void SpawnFeature(GameObject prefab, Vector2Int cell, string baseName, Quaternion? rotation = null
 )
     {
+        TurnManager.Instance.allUnits = FindObjectsOfType<Unit>().OrderByDescending(u => u.status.speed).ToList();
         if (prefab == null) return;
         Quaternion rot = rotation ?? Quaternion.identity;
 
@@ -463,7 +468,6 @@ public class ElementGenerator : MonoBehaviour
 
         GridBlock block = GridManager.Instance.GetBlock(cell);
         if (block == null) return;
-
         // Unit（敵・ボス）
         Unit unit = o.GetComponent<Unit>();
         if (unit != null)

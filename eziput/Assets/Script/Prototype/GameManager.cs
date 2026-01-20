@@ -173,13 +173,13 @@ public class GameManager : MonoBehaviour
     // =======================
     public void TryStageClear()
     {
+        /*
         if (!IsBossDefeated || !IsItemCrafted)
             return;
-
         if (CurrentStage == 1)
             ShowStage1GameClear();
-        else
-            GameClear();
+        else*/
+        GameClear();
     }
 
     // =======================
@@ -276,16 +276,18 @@ public class GameManager : MonoBehaviour
     // =======================
     private void ProceedToNextStage()
     {
-        CurrentStage++;
+        var ps = PlayerState.Instance;
+
+        ps.currentStage++;
 
         IsBossDefeated = false;
         IsItemCrafted = false;
 
-        if (CurrentStage > MaxStage)
+        if (ps.currentStage > MaxStage)
         {
             SceneManager.LoadScene("GameCompleteScene");
         }
-        else if (CurrentStage == 4)
+        else if (ps.currentStage == 4)
         {
             SceneManager.LoadScene("FinalStage");
         }
@@ -294,6 +296,7 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene("Scene_Select");
         }
     }
+
 
     // =======================
     // 共通処理
@@ -358,13 +361,23 @@ public class GameManager : MonoBehaviour
         OnPlayerSpawned?.Invoke(playerObj);
         TurnManager.Instance.OnPlayerRevive();
         InitCanvasGroup(gameOverCanvasGroup);
-        trapPlacer.PlaceTraps();
 
-        if(SeSlider != null) playerObj.GetComponentInChildren<BGMSE>()?.InitializeSettings(SeSlider, BgmSlider, seMuteButton, bgmMuteButton);
+        if (SeSlider != null) playerObj.GetComponentInChildren<BGMSE>()?.InitializeSettings(SeSlider, BgmSlider, seMuteButton, bgmMuteButton);
 
         Unit unit = playerObj.GetComponent<Unit>();
         if (unit != null)
         {
+            //ステータスの引継ぎ
+            var ps = PlayerState.Instance;
+            if (ps.currentStage != 1)
+            {
+                unit.status.maxHP = ps.maxHP;
+                unit.status.currentHP = ps.currentHP;
+                unit.status.attack = ps.attack;
+                unit.status.defense = ps.defense;
+                unit.godPlayer.ownedGods = ps.ownedGods;
+            }
+
             unit.hpSlider = hpSlider;
             unit.hptext = hptext;
             unit.gridPos = new Vector2Int(
@@ -387,5 +400,17 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log("Player Spawned at Entrance");
+    }
+
+    //ステータスの引継ぎ
+    public void SavePlayerState(Unit unit)
+    {
+        var ps = PlayerState.Instance;
+
+        ps.currentHP = unit.status.currentHP;
+        ps.maxHP = unit.status.maxHP;
+        ps.attack = unit.status.attack;
+        ps.defense = unit.status.defense;
+        ps.ownedGods = unit.godPlayer.ownedGods;
     }
 }

@@ -12,6 +12,7 @@ public class DungeonGenerator : MonoBehaviour
     public bool showMarkers = false;
     private List<Vector2Int> floorList = new List<Vector2Int>();
     public IReadOnlyList<Vector2Int> FloorList => floorList;
+    public static DungeonGenerator Instance { get; internal set; }
 
     [Header("マップ基本設定")]
     public int width = 80;
@@ -56,13 +57,14 @@ public class DungeonGenerator : MonoBehaviour
         {
             Debug.LogWarning("[DungeonGenerator] DungeonSettings が Inspector に割当てられていません。既定値で生成します。");
         }
-
+        
         GenerateNow();
     }
 
     [ContextMenu("Generate Now")]
     public void GenerateNow()
     {
+        TurnManager.Instance.allUnits.Clear();
         // safety fix
         if (minRoomSize < 3) minRoomSize = 3;
         if (maxRoomSize < minRoomSize) maxRoomSize = minRoomSize + 1;
