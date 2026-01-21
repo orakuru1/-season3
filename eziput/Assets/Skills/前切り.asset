@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82375e399513afe459a48a7938d82627, type: 3}
   m_Name: "\u524D\u5207\u308A"
   m_EditorClassIdentifier: 
-  skillID: 3
+  skillID: 1
   skillName: "\u524D\u5207\u308A"
   weaponType: 0
   requiredMastery: 0

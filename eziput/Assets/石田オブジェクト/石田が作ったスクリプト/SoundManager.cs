@@ -9,7 +9,6 @@ public class SoundManager : MonoBehaviour
     [Header("AudioSources")]
     [SerializeField] public AudioSource bgmSource;
     [SerializeField] public AudioSource seSource;
-    [SerializeField] public AudioClip audioClip;
     public List<AudioClip> seClipList = new List<AudioClip>();
     private Dictionary<string, AudioClip> seClips = new Dictionary<string, AudioClip>();
 
@@ -31,11 +30,7 @@ public class SoundManager : MonoBehaviour
 
     void Update()
     {
-        // Test Code
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            PlaySE(audioClip);
-        }
+        
     }
 
     public void InitializeSettings(AudioSource bgmSource, AudioSource seSource)

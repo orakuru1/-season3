@@ -15,10 +15,16 @@ MonoBehaviour:
   normalSkills:
     sword:
     - {fileID: 11400000, guid: 69a836a390dc5154695b7059bd31a689, type: 2}
-    axe: []
-    spear: []
+    - {fileID: 11400000, guid: 9ed802075ff6c834cbe0f6d90d007f13, type: 2}
+    axe:
+    - {fileID: 11400000, guid: d36e987f3c883b0428e51fd171039e18, type: 2}
+    - {fileID: 11400000, guid: 278be790ad56f3340afafb38b3248143, type: 2}
+    spear:
+    - {fileID: 11400000, guid: 695f4e06ec7c4ba4e97ad5f2262413ea, type: 2}
+    - {fileID: 11400000, guid: 2bc75a392d461404d94b79582f8a6eb9, type: 2}
     bow: []
     staff:
+    - {fileID: 11400000, guid: 764be6522e85daf49a90c916568e6baa, type: 2}
     - {fileID: 11400000, guid: d98dff570ecb34e428a52d031e58d78e, type: 2}
     none:
     - {fileID: 11400000, guid: 7ec4473f122633e46bf7dd0b585351f6, type: 2}
