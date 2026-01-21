@@ -97,4 +97,9 @@ public class BGMSE : MonoBehaviour
         this.seMuteButton = sb;
         this.bgmMuteButton = bb;
     }
+
+    public void StopBGM()
+    {
+        bgmSource.Stop();
+    }
 }

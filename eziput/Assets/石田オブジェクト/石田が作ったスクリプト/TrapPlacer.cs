@@ -32,7 +32,7 @@ public class TrapPlacer : MonoBehaviour
             candidates.RemoveAt(index);
 
             block.trapType = TrapType.Damage;
-            block.trapValue = Random.Range(3, 8);
+            block.trapValue = Random.Range(5, 10);
             block.ArrowTrapSE = trapse;
             //block.OnDrawGizmos();
             placedTraps.Add(block);

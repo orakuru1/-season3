@@ -22,7 +22,8 @@ MonoBehaviour:
     spear:
     - {fileID: 11400000, guid: 695f4e06ec7c4ba4e97ad5f2262413ea, type: 2}
     - {fileID: 11400000, guid: 2bc75a392d461404d94b79582f8a6eb9, type: 2}
-    bow: []
+    bow:
+    - {fileID: 11400000, guid: eec035fb94e659d49887efec0c44f8df, type: 2}
     staff:
     - {fileID: 11400000, guid: 764be6522e85daf49a90c916568e6baa, type: 2}
     - {fileID: 11400000, guid: d98dff570ecb34e428a52d031e58d78e, type: 2}
