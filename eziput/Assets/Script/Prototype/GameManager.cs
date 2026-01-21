@@ -211,13 +211,17 @@ public class GameManager : MonoBehaviour
     // =======================
     private void GameClear()
     {
+        Debug.Log("ステージクリア表示UI");
+        DisableInput();
+        StopBgm();
         StartCoroutine(GameClearRoutine());
+        StartCoroutine(FadeInCanvas(gameClearCanvasGroup, gameClearFadeTime));
     }
 
     private IEnumerator GameClearRoutine()
     {
         DisableInput();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(3f);
         ProceedToNextStage();
     }
 
