@@ -77,8 +77,10 @@ public class PlayerUnit : Unit
 
         if (anim != null)
         {
-            int TA = CalculateDamage(status.attack, equippedWeaponType);
-            int TrueAttack = TA + skill.power + equidpAttackBonus;
+            
+            int TA = status.attack + skill.power + equidpAttackBonus;
+            int TrueAttack = CalculateDamage(TA, equippedWeaponType);
+            if (TrueAttack < 0) TrueAttack = 0;
             if (targets.Count == 1)
             {
                 animationController.Initialize(targets[0], TrueAttack, skill.deathAnimationID);

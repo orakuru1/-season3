@@ -61,32 +61,36 @@ public class EffectManager : MonoBehaviour
     /// </summary>
     public void PlayAttackEffect(Vector3 pos, Transform origin, int id)
     {
-        if(!attackEffectMap.TryGetValue(id, out AttackEffects data))
+        if (!attackEffectMap.TryGetValue(id, out AttackEffects data))
         {
             Debug.LogWarning($"AttackEffect ID {id} が見つかりません");
             return;
         }
 
-        Quaternion rot = data.alignToCharacter? Quaternion.Euler(0, origin.eulerAngles.y, 0) : Quaternion.identity;
+        Quaternion rot = data.alignToCharacter
+            ? Quaternion.Euler(0, origin.eulerAngles.y, 0)
+            : Quaternion.identity;
 
         Vector3 finalPos = pos + data.offset;
+
+        // ★ キャラ前方に出す
+        if (data.useCharacterForward)
+        {
+            finalPos += origin.forward * data.forwardOffset;
+        }
 
         GameObject effect = Instantiate(data.effectPrefab, finalPos, rot);
         Destroy(effect, data.duration);
 
-        // 追加エフェクト処理（Zangeki など）
+        // 追加エフェクト
         if (data.spawnExtraEffect && data.extraEffectPrefab != null)
         {
-            if (data.useCharacterForward)
-            {
-                pos += origin.forward * data.forwardOffset;
-            }
-            Vector3 extraPos = pos + data.extraOffset;
+            Vector3 extraPos = finalPos + data.extraOffset;
             GameObject extra = Instantiate(data.extraEffectPrefab, extraPos, rot);
             Destroy(extra, data.duration);
         }
-
     }
+
 
 
     public void PlayHitEffect(Vector3 pos, int id)

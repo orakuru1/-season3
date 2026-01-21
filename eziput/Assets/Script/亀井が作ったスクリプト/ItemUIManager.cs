@@ -706,6 +706,7 @@ public class ItemUIManager : MonoBehaviour
             player.durabilityexp = 5;
             player.RefreshAttackSkills();
             weponSlotImage.sprite = fistIcon;
+            player.equipVarianceBonus = 0;
 
             //装備解除
             equippedWeaponButton = null;

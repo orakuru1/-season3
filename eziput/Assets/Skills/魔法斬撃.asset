@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82375e399513afe459a48a7938d82627, type: 3}
   m_Name: "\u9B54\u6CD5\u65AC\u6483"
   m_EditorClassIdentifier: 
-  skillID: 0
+  skillID: 2
   skillName: "\u9B54\u6CD5\u65AC\u6483"
   weaponType: 4
-  requiredMastery: 5
+  requiredMastery: 3
   triggerKey: 118
   attackPattern: {fileID: 11400000, guid: cde4c948a286cda45bc792f656e021f7, type: 2}
-  power: 5
+  power: 3
   animationID: 2
   deathAnimationID: 201

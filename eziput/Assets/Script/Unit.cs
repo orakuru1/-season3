@@ -57,7 +57,7 @@ public class Unit : MonoBehaviour
     public int equipDefenseBonus = 0;
 
     //武器のブレ幅
-    public int equipVarianceBonus = 0;
+    public float equipVarianceBonus = 0;
 
     //現在の総合ステータス計算
     public int TotalAttack => status.attack + equidpAttackBonus;
@@ -381,6 +381,7 @@ public class Unit : MonoBehaviour
     public int CalculateDamage(int attack, WeaponType weaponType)
     {
         float varianceRate = GetVarianceRate(weaponType) + equipVarianceBonus;
+        Debug.LogError("Variance Rate: " + varianceRate);
 
         float variance = attack * varianceRate;
         float min = attack - variance;
@@ -752,7 +753,5 @@ public class Unit : MonoBehaviour
         yield return null;
         isEvent = false;
     }
-
-
 
 }

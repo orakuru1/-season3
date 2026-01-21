@@ -98,6 +98,9 @@ MonoBehaviour:
   equipVarianceBonus: 0
   godPlayer: {fileID: 0}
   equippedWeaponType: 5
+  isStunned: 0
+  stunTurns: 0
+  isDead: 0
   isUsingSkill: 0
 --- !u!1001 &2098735307932254698
 PrefabInstance:

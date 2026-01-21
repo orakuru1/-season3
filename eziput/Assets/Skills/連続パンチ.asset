@@ -18,6 +18,6 @@ MonoBehaviour:
   requiredMastery: 2
   triggerKey: 110
   attackPattern: {fileID: 11400000, guid: 0e4aead31d1722145a7af508dac7826a, type: 2}
-  power: 2
+  power: 1
   animationID: 4
   deathAnimationID: 201

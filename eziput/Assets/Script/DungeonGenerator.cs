@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Phase2 完全版: BSPで部屋を作り、必ず接続（掘削）するダンジョン生成器
@@ -395,10 +396,11 @@ public class DungeonGenerator : MonoBehaviour
 
     public void GameOveaaaaaa()
     {
-        GameManager.Instance.GameOvedUI();
-        TurnManager.Instance.allUnits.Clear();
-        GenerateNow();
-        StartCoroutine(GameManager.Instance.SpawnPlayerAfterGenerate());
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //GameManager.Instance.GameOvedUI();
+        //TurnManager.Instance.allUnits.Clear();
+        //GenerateNow();
+        //StartCoroutine(GameManager.Instance.SpawnPlayerAfterGenerate());
     }
 }
 

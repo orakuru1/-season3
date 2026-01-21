@@ -50,6 +50,12 @@ public class SaveLoad : MonoBehaviour
             saveData.weaponSkillLoadouts.Add(loadoutData);
         }
 
+        if(godPlayer == null)
+        {
+            Debug.LogError("GodPlayerが見つかりません。セーブに失敗しました。");
+            return;
+        }
+
         foreach(var god in godPlayer.ownedGods)//神の加護のセーブのために追加
         {
             saveData.godids.Add(god.id);
