@@ -795,6 +795,7 @@ public class ItemUIManager : MonoBehaviour
     //=============================
     private void UpdateItemCountText(GameObject button, int count)
     {
+        if(button == null) return;
         Text countText = button.GetComponentInChildren<Text>(true);
         var dict = GetDictionaryByCategory(GetItemCategory(button.name));
 
