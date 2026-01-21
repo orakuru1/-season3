@@ -173,6 +173,11 @@ public class GameManager : MonoBehaviour
     // =======================
     public void TryStageClear()
     {
+        if(!IsItemCrafted)
+        {
+            Debug.Log("クリア条件未達成");
+            return;
+        }
         /*
         if (!IsBossDefeated || !IsItemCrafted)
             return;

@@ -31,9 +31,26 @@ public class EventManager : MonoBehaviour
 
             case "Next":
                 Debug.Log($"{actor.name} は出口に着いた！");
-                GameManager.Instance.SavePlayerState(actor);
-                GameManager.Instance.TryStageClear();
+
+                if (ItemUIManager.instance.HasItem("アヌビスの通行証"))
+                {
+                    Debug.Log("特殊アイテム所持 → クリア判定");
+
+                    // 消費
+                    ItemUIManager.instance.UseSelectedItem("アヌビスの通行証", "item");
+
+                    // ★ フラグを立てる
+                    GameManager.Instance.IsItemCrafted = true;
+
+                    GameManager.Instance.SavePlayerState(actor);
+                    GameManager.Instance.TryStageClear();
+                }
+                else
+                {
+                    Debug.Log("特殊アイテムを持っていません");
+                }
                 break;
+
 
             case "Boss":
                 Debug.Log("ボス戦開始！");

@@ -373,6 +373,11 @@ public class ItemUIManager : MonoBehaviour
         {
             AddItem(result, "item");
         }
+
+        if(result == "アヌビスの通行証")
+        {
+            GameManager.Instance.IsItemCrafted = true;
+        }
         StartCoroutine(ShowCraftMessage($"成功！{result}を作成！", true));
 
         ClearCraftSlots();
@@ -823,6 +828,11 @@ public class ItemUIManager : MonoBehaviour
            return baseCategoryDict[itemName];
         
         return null;
+    }
+
+    public bool HasItem(string itemName)
+    {
+        return itemDict.ContainsKey(itemName) && itemDict[itemName].count > 0;
     }
 
 
