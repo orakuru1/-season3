@@ -20,6 +20,10 @@ public class GetCanvas : MonoBehaviour
     public GameObject craftArea; 
     public GameObject SkillSlotUI;
     public GameObject SwordImage;
+    public GameObject AxeImage;
+    public GameObject SpearImage;
+    public GameObject BowImage;
+    public GameObject StaffImage;
     public GameObject FistImage;
 
     [Header("神の力表示Panel")]
@@ -60,6 +64,10 @@ public class GetCanvas : MonoBehaviour
         kamipanelsutatus.SetActive(newState);
         SkillSlotUI.SetActive(State);
         SwordImage.SetActive(newState);
+        AxeImage.SetActive(newState);
+        SpearImage.SetActive(newState);
+        BowImage.SetActive(newState);
+        StaffImage.SetActive(newState);
         FistImage.SetActive(newState);
 
         if (newState)
@@ -88,6 +96,10 @@ public class GetCanvas : MonoBehaviour
         if(craftArea) craftArea.SetActive(false);
         if(kamipanelsutatus) kamipanelsutatus.SetActive(false);
         if(SwordImage) SwordImage.SetActive(false);
+        if(AxeImage) AxeImage.SetActive(false);
+        if(SpearImage) SpearImage.SetActive(false);
+        if(BowImage) BowImage.SetActive(false);
+        if(StaffImage) StaffImage.SetActive(false);
         if(FistImage) FistImage.SetActive(false);
     }
 
@@ -148,6 +160,34 @@ public class GetCanvas : MonoBehaviour
         HideAllImages();
         if(statusImage) statusImage.SetActive(true);
         if(SwordImage) SwordImage.SetActive(true);
+    }
+
+    public void showAxeimage()
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if(AxeImage) AxeImage.SetActive(true);
+    }    
+
+    public void showSpearimage()
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if(SpearImage) SpearImage.SetActive(true);
+    }
+
+    public void showBowimage()
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if(BowImage) BowImage.SetActive(true);
+    }
+
+    public void showStaffimage()
+    {
+        HideAllImages();
+        if(statusImage) statusImage.SetActive(true);
+        if(StaffImage) StaffImage.SetActive(true);
     }
 
     public void showFistImage()
