@@ -18,6 +18,7 @@ public class Unit : MonoBehaviour
         public string unitName = "Unit";
         public int exp = 0;
         public int level = 1;
+        public int expToNextLevel = 10;   // 次のレベルまでに必要なEXP
         public int maxHP = 20;
         public int currentHP = 20;
         public int attack = 5;
@@ -72,6 +73,7 @@ public class Unit : MonoBehaviour
     public int stunTurns = 0;//罠
 
     public bool isDead = false;
+    public BGMSE bGMSE;
 
     protected virtual void Awake()
     {
@@ -476,10 +478,24 @@ public class Unit : MonoBehaviour
     public void LevelUp()
     {
         status.level++;
-        float mul = status.levelUpMultipliers[Mathf.Clamp(status.level, 0, status.levelUpMultipliers.Count - 1)];
+
+        float mul = status.levelUpMultipliers[
+            Mathf.Clamp(status.level - 1, 0, status.levelUpMultipliers.Count - 1)
+        ];
+
         status.maxHP = Mathf.RoundToInt(status.maxHP * mul);
         status.attack = Mathf.RoundToInt(status.attack * mul);
+        status.defense = Mathf.RoundToInt(status.defense * mul);
+
+        status.currentHP = status.maxHP;
+
+        status.expToNextLevel = Mathf.RoundToInt(status.expToNextLevel * 1.2f);
+
+        UpdateHPBar(status.currentHP);
+
+        LogManager.Instance.AddLog($"{LogManager.ColorText($"{status.unitName}はレベル{status.level}になった！", "#44FF44")}");
     }
+
 
     public void Die(Unit killer = null)
     {
@@ -513,6 +529,15 @@ public class Unit : MonoBehaviour
             }
         }
 
+            // === 経験値付与 ===
+        if (killer != null && killer is PlayerUnit player)
+        {
+            if (this is EnemyUnit enemy)
+            {
+                player.AddExp(enemy.expReward);
+            }
+        }
+
         GetComponent<BossScript>()?.enemyDie();
 
         if (team == Team.Player)
@@ -521,6 +546,7 @@ public class Unit : MonoBehaviour
             TurnManager.Instance.OnPlayerDied();
             if(WallHintManager.Instance != null) WallHintManager.Instance.Reset(); 
             GameManager.Instance.GameOver();
+            bGMSE.StopBGM();
         }
 
         if (anim == null && GetComponent<BossScript>() == null)
@@ -753,5 +779,18 @@ public class Unit : MonoBehaviour
         yield return null;
         isEvent = false;
     }
+
+    public virtual void AddExp(int amount)
+    {
+        status.exp += amount;
+        LogManager.Instance.AddLog($"{status.unitName}は{LogManager.ColorText(amount.ToString(), "#44FF44")} の経験値を得た！");
+
+        while (status.exp >= status.expToNextLevel)
+        {
+            status.exp -= status.expToNextLevel;
+            LevelUp();
+        }
+    }
+
 
 }

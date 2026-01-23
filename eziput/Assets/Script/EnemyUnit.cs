@@ -10,6 +10,8 @@ public class EnemyUnit : Unit
     public bool isUsingSkill = false;
 
     private BossScript bossScript;
+
+    public int expReward = 5;
     //近づいたら、Word Spaceで表示させるようにしたい。(雑魚的)
     //ボスは、Screen Space - Cameraで表示させる。
 

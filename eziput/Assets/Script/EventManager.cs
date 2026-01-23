@@ -32,12 +32,12 @@ public class EventManager : MonoBehaviour
             case "Next":
                 Debug.Log($"{actor.name} は出口に着いた！");
 
-                if (ItemUIManager.instance.HasItem("アヌビスの仮面"))
+                if (ItemUIManager.instance.HasItem("アヌビスの通行証"))
                 {
                     Debug.Log("特殊アイテム所持 → クリア判定");
 
                     // 消費
-                    ItemUIManager.instance.UseSelectedItem("アヌビスの仮面", "item");
+                    ItemUIManager.instance.UseSelectedItem("アヌビスの通行証", "item");
 
                     // ★ フラグを立てる
                     GameManager.Instance.IsItemCrafted = true;

@@ -69,9 +69,10 @@ MonoBehaviour:
   hpSlider: {fileID: 0}
   hptext: {fileID: 0}
   status:
-    unitName: Unit
+    unitName: "\u30A2\u30CC\u30D3\u30B9"
     exp: 0
     level: 1
+    expToNextLevel: 10
     maxHP: 20
     currentHP: 20
     attack: 5
@@ -93,7 +94,8 @@ MonoBehaviour:
   isShowingAttackRange: 0
   isEvent: 0
   facingDir: {x: 0, y: 0}
-  attackSkills: []
+  attackSkills:
+  - {fileID: 11400000, guid: 5739d8f57a39c924eb2ffbe61e37e0d2, type: 2}
   weaponSkillLoadouts: []
   anim: {fileID: 3548262269595652}
   animationController: {fileID: 5865391548788385566}
@@ -105,7 +107,9 @@ MonoBehaviour:
   isStunned: 0
   stunTurns: 0
   isDead: 0
+  bGMSE: {fileID: 0}
   isUsingSkill: 0
+  expReward: 5
 --- !u!114 &8992817457766031524
 MonoBehaviour:
   m_ObjectHideFlags: 0
