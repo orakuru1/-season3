@@ -161,6 +161,7 @@ public class PlayerUnit : Unit
 
         int healedAmount = status.currentHP - oldHP;  //実際に回復した量
         UpdateHPBar(status.currentHP);
+        LogManager.Instance.AddLog($"{status.unitName}のHPが{LogManager.ColorText(amount.ToString(), "#17ff02")} 回復した");
         Debug.Log($"{status.unitName}のHPが{amount}回復！");
 
     }
