@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class InputHandler : MonoBehaviour
@@ -6,6 +7,13 @@ public class InputHandler : MonoBehaviour
     private Unit currentPlayerUnit;
     private GridBlock highlightedBlock;
     private bool st;
+    [SerializeField] float longPressThreshold = 0.35f;
+    [SerializeField] float autoMoveInterval = 0.15f;
+
+    float enterPressTime = 0f;
+    bool isAutoMoving = false;
+    Coroutine autoMoveCoroutine;
+
     public static InputHandler Instance { get; internal set; }
 
     private void OnEnable() => TurnManager.OnTurnStart += OnTurnStart;
@@ -45,6 +53,29 @@ public class InputHandler : MonoBehaviour
         else if (canRotate)
         {
             HandleDirectionChange(player);
+        }
+
+        // === Enter押下開始 ===
+        if (Input.GetKeyDown(KeyCode.Return) && !player.isEvent)
+        {
+            enterPressTime = Time.time;
+        }
+
+        // === Enter押し続け ===
+        if (Input.GetKey(KeyCode.Return) && !player.isEvent)
+        {
+            if (!isAutoMoving &&
+                Time.time - enterPressTime >= longPressThreshold &&
+                !IsEnemyAhead(player))
+            {   // 長押し開始
+                autoMoveCoroutine = StartCoroutine(AutoMove(player));
+            }
+        }
+
+        // === Enter離した ===
+        if (Input.GetKeyUp(KeyCode.Return))
+        {
+            StopAutoMove();
         }
 
 
@@ -101,38 +132,42 @@ public class InputHandler : MonoBehaviour
         st = true;
         bool dirChanged = false;
         if (Input.GetKeyDown(KeyCode.W)) { player.facingDir = Vector2Int.up; dirChanged = true; }
-        //if (Input.GetKeyDown(KeyCode.A)) { player.facingDir = Vector2Int.left; dirChanged = true; }
-        //if (Input.GetKeyDown(KeyCode.S)) { player.facingDir = Vector2Int.down; dirChanged = true; }
-        //if (Input.GetKeyDown(KeyCode.D)) { player.facingDir = Vector2Int.right; dirChanged = true; }
-
-        //１人称の時と天カメの時で操作方法を変えたほうが良いかもしれない。めっちゃやりにくい。
+        if(CameraSwitcher.Instance.isTopView)
+        {
+            if (Input.GetKeyDown(KeyCode.A)) { player.facingDir = Vector2Int.left; dirChanged = true; }
+            if (Input.GetKeyDown(KeyCode.S)) { player.facingDir = Vector2Int.down; dirChanged = true; }
+            if (Input.GetKeyDown(KeyCode.D)) { player.facingDir = Vector2Int.right; dirChanged = true; }
+        }
+        else
+        {
+            //１人称の時と天カメの時で操作方法を変えたほうが良いかもしれない。めっちゃやりにくい。
         
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            // 180度反転
-            player.facingDir = -player.facingDir;
-            dirChanged = true;
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            // 左回転（90度）
-            player.facingDir = new Vector2Int(
-                -player.facingDir.y,
-                player.facingDir.x
-            );
-            dirChanged = true;
-        }
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                // 180度反転
+                player.facingDir = -player.facingDir;
+                dirChanged = true;
+            }
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                // 左回転（90度）
+                player.facingDir = new Vector2Int(
+                    -player.facingDir.y,
+                    player.facingDir.x
+                );
+                dirChanged = true;
+            }
 
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            // 右回転（90度）
-            player.facingDir = new Vector2Int(
-                player.facingDir.y,
-                -player.facingDir.x
-            );
-            dirChanged = true;
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                // 右回転（90度）
+                player.facingDir = new Vector2Int(
+                    player.facingDir.y,
+                    -player.facingDir.x
+                );
+                dirChanged = true;
+            }
         }
-        
 
         if (!dirChanged) return;
 
@@ -151,6 +186,82 @@ public class InputHandler : MonoBehaviour
         if (player.facingDir == Vector2Int.down) player.TryMove(Vector2Int.down);
         if (player.facingDir == Vector2Int.left) player.TryMove(Vector2Int.left);
         if (player.facingDir == Vector2Int.right) player.TryMove(Vector2Int.right);
+    }
+
+    List<Vector2Int> GetForwardCheckCells(
+    Vector2Int origin,
+    Vector2Int dir,
+    int forward = 2,
+    int halfWidth = 1
+)
+    {
+        List<Vector2Int> cells = new List<Vector2Int>();
+
+        Vector2Int right = new Vector2Int(dir.y, -dir.x); // 90度回転
+
+        for (int f = 1; f <= forward; f++)
+        {
+            Vector2Int center = origin + dir * f;
+
+            for (int w = -halfWidth; w <= halfWidth; w++)
+            {
+                cells.Add(center + right * w);
+            }
+        }
+
+        return cells;
+    }
+
+    bool IsEnemyAhead(PlayerUnit player)
+    {
+        var gm = GridManager.Instance;
+        var cells = GetForwardCheckCells(
+            player.gridPos,
+            player.facingDir,
+            forward: 5,
+            halfWidth: 1
+        );
+
+        foreach (var c in cells)
+        {
+            var block = gm.GetBlock(c);
+            if (block == null) continue;
+
+            if (block.occupantUnit != null &&
+                block.occupantUnit.team == Unit.Team.Enemy)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    IEnumerator AutoMove(PlayerUnit player)
+    {
+        isAutoMoving = true;
+
+        while (Input.GetKey(KeyCode.Return))
+        {
+            DoMove(player);
+            yield return new WaitForSeconds(autoMoveInterval);
+
+            // 敵が近づいたら即停止
+            if (IsEnemyAhead(player))
+                break;
+        }
+
+        StopAutoMove();
+    }
+
+
+    void StopAutoMove()
+    {
+        if (autoMoveCoroutine != null)
+        {
+            StopCoroutine(autoMoveCoroutine);
+            autoMoveCoroutine = null;
+        }
+        isAutoMoving = false;
     }
 
     public void UpdateHighlight()

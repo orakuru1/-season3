@@ -9,13 +9,20 @@ public class CameraSwitcher : MonoBehaviour
     public Transform TopViewPoint;
     public Transform PlayerViewPoint;
 
-    bool isTopView = false;
+    public bool isTopView = false;
+    public static CameraSwitcher Instance { get; private set; }
 
     void Start()
     {
         //SetView(false); // 最初はプレイヤー視点
     }
-
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab)) // 好きなキー
