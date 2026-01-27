@@ -32,7 +32,7 @@ public class EventManager : MonoBehaviour
             case "Next":
                 Debug.Log($"{actor.name} は出口に着いた！");
 
-                if (ItemUIManager.instance.HasItem("アヌビスの通行証"))
+                if (ItemUIManager.instance.HasItem("アヌビスの仮面"))
                 {
                     Debug.Log("特殊アイテム所持 → クリア判定");
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 public class TurnManager : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class TurnManager : MonoBehaviour
 
     public delegate void OnTurnStartDelegate(Unit unit);
     public static event OnTurnStartDelegate OnTurnStart;
+    public static event Action OnStatusEffectTurnUpdate;
+
 
     public List<Unit> allUnits = new List<Unit>();
     private int currentIndex = 0;
@@ -141,6 +144,7 @@ public class TurnManager : MonoBehaviour
     {
         //神の力のクールダウンを減らす
         GodManeger.Instance.CooldownCount();
+        OnStatusEffectTurnUpdate?.Invoke();
         currentIndex = 0; // プレイヤーに戻す
         StartNextTurn();
     }

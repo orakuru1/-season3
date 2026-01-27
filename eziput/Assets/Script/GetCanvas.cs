@@ -229,7 +229,7 @@ public class GetCanvas : MonoBehaviour
             if (script != null)
                 script.enabled = enable;
         }
-
+/*
         // マウスカーソルも制御（UI操作しやすく）
         if (!enable)
         {
@@ -241,5 +241,6 @@ public class GetCanvas : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
+*/
     }
 }

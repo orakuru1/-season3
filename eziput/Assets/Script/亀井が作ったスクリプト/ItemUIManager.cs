@@ -607,6 +607,7 @@ public class ItemUIManager : MonoBehaviour
                 player.equippedWeaponType = weapon.weaponType;
                 player.RefreshAttackSkills();
                 player.equipVarianceBonus = weapon.varianceBonus;
+                player.CurrentWeaponObject = weapon.weaponPrefab;
 
                 //装備した武器の種類によるアイコン変更
                 switch (weapon.weaponType)
@@ -707,6 +708,7 @@ public class ItemUIManager : MonoBehaviour
             player.RefreshAttackSkills();
             weponSlotImage.sprite = fistIcon;
             player.equipVarianceBonus = 0;
+            player.CurrentWeaponObject = null;
 
             //装備解除
             equippedWeaponButton = null;

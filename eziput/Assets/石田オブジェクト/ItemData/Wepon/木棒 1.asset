@@ -20,3 +20,4 @@ MonoBehaviour:
   attackBonus: 3
   varianceBonus: 0.03
   durability: 3
+  weaponPrefab: {fileID: 11400000, guid: 1bb79bf153cd8da478e6204eaea6a239, type: 2}

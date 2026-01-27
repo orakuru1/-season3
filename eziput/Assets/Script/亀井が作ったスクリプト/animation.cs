@@ -40,6 +40,10 @@ public class animation : MonoBehaviour
         isGuaranteedChest = true;
         Debug.Log("この宝箱は[確定宝箱]です");
        }
+       else
+        {
+            Debug.Log("この宝箱は[ランダム宝箱]です");
+        }
         //audio = GetComponent<AudioSource>(); //SE追加
     }
 

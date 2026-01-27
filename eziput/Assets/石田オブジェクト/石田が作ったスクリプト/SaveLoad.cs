@@ -80,7 +80,9 @@ public class SaveLoad : MonoBehaviour
         //ファイルが既に存在してるか？
         if (!File.Exists(SavePath))
         {
-            Debug.Log("セーブデータがありません");
+            Debug.Log("セーブデータがありません。初期データを作成します。");
+            ApplyInitialData(player, godPlayer);
+            Save(); // 初期データをそのまま保存
             return;
         }
 
@@ -121,4 +123,33 @@ public class SaveLoad : MonoBehaviour
         Debug.Log("ロードしました:" + SavePath);
         Debug.Log(savedata.weaponMasterySet);
     }
+    
+    private void ApplyInitialData(PlayerUnit player, GodPlayer godPlayer)
+    {
+        // 武器熟練度：初期化
+        player.weaponMasterySet = new WeaponMasterySet(); 
+        player.weaponMasterySet.InitializeDefault(); // ←あるなら
+
+        // スキルロードアウト初期化
+        player.weaponSkillLoadouts.Clear();
+        foreach (WeaponType type in System.Enum.GetValues(typeof(WeaponType)))
+        {
+            if (type == WeaponType.None) continue;
+
+            WeaponSkillLoadout loadout = new WeaponSkillLoadout();
+            loadout.weaponType = type;
+            loadout.skills = new List<SkillData>();
+
+            // 初期スキルがあるならここで追加
+            SkillData defaultSkill = player.allSkillsDatabase.GetDefaultSkill(type);
+            if (defaultSkill != null)
+                loadout.skills.Add(defaultSkill);
+
+            player.weaponSkillLoadouts.Add(loadout);
+        }
+
+        // 神の加護 初期化
+        godPlayer.ownedGods.Clear();
+    }
+
 }
