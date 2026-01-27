@@ -74,6 +74,13 @@ public class Unit : MonoBehaviour
 
     public bool isDead = false;
     public BGMSE bGMSE;
+    public WeaponVisualData CurrentWeaponObject;//現在装備している武器のオブジェクト
+    public Transform WeaponPositon;//武器を持つ位置
+
+    public EnemyDropTable dropTable;
+    public GameObject DebuffOuragePrefab;//デバフエフェクト用オーラプレハブ
+    public GameObject InstanceDebuffOurage;//デバフエフェクト用オーラインスタンス
+    private Dictionary<string, int> statusEffects = new Dictionary<string, int>();
 
     protected virtual void Awake()
     {
@@ -444,6 +451,9 @@ public class Unit : MonoBehaviour
         //デバフの効果値を貰う
         status.attack = Mathf.Max(0, status.attack - power);
         status.defense = Mathf.Max(0, status.defense - power);
+        if(DebuffOuragePrefab != null) InstanceDebuffOurage = Instantiate(DebuffOuragePrefab, this.transform.position, Quaternion.identity, this.transform);
+        statusEffects.Add("Debuff", 3);//3ターンデバフ持続
+
     }
 
     public void TakeDamage(int damage, Unit attacker = null)
@@ -479,15 +489,23 @@ public class Unit : MonoBehaviour
     {
         status.level++;
 
-        float mul = status.levelUpMultipliers[
-            Mathf.Clamp(status.level - 1, 0, status.levelUpMultipliers.Count - 1)
-        ];
+        //float mul = status.levelUpMultipliers[
+        //    Mathf.Clamp(status.level - 1, 0, status.levelUpMultipliers.Count - 1)
+        //];
+        //int oldMaxHP = status.maxHP;
+        //status.maxHP = Mathf.RoundToInt(status.maxHP * mul);
+        //status.attack = Mathf.RoundToInt(status.attack * mul);
+        //status.defense = Mathf.RoundToInt(status.defense * mul);
 
-        status.maxHP = Mathf.RoundToInt(status.maxHP * mul);
-        status.attack = Mathf.RoundToInt(status.attack * mul);
-        status.defense = Mathf.RoundToInt(status.defense * mul);
+        //int hpIncrease = status.maxHP - oldMaxHP;
 
-        status.currentHP = status.maxHP;
+        status.maxHP += 5; // 固定値で成長させる
+        status.currentHP += 5;
+        status.attack += 1;
+        status.defense += 2;
+
+        if (status.currentHP > status.maxHP)
+            status.currentHP = status.maxHP;
 
         status.expToNextLevel = Mathf.RoundToInt(status.expToNextLevel * 1.2f);
 
@@ -561,9 +579,38 @@ public class Unit : MonoBehaviour
         // このユニットを削除
         if(team == Team.Enemy)
         {
+            DropItems();
             Destroy(gameObject);
         }
         
+    }
+
+    private void DropItems()
+    {
+        if (dropTable == null) return;
+        Debug.Log($"ドロップアイテムを決定: {dropTable.dropCategories.Count}カテゴリ");
+
+        foreach (var category in dropTable.dropCategories)
+        {
+            // カテゴリ抽選（例：レア枠が当たるか）
+            if (Random.value > category.categoryRate)
+                continue;
+
+            foreach (var item in category.items)
+            {
+                if (Random.value <= item.dropRate)
+                {
+                    int count = Random.Range(item.minCount, item.maxCount + 1);
+                    for (int i = 0; i < count; i++)
+                    {
+                        ItemUIManager.instance.AddItem(item.itemName);
+                    }
+
+                    LogManager.Instance.AddLog($"{LogManager.ColorText(item.itemName + " x" + count, "#FFFF44")}をドロップした！");
+                    Debug.Log($"ドロップ: {item.itemName} x{count}");
+                }
+            }
+        }
     }
 
     // AI用ヘルパー
@@ -767,11 +814,13 @@ public class Unit : MonoBehaviour
                 break;
 
             case TrapType.Stun:
-                //SoundManager.Instance.PlaySE("Trap_Damage");
-                yield return new WaitForSeconds(1f);//音が鳴ってから、少ししてダメージ
-                LogManager.Instance.AddLog(
-                    $"{status.unitName}は足を取られた！"
-                );
+                SoundManager.Instance.PlaySE(block.ArrowTrapSE);
+                yield return new WaitForSeconds(1f);//音が鳴ってから、少しして罠のエフェクト
+                EffectManager.Instance.PlayAttackEffect(transform.position, transform, 2007);//罠のエフェクト
+                SoundManager.Instance.PlaySE2("電気罠");
+                LogManager.Instance.AddLog($"{LogManager.ColorText($"{status.unitName}は罠を踏んだ！", "#FF4444")}");
+                LogManager.Instance.AddLog($"{block.trapValue}ターン行動不能になった！");
+                yield return new WaitForSeconds(1f);//音が鳴ってから、少ししてスタン効果
                 StartCoroutine(ApplyStun(block.trapValue));
                 break;
         }
@@ -790,6 +839,39 @@ public class Unit : MonoBehaviour
             status.exp -= status.expToNextLevel;
             LevelUp();
         }
+    }
+
+    public void statusEffectTurnUpdate()
+    {
+        List<string> keys = new List<string>(statusEffects.Keys);
+        foreach (var key in keys)
+        {
+            statusEffects[key]--;
+            if (statusEffects[key] <= 0)
+            {
+                // 効果終了
+                if (key == "Debuff")
+                {
+                    Debug.Log($"{gameObject.name}のデバフが解除された！");
+                    // デバフ解除の処理（例：ステータスを元に戻す）
+                    // ここでは仮に攻撃と防御を5回復するとします
+                    status.attack += 5;
+                    status.defense += 5;
+                    if(InstanceDebuffOurage != null) Destroy(InstanceDebuffOurage);
+                }
+
+                statusEffects.Remove(key);
+            }
+        }
+    }
+
+    public void OnEnable()
+    {
+        TurnManager.OnStatusEffectTurnUpdate += statusEffectTurnUpdate;
+    }
+    public void OnDisable()
+    {
+        TurnManager.OnStatusEffectTurnUpdate -= statusEffectTurnUpdate;
     }
 
 

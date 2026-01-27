@@ -16,6 +16,9 @@ public class AnimationController : MonoBehaviour
     public Animator anim;
 
     public System.Action onAnimationEnd;// アニメーション終了時に呼ばれるイベント
+    private TrailRenderer weaponTrail;
+
+    [SerializeField] private GameObject InstanceWeapon;//なんの武器を生成するかわかりやすくするために見せてる。
 
     void Start()
     {
@@ -314,5 +317,58 @@ public class AnimationController : MonoBehaviour
     public void TrapDethAnimation()
     {
         anim.SetInteger("Hit", 201);
+    }
+
+    public void WeaponInstance()
+    {
+        if (Im.CurrentWeaponObject != null && Im.WeaponPositon != null)
+        {
+            InstanceWeapon = Instantiate(Im.CurrentWeaponObject.prefab, Im.WeaponPositon);
+
+                InstanceWeapon.transform.localPosition = Im.CurrentWeaponObject.localPosition;
+                InstanceWeapon.transform.localEulerAngles = Im.CurrentWeaponObject.localRotation;
+                InstanceWeapon.transform.SetParent(Im.WeaponPositon, false);
+
+                // TrailRenderer を取得
+                weaponTrail = InstanceWeapon.GetComponent<TrailRenderer>();
+                if (weaponTrail != null)
+                {
+                    weaponTrail.emitting = false; // 最初は出さない
+                }
+
+        }
+    }
+
+    public void WeaponDestroy()
+    {
+        if (InstanceWeapon != null)
+        {
+            Destroy(InstanceWeapon);
+        }
+    }
+
+    public void PlaySwingSound()
+    {
+        if (Im.CurrentWeaponObject != null && Im.CurrentWeaponObject.swingSound != null)
+        {
+            SoundManager.Instance.PlaySE(Im.CurrentWeaponObject.swingSound);
+        }
+    }
+
+    public void StartWeaponTrail()
+    {
+        if (weaponTrail != null)
+        {
+            weaponTrail.Clear();   // 前回の残りを消す
+            weaponTrail.emitting = true;
+        }
+    }
+
+    public void StopWeaponTrail()
+    {
+        if (weaponTrail != null)
+        {
+            weaponTrail.emitting = false;
+        }
     }
 }

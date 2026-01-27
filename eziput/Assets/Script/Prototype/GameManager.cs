@@ -105,6 +105,7 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(SpawnPlayerAfterGenerate());
         trapPlacer = GetComponent<TrapPlacer>();
+
     }
 
     private void InitCanvasGroup(CanvasGroup cg)

@@ -114,6 +114,16 @@ public class WeaponMasterySet
         none.exp    = other.none.exp;
     }
 
+    public void InitializeDefault()
+    {
+        sword = new WeaponMasteryProgress();
+        axe = new WeaponMasteryProgress();
+        spear = new WeaponMasteryProgress();
+        bow = new WeaponMasteryProgress();
+        staff = new WeaponMasteryProgress();
+        none = new WeaponMasteryProgress();
+    }
+
     public WeaponMasteryProgress Get(WeaponType type)
     {
         switch (type)

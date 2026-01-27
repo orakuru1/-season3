@@ -68,6 +68,7 @@ MonoBehaviour:
     unitName: "\u30DF\u30A4\u30E9"
     exp: 0
     level: 1
+    expToNextLevel: 10
     maxHP: 20
     currentHP: 20
     attack: 5
@@ -101,7 +102,14 @@ MonoBehaviour:
   isStunned: 0
   stunTurns: 0
   isDead: 0
+  bGMSE: {fileID: 0}
+  CurrentWeaponObject: {fileID: 0}
+  WeaponPositon: {fileID: 0}
+  dropTable: {fileID: 11400000, guid: 770055b854954b041bbe2fe568b7c19b, type: 2}
+  DebuffOuragePrefab: {fileID: 387052216279435133, guid: b9558c2852940fd4da1647e7203e4ef4,
+    type: 3}
   isUsingSkill: 0
+  expReward: 5
 --- !u!1001 &2098735307932254698
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -233,6 +241,7 @@ MonoBehaviour:
     isDebuffing: 0
     isHiling: 0
   anim: {fileID: 0}
+  InstanceWeapon: {fileID: 0}
 --- !u!4 &1921504158005995009 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 07359b87f81764041b43f15d7069d4ce,

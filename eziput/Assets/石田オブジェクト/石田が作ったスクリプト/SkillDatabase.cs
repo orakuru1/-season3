@@ -51,6 +51,10 @@ public class SkillDatabase : ScriptableObject
             rareSkills.Cast<SkillData>().ToList()
         };
     }
+    public SkillData GetDefaultSkill(WeaponType type)
+    {
+        return normalSkills.Get(type).FirstOrDefault();
+    }
 }
 
 [System.Serializable]
