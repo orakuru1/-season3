@@ -47,7 +47,7 @@ public class EventManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("特殊アイテムを持っていません");
+                    LogManager.Instance.AddLog($"{LogManager.ColorText("特殊アイテムを持っていません", "#ff7307")}");
                 }
                 break;
 
